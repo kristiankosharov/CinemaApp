@@ -82,8 +82,9 @@ public class MovieDetailAdapter extends PagerAdapter {
 
         MovieDetail item = list.get(position);
 
-
+        viewHolder.ratingBar.setMax(300);
         viewHolder.ratingBar.setProgress(item.getRating());
+//        Toast.makeText(context, "progress" + item.getRating(), Toast.LENGTH_SHORT).show();
 
         LayerDrawable stars = (LayerDrawable) viewHolder.ratingBar.getProgressDrawable();
         stars.getDrawable(2).setColorFilter(context.getResources().getColor(R.color.starFullySelected), PorterDuff.Mode.SRC_ATOP);
@@ -174,18 +175,18 @@ public class MovieDetailAdapter extends PagerAdapter {
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 viewWidth,
-                (int) (40 * density));
+                (int) (60 * density));
         //layoutParams.setMargins(1,0,1,0);
 
         LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
                 viewWidth,
-                (int) (40 * density), Gravity.CENTER_HORIZONTAL);
+                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
         textViewParam.weight = 1;
         int halfViewWidth = viewWidth / 2;
 
         LinearLayout.LayoutParams emptyViewParam = new LinearLayout.LayoutParams(
                 viewWidth + halfViewWidth,
-                (int) (40 * density), Gravity.CENTER_HORIZONTAL);
+                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
 
         String[] nameOfDays = item.getNameDayOfMonth();
         String[] date = item.getDate();

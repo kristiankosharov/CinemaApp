@@ -54,9 +54,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             rowView.setTag(viewHolder);
         }
 
-        ViewHolder holder = (ViewHolder) rowView.getTag();
+        final ViewHolder holder = (ViewHolder) rowView.getTag();
 
-        Movie item = list.get(position);
+        final Movie item = list.get(position);
 
         if (item.getNewForWeek() == null || item.getNewForWeek().equals("")) {
             holder.newForWeek.setVisibility(View.GONE);
@@ -70,6 +70,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         holder.movieImage.setDefaultImageResId(R.drawable.example);
 
         LayerDrawable stars = (LayerDrawable) holder.ratingBar.getProgressDrawable();
+
         stars.getDrawable(2).setColorFilter(context.getResources().getColor(R.color.starFullySelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
@@ -89,9 +90,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MovieDetailActivity.class);
-                intent.putExtra("PROGRESS", getItem(position).getMovieProgress());
-                intent.putExtra("URL", getItem(position).getImageUrl());
-                intent.putExtra("TITLE", getItem(position).getMovieTitle());
+                intent.putExtra("PROGRESS", item.getMovieProgress());
+                intent.putExtra("URL", item.getImageUrl());
+                intent.putExtra("TITLE", item.getMovieTitle());
                 context.startActivity(intent);
             }
         });

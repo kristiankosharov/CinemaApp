@@ -14,18 +14,18 @@
             android:id="@+id/rating_layout"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:layout_below="@+id/toolbar"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_below="@+id/toolbar">
+            android:focusableInTouchMode="true">
 
             <RatingBar
                 android:id="@+id/rating_bar"
-                style="?android:ratingBarStyleSmall"
+                style="?android:ratingBarStyleIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="10dp"
                 android:isIndicator="true"
                 android:numStars="5"
                 android:progress="50"
@@ -256,18 +256,18 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/dash_line1"
                 android:text="FULL DESRIPTION" />
-<!--
-            <VideoView
-                android:id="@+id/movie_trailer"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
+            <!--
+                        <VideoView
+                            android:id="@+id/movie_trailer"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentRight="true"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
 
-                android:layout_below="@+id/full_desription" />
-                -->
+                            android:layout_below="@+id/full_desription" />
+                            -->
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

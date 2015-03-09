@@ -59,6 +59,9 @@ public class MovieDetailActivity extends BaseActivity {
         String url = intent.getStringExtra("URL");
         String title = intent.getStringExtra("TITLE");
         int progress = intent.getIntExtra("PROGRESS", 0);
+
+        //Toast.makeText(this,"progress" + progress,Toast.LENGTH_SHORT).show();
+
         String[] directors = {"az", "ti"};
         String[] genres = {"az", "ti"};
         String[] actors = {"az", "ti"};
@@ -92,7 +95,9 @@ public class MovieDetailActivity extends BaseActivity {
             detail.setMovieActors(actors);
             detail.setMovieGenre(genres);
             detail.setMovieTitle(title);
-            detail.setRating(progress * i);
+            detail.setRating(progress);
+
+
             detail.setDuration("110min . 30.01.15");
             detail.setDate(days);
             detail.setFullDescription("ldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjflj" +
