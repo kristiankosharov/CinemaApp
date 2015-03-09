@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:id="@+id/master">
+
+    <TextView
+        android:id="@+id/new_movie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/primary"
+        android:gravity="center"
+        android:text="Novo tazi sedmica"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/movie_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/new_movie"
+        android:layout_margin="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/example" />
+
+    <TextView
+        android:id="@+id/movie_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_image"
+        android:gravity="center"
+        android:text="Zaglavie na film"
+        android:layout_marginBottom="5dp"
+        android:textSize="15sp" />
+
+    <View
+        android:id="@+id/dash_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/movie_title"
+        android:background="@drawable/dash_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/movie_image"
+        android:layout_alignLeft="@+id/movie_image"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/dash_line">
+
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:ratingBarStyleSmall"
+            android:isIndicator="true"
+            android:layout_alignParentLeft="true"
+            android:stepSize="1.0" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/arrow" />
+    </RelativeLayout>
+
+</RelativeLayout>

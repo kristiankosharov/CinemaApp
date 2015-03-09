@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MyCinemaApp</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="list_of_movie">List</string>
+    <string name="tickets">Tickets</string>
+    <string name="marks">Marks</string>
+
+    <string name="profile">Profile</string>
+
+
+    <string-array name="tabs">
+        <item>List</item>
+        <item>Ticket</item>
+        <item>Mark</item>
+    </string-array>
+</resources>

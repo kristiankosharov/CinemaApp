@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/movie_detail_item_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rating_layout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_below="@+id/toolbar">
+
+            <RatingBar
+                android:id="@+id/rating_bar"
+                style="?android:ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progress="50"
+                android:stepSize="0.1" />
+
+            <Button
+                android:id="@+id/rate_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:text="RATE A MOVIE!"
+                android:textSize="10sp" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@android:color/darker_gray" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/movie_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rating_layout"
+            android:layout_toRightOf="@+id/movie_image">
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/image"
+                android:layout_width="180dp"
+                android:layout_height="250dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/example" />
+
+            <RelativeLayout
+                android:id="@+id/movie_information"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/image"
+                android:layout_alignTop="@+id/image"
+                android:layout_toRightOf="@+id/image"
+                android:paddingLeft="5dp">
+
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TITLE" />
+
+                <View
+                    android:id="@+id/line1"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_below="@+id/title"
+                    android:background="@drawable/dash_line" />
+
+                <TextView
+                    android:id="@+id/genre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/line1"
+                    android:text="GENRE" />
+
+                <View
+                    android:id="@+id/line2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="2dp"
+                    android:layout_below="@+id/genre"
+                    android:background="@drawable/dash_line" />
+
+                <TextView
+                    android:id="@+id/director"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/line2"
+                    android:text="DIRECTOR"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/names_director"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/director"
+                    android:text="NAMES" />
+
+                <TextView
+                    android:id="@+id/actors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/names_director"
+                    android:text="ACTOR"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/names_actors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/actors"
+                    android:text="NAMES" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="2dp"
+                    android:layout_above="@+id/duration"
+                    android:background="@drawable/dash_line" />
+
+                <TextView
+                    android:id="@+id/duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="VREMETRAENE" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/line3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/movie_information"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/projections_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/movie_info"
+            android:background="@color/gray_background_gridview">
+
+            <RelativeLayout
+                android:id="@+id/days_horizontal_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp">
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/mall_horizontal_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/days_horizontal_scroll_view">
+
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/triangle"
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:layout_below="@+id/mall_horizontal_scroll_view"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/down_arrow" />
+
+            <RelativeLayout
+                android:id="@+id/projection_horizontal_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/triangle"
+                android:layout_marginBottom="2dp">
+
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/projections_layout">
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/line4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/comments"
+            android:background="@android:color/darker_gray" />
+
+        <RelativeLayout
+            android:id="@+id/movie_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line4">
+
+
+            <Button
+                android:id="@+id/imdb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="5dp"
+                android:text="IMDB"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/title_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imdb"
+                android:layout_alignTop="@+id/imdb"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="TITLE"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/dash_line1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/imdb"
+                android:background="@drawable/dash_line" />
+
+            <TextView
+                android:id="@+id/full_desription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dash_line1"
+                android:text="FULL DESRIPTION" />
+<!--
+            <VideoView
+                android:id="@+id/movie_trailer"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                android:layout_below="@+id/full_desription" />
+                -->
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>
