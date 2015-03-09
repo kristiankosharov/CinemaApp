@@ -119,6 +119,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
                 activeItem = activeItem + 3;
             }
 
+
             returnValue = true;
 
         } else if (ptx1 - ptx2 < 0 && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
