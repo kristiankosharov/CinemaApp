@@ -5,7 +5,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
-import android.widget.Toast;
 
 public class CustomHorizontalScrollView extends HorizontalScrollView implements
         View.OnTouchListener, GestureDetector.OnGestureListener {
@@ -107,28 +106,35 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         this.currentScrollX = x;
         int minFactor = itemWidth
                 / 2;
+        int minFactorMinus = -minFactor;
 
-        if (ptx1 - ptx2 < minFactor && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-            if (activeItem < maxItem - 1) {
-                activeItem = activeItem + 3;
-            } else {
+        if (ptx1 - ptx2 > 0 && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+            //right to left slide
+            //positive residue
+            if ((ptx1 - ptx2) < minFactor
+//                    ||  activeItem < maxItem - 1 || activeItem > 0
+                    ) {
                 activeItem = activeItem + 1;
+            } else {
+                activeItem = activeItem + 3;
             }
 
             returnValue = true;
 
-        } else if (ptx2 - ptx1 > minFactor && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-
-            if (activeItem > 0) {
-                activeItem = activeItem - 3;
-            } else {
+        } else if (ptx1 - ptx2 < 0 && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+            //left to right
+            // negative residue
+            if ((ptx1 - ptx2) > minFactorMinus
+//                    || activeItem < maxItem - 1 || activeItem > 0
+                    ) {
                 activeItem = activeItem - 1;
+            } else {
+                activeItem = activeItem - 3;
             }
+
             returnValue = true;
         }
-        //System.out.println("horizontal : " + activeItem);
-        Toast.makeText(getContext(), "e1-e2" + (ptx2-ptx1) + "min" + minFactor, Toast.LENGTH_SHORT).show();
-        Toast.makeText(getContext(), "" + velocityX, Toast.LENGTH_SHORT).show();
+
         scrollTo = activeItem * itemWidth;
         this.smoothScrollTo(scrollTo, 0);
 
