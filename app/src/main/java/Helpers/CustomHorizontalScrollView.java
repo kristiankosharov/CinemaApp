@@ -1,10 +1,24 @@
 package Helpers;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
+import android.view.Display;
 import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import mycinemaapp.com.mycinemaapp.R;
 
 public class CustomHorizontalScrollView extends HorizontalScrollView implements
         View.OnTouchListener, GestureDetector.OnGestureListener {
@@ -15,6 +29,10 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     private static final int SWIPE_PAGE_ON_FACTOR = 10;
     private int overScrollX, scrollToX, scrollToY;
 
+    private String day, place;
+    private ArrayList<String> nameOfPlace;
+    private ArrayList<String> days;
+    private HashMap<String, HashMap<String, String[]>> map;
 
     private GestureDetector gestureDetector;
     private int scrollTo = 0;
@@ -26,13 +44,15 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     private float currentScrollX;
     private boolean flingDisable = false;
 
+    private Activity context;
+
     public CustomHorizontalScrollView(Context context) {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
     }
 
-    public CustomHorizontalScrollView(Context context, int maxItem,
+    public CustomHorizontalScrollView(Activity context, int maxItem,
                                       int itemWidth, int overScrollX) {
         this(context);
         this.maxItem = maxItem;
@@ -40,6 +60,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         gestureDetector = new GestureDetector(this);
         this.setOnTouchListener(this);
         this.overScrollX = overScrollX;
+        this.context = context;
     }
 
 //    @Override
@@ -112,13 +133,16 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
             //right to left slide
             //positive residue
             if ((ptx1 - ptx2) < minFactor
-//                    ||  activeItem < maxItem - 1 || activeItem > 0
+                    && activeItem != maxItem
                     ) {
                 activeItem = activeItem + 1;
-            } else {
-                activeItem = activeItem + 3;
-            }
+                createProjectionScroll("grand", "11.03.2015");
+                Toast.makeText(getContext(), activeItem + ":" + maxItem, Toast.LENGTH_SHORT).show();
 
+            } else if (activeItem < maxItem - 2) {
+                activeItem = activeItem + 3;
+                Toast.makeText(getContext(), activeItem + " dulgoo +3 :" + maxItem, Toast.LENGTH_SHORT).show();
+            }
 
             returnValue = true;
 
@@ -126,13 +150,15 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
             //left to right
             // negative residue
             if ((ptx1 - ptx2) > minFactorMinus
-//                    || activeItem < maxItem - 1 || activeItem > 0
+                    && activeItem != 0
                     ) {
                 activeItem = activeItem - 1;
-            } else {
+
+            } else if (activeItem > 2) {
                 activeItem = activeItem - 3;
             }
 
+            Toast.makeText(getContext(), activeItem + "", Toast.LENGTH_SHORT).show();
             returnValue = true;
         }
 
@@ -209,8 +235,105 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
     }
 
+    public void setDayAndPlace(ArrayList<String> nameOfPlace, ArrayList<String> days, HashMap<String, HashMap<String, String[]>> map) {
+//        this.day = day;
+        this.nameOfPlace = nameOfPlace;
+        this.days = days;
+        this.map = map;
+//        place = this.nameOfPlace[position];
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
+    }
+
+//    public void createProjections(){
+//        createProje
+//    }
+
+    public void createProjectionScroll(String place, String day) {
+
+        LayoutInflater inflater = context.getLayoutInflater();
+        View view = inflater.inflate(R.layout.movie_detail_item, null, false);
+        RelativeLayout containerLayout = (RelativeLayout) view.findViewById(R.id.projection_horizontal_scroll_view);
+        containerLayout.removeAllViews();
+        float density = context.getResources().getDisplayMetrics().density;
+        Display display = context.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int viewWidth = screenWidth / 3;
+
+        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, 35, viewWidth, viewWidth);
+
+        LinearLayout masterLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                viewWidth,
+                (int) (60 * density));
+        //layoutParams.setMargins(1,0,1,0);
+
+        LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
+                viewWidth,
+                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
+        textViewParam.weight = 1;
+        int halfViewWidth = viewWidth / 2;
+
+        LinearLayout.LayoutParams emptyViewParam = new LinearLayout.LayoutParams(
+                viewWidth + halfViewWidth,
+                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
+
+        TextView placeView;
+        LinearLayout layout;
+        LinearLayout emptyLayout;
+
+
+
+        String[] dayFromMap = map.get(place).get(day);
+
+
+        for (int i = -1; i < dayFromMap.length + 1; i++) {
+
+            placeView = new TextView(context);
+            //TextView emptyView = new TextView(context);
+            layout = new LinearLayout(context);
+            emptyLayout = new LinearLayout(context);
+            emptyLayout.setLayoutParams(emptyViewParam);
+
+//            Toast.makeText(context,""+item.getStartDay() +" "+ item.getNumberOfDays(),Toast.LENGTH_LONG).show();
+
+            if (i == -1 || i == dayFromMap.length) {
+                //emptyView.setWidth(viewWidth + halfViewWidth);
+//                emptyView.setLayoutParams(emptyViewParam);
+//                emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
+//                emptyView.setBackgroundColor(context.getResources().getColor(R.color.gray_background_gridview));
+                //emptyLayout.addView(emptyView);
+                layout.setLayoutParams(layoutParams);
+
+//                layout.addView(emptyView);
+            } else {
+
+                layout.setLayoutParams(layoutParams);
+                layout.setGravity(Gravity.CENTER_HORIZONTAL);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                placeView.setWidth(viewWidth);
+                placeView.setLayoutParams(textViewParam);
+                placeView.setGravity(Gravity.CENTER_HORIZONTAL);
+                placeView.setText(dayFromMap[i]);
+                placeView.setTag(i);
+
+                layout.addView(placeView);
+
+                layout.setLayoutParams(layoutParams);
+
+            }
+            //layout.addView(emptyView);
+            layout.setBackground(context.getResources().getDrawable(R.drawable.scalloped_rectangle));
+            masterLayout.addView(layout);
+        }
+        scrollView.addView(masterLayout);
+//        scrollView.setScrollTo(viewWidth/2, 0);
+        containerLayout.addView(scrollView);
     }
 }

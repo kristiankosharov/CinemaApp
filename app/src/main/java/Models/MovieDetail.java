@@ -1,5 +1,8 @@
 package Models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by kristian on 15-3-5.
  */
@@ -24,10 +27,30 @@ public class MovieDetail {
 
     int numberOfDays;
     int startDay;
-    String[] date;
-    String[] nameDayOfMonth;
+    ArrayList<String> date;
+    ArrayList<String> nameDayOfMonth;
     String[] timeOfProjection;
 
+    ArrayList<String> nameOfPlace;
+
+    HashMap<String, HashMap<String, String[]>> allProjections;
+
+    public ArrayList<String> getNameOfPlace() {
+        return nameOfPlace;
+    }
+
+    public void setNameOfPlace(ArrayList<String> nameOfPlace) {
+        this.nameOfPlace = nameOfPlace;
+    }
+
+
+    public HashMap<String, HashMap<String, String[]>> getAllProjections() {
+        return allProjections;
+    }
+
+    public void setAllProjections(HashMap<String, HashMap<String, String[]>> allProjections) {
+        this.allProjections = allProjections;
+    }
 
 
     public int getStartDay() {
@@ -39,11 +62,11 @@ public class MovieDetail {
     }
 
 
-    public String[] getNameDayOfMonth() {
+    public ArrayList<String> getNameDayOfMonth() {
         return nameDayOfMonth;
     }
 
-    public void setNameDayOfMonth(String[] nameDayOfMonth) {
+    public void setNameDayOfMonth(ArrayList<String> nameDayOfMonth) {
         this.nameDayOfMonth = nameDayOfMonth;
     }
 
@@ -55,11 +78,11 @@ public class MovieDetail {
         this.timeOfProjection = timeOfProjection;
     }
 
-    public String[] getDate() {
+    public ArrayList<String> getDate() {
         return date;
     }
 
-    public void setDate(String[] date) {
+    public void setDate(ArrayList<String> date) {
         this.date = date;
     }
 

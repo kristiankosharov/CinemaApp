@@ -11,6 +11,7 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,6 +31,7 @@ public class MovieDetailActivity extends BaseActivity {
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
     private View v;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,14 +61,18 @@ public class MovieDetailActivity extends BaseActivity {
         String url = intent.getStringExtra("URL");
         String title = intent.getStringExtra("TITLE");
         int progress = intent.getIntExtra("PROGRESS", 0);
+        HashMap<String, HashMap<String, String[]>> projections = (HashMap<String, HashMap<String, String[]>>) intent.getSerializableExtra("PROJECTIONS");
 
-        //Toast.makeText(this,"progress" + progress,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "projections" + projections.toString(), Toast.LENGTH_SHORT).show();
 
         String[] directors = {"az", "ti"};
         String[] genres = {"az", "ti"};
         String[] actors = {"az", "ti"};
-        String[] days = new String[32];
-        String[] nameOfDays = new String[32];
+        ArrayList<String> days = new ArrayList<>();
+        ArrayList<String> nameOfDays = new ArrayList<>();
+        ArrayList<String> nameOfPlaces = new ArrayList<>();
+        nameOfPlaces.add("Mall Varna");
+        nameOfPlaces.add("Grand");
 
         //Toast.makeText(this,url + "," + title + "," + progress,Toast.LENGTH_LONG).show();
 
@@ -80,12 +86,17 @@ public class MovieDetailActivity extends BaseActivity {
 
 
         int allDay = dayOfMonth;
-        for (int i = allDay; i < countOfDays + 1; i++) {
-            days[i] = allDay + "." + month + "." + year;
+        for (int i = dayOfMonth; i < countOfDays + 1; i++) {
+            days.add(allDay + "." + month + "." + year);
             allDay++;
-            nameOfDays[i] = symbols.getWeekdays()[2];
-//            Toast.makeText(this, "" + nameOfDays[i] + dayOfWeek, Toast.LENGTH_SHORT).show();
+            nameOfDays.add(symbols.getWeekdays()[2]);
         }
+
+//        for (int i =0;i<days.size();i++){
+//            Toast.makeText(this, days.get(i), Toast.LENGTH_SHORT).show();
+//        }
+
+        countOfDays = countOfDays - dayOfMonth;
 
 
         for (int i = 0; i < 10; i++) {
@@ -96,7 +107,7 @@ public class MovieDetailActivity extends BaseActivity {
             detail.setMovieGenre(genres);
             detail.setMovieTitle(title);
             detail.setRating(progress);
-
+            detail.setAllProjections(projections);
 
             detail.setDuration("110min . 30.01.15");
             detail.setDate(days);
@@ -110,6 +121,7 @@ public class MovieDetailActivity extends BaseActivity {
                     "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
                     "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
                     "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf");
+            detail.setNameOfPlace(nameOfPlaces);
             detail.setNameDayOfMonth(nameOfDays);
             detail.setTimeOfProjection(new String[]{});
             detail.setNumberOfDays(countOfDays);
@@ -117,8 +129,6 @@ public class MovieDetailActivity extends BaseActivity {
             detail.setMovieTrailerUrl("rtsp://r1---sn-4g57kues.c.youtube.com/CiILENy73wIaGQnVYkLyUyJ2kRMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp");
             list.add(detail);
         }
-
-
 
 
         //Toast.makeText(this,list.toString(),Toast.LENGTH_LONG).show();
@@ -141,5 +151,9 @@ public class MovieDetailActivity extends BaseActivity {
                 return result;
             }
         }
+    }
+
+    public void changePagerStatus(){
+
     }
 }

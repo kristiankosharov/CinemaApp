@@ -34,6 +34,8 @@ public class MovieDetailAdapter extends PagerAdapter {
 
     private Activity context;
     private ArrayList<MovieDetail> list;
+    private String day;
+    private String place;
 //    RatingBar ratingBar;
 //    Button rateBtn;
 //    NetworkImageView movieImage;
@@ -129,11 +131,11 @@ public class MovieDetailAdapter extends PagerAdapter {
         RelativeLayout mallLayout = (RelativeLayout) view.findViewById(R.id.mall_horizontal_scroll_view);
         RelativeLayout projectionLayout = (RelativeLayout) view.findViewById(R.id.projection_horizontal_scroll_view);
 
-
         //New Thread maybe
         createDaysScroll(daysLayout, item);
-        createDaysScroll(mallLayout, item);
-        createDaysScroll(projectionLayout, item);
+        createPlaceScroll(mallLayout, item);
+
+//        createDaysScroll(projectionLayout, item);
 
 //        final ScrollView scroll = (ScrollView)view.findViewById(R.id.movie_detail_item_scroll);
 //
@@ -164,13 +166,9 @@ public class MovieDetailAdapter extends PagerAdapter {
     public void createDaysScroll(RelativeLayout containerLayout, MovieDetail item) {
 
         float density = context.getResources().getDisplayMetrics().density;
-        Display display = context.getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        int viewWidth = screenWidth / 3;
 
-        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, 35, viewWidth, viewWidth);
+        int viewWidth = getScreenWidth() / 3;
+
 
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -188,16 +186,23 @@ public class MovieDetailAdapter extends PagerAdapter {
                 viewWidth + halfViewWidth,
                 (int) (50 * density), Gravity.CENTER_HORIZONTAL);
 
-        String[] nameOfDays = item.getNameDayOfMonth();
-        String[] date = item.getDate();
+        ArrayList<String> nameOfDays = item.getNameDayOfMonth();
+        ArrayList<String> date = item.getDate();
+        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
 
+
+        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, item.getNumberOfDays(), viewWidth, viewWidth);
+
+        scrollView.setDayAndPlace(nameOfPlace,date,item.getAllProjections());
 
         TextView dayView;
         TextView dateView;
         LinearLayout layout;
         LinearLayout emptyLayout;
 
-        for (int i = item.getStartDay() - 1; i < item.getNumberOfDays() + 2; i++) {
+//        Toast.makeText(context,item.getStartDay() + "",Toast.LENGTH_SHORT).show();
+
+        for (int i = -1; i < item.getNumberOfDays() + 2; i++) {
 
             dayView = new TextView(context);
             dateView = new TextView(context);
@@ -208,7 +213,7 @@ public class MovieDetailAdapter extends PagerAdapter {
 
 //            Toast.makeText(context,""+item.getStartDay() +" "+ item.getNumberOfDays(),Toast.LENGTH_LONG).show();
 
-            if (i == item.getStartDay() - 1 || i == item.getNumberOfDays() + 1) {
+            if (i == -1 || i == item.getNumberOfDays() + 1) {
                 //emptyView.setWidth(viewWidth + halfViewWidth);
 //                emptyView.setLayoutParams(emptyViewParam);
 //                emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -226,14 +231,13 @@ public class MovieDetailAdapter extends PagerAdapter {
                 dayView.setWidth(viewWidth);
                 dayView.setLayoutParams(textViewParam);
                 dayView.setGravity(Gravity.CENTER_HORIZONTAL);
-                dayView.setText(nameOfDays[i]);
+                dayView.setText(nameOfDays.get(i));
                 dayView.setTag(i);
-
 
                 dateView.setWidth(viewWidth);
                 dateView.setLayoutParams(textViewParam);
                 dateView.setGravity(Gravity.CENTER_HORIZONTAL);
-                dateView.setText(date[i]);
+                dateView.setText(date.get(i));
 
 
                 layout.addView(dayView);
@@ -243,24 +247,123 @@ public class MovieDetailAdapter extends PagerAdapter {
 
             }
             //layout.addView(emptyView);
-
+            day = date.get(item.getStartDay());
 
             layout.setBackground(context.getResources().getDrawable(R.drawable.scalloped_rectangle));
             masterLayout.addView(layout);
 
 
         }
+        scrollView.addView(masterLayout);
+//        scrollView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//            }
+//        });
+//        scrollView.setScrollTo(viewWidth/2, 0);
+        containerLayout.addView(scrollView);
+    }
 
+    public void createPlaceScroll(RelativeLayout containerLayout, MovieDetail item) {
+        float density = context.getResources().getDisplayMetrics().density;
+        int viewWidth = getScreenWidth() / 3;
+
+
+        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
+        ArrayList<String> date = item.getDate();
+
+        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, nameOfPlace.size()-1, viewWidth, viewWidth);
+//        Toast.makeText(context,item.getAllProjections().toString(),Toast.LENGTH_SHORT).show();
+        scrollView.setDayAndPlace(nameOfPlace,date,item.getAllProjections());
+
+        LinearLayout masterLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                viewWidth,
+                (int) (60 * density));
+        //layoutParams.setMargins(1,0,1,0);
+
+        LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
+                viewWidth,
+                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
+        textViewParam.weight = 1;
+        int halfViewWidth = viewWidth / 2;
+
+        LinearLayout.LayoutParams emptyViewParam = new LinearLayout.LayoutParams(
+                viewWidth + halfViewWidth,
+                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
+
+
+        TextView placeView;
+        LinearLayout layout;
+        LinearLayout emptyLayout;
+
+        for (int i = -1; i < nameOfPlace.size() + 1; i++) {
+
+            placeView = new TextView(context);
+            //TextView emptyView = new TextView(context);
+            layout = new LinearLayout(context);
+            emptyLayout = new LinearLayout(context);
+            emptyLayout.setLayoutParams(emptyViewParam);
+
+//            Toast.makeText(context,""+item.getStartDay() +" "+ item.getNumberOfDays(),Toast.LENGTH_LONG).show();
+
+            if (i == -1 || i == nameOfPlace.size()) {
+                //emptyView.setWidth(viewWidth + halfViewWidth);
+//                emptyView.setLayoutParams(emptyViewParam);
+//                emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
+//                emptyView.setBackgroundColor(context.getResources().getColor(R.color.gray_background_gridview));
+                //emptyLayout.addView(emptyView);
+                layout.setLayoutParams(layoutParams);
+
+//                layout.addView(emptyView);
+            } else {
+
+                layout.setLayoutParams(layoutParams);
+                layout.setGravity(Gravity.CENTER_HORIZONTAL);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                placeView.setWidth(viewWidth);
+                placeView.setLayoutParams(textViewParam);
+                placeView.setGravity(Gravity.CENTER_HORIZONTAL);
+                placeView.setText(nameOfPlace.get(i));
+                placeView.setTag(i);
+
+                layout.addView(placeView);
+
+                layout.setLayoutParams(layoutParams);
+
+            }
+            //layout.addView(emptyView);
+//            place = nameOfPlace[position];
+
+            layout.setBackground(context.getResources().getDrawable(R.drawable.scalloped_rectangle));
+            masterLayout.addView(layout);
+
+
+        }
+//        scrollView.setDayAndPlace(nameOfPlace, position);
         scrollView.addView(masterLayout);
 //        scrollView.setScrollTo(viewWidth/2, 0);
         containerLayout.addView(scrollView);
     }
 
-    public void createProjectionScroll() {
 
-    }
     // funkciq za vsqka projekciq prez parametur dannite koito shte se setvat sprqmo cikula za dnite (dannite moje bi ot modela)
 
+//    private String[] searchProjections(int position, String day, String place, HashMap<String, HashMap<String, String[]>> map) {
+//        HashMap<String, String[]> days = map.get(place);
+//        String[] projections = days.get(day);
+//        return projections;
+//    }
 
+
+    public int getScreenWidth() {
+
+        Display display = context.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        return screenWidth;
+    }
 
 }

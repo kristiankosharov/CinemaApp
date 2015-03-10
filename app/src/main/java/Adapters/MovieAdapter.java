@@ -85,7 +85,6 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         holder.movieTitle.setText(item.getMovieTitle());
 
-
         holder.master.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,6 +92,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                 intent.putExtra("PROGRESS", item.getMovieProgress());
                 intent.putExtra("URL", item.getImageUrl());
                 intent.putExtra("TITLE", item.getMovieTitle());
+                intent.putExtra("PROJECTIONS",item.getAllProjections());
                 context.startActivity(intent);
             }
         });
