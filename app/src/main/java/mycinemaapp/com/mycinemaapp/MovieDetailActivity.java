@@ -61,13 +61,24 @@ public class MovieDetailActivity extends BaseActivity {
         String url = intent.getStringExtra("URL");
         String title = intent.getStringExtra("TITLE");
         int progress = intent.getIntExtra("PROGRESS", 0);
-        HashMap<String, HashMap<String, String[]>> projections = (HashMap<String, HashMap<String, String[]>>) intent.getSerializableExtra("PROJECTIONS");
+//        HashMap<String, HashMap<String, String[]>> projections = (HashMap<String, HashMap<String, String[]>>) intent.getSerializableExtra("PROJECTIONS");
 
 //        Toast.makeText(this, "projections" + projections.toString(), Toast.LENGTH_SHORT).show();
+
+        HashMap<String, HashMap<String, String[]>> allProjections = new HashMap<>();
+        HashMap<String, String[]> onlyProjections = new HashMap<>();
+        HashMap<String, String[]> onlyProjections1 = new HashMap<>();
+        String[] projections = {"14:00", "15:00", "20:00"};
+        String[] projections1 = {"16:00", "17:00", "22:00"};
+
+        allProjections.put("Mall Varna", onlyProjections);
+        allProjections.put("Grand", onlyProjections1);
+
 
         String[] directors = {"az", "ti"};
         String[] genres = {"az", "ti"};
         String[] actors = {"az", "ti"};
+
         ArrayList<String> days = new ArrayList<>();
         ArrayList<String> nameOfDays = new ArrayList<>();
         ArrayList<String> nameOfPlaces = new ArrayList<>();
@@ -86,8 +97,13 @@ public class MovieDetailActivity extends BaseActivity {
 
 
         int allDay = dayOfMonth;
+        String day;
         for (int i = dayOfMonth; i < countOfDays + 1; i++) {
-            days.add(allDay + "." + month + "." + year);
+
+            day = allDay + "." + month + "." + year;
+            days.add(day);
+            onlyProjections.put(day, projections);
+            onlyProjections1.put(day,projections1);
             allDay++;
             nameOfDays.add(symbols.getWeekdays()[2]);
         }
@@ -107,7 +123,7 @@ public class MovieDetailActivity extends BaseActivity {
             detail.setMovieGenre(genres);
             detail.setMovieTitle(title);
             detail.setRating(progress);
-            detail.setAllProjections(projections);
+            detail.setAllProjections(allProjections);
 
             detail.setDuration("110min . 30.01.15");
             detail.setDate(days);
@@ -153,7 +169,7 @@ public class MovieDetailActivity extends BaseActivity {
         }
     }
 
-    public void changePagerStatus(){
+    public void changePagerStatus() {
 
     }
 }

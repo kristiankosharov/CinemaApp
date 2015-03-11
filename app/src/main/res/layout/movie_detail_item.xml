@@ -181,23 +181,24 @@
 
             </RelativeLayout>
 
+
+            <RelativeLayout
+                android:id="@+id/projection_horizontal_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mall_horizontal_scroll_view">
+
+
+            </RelativeLayout>
+
             <View
                 android:id="@+id/triangle"
                 android:layout_width="30dp"
                 android:layout_height="10dp"
                 android:layout_below="@+id/mall_horizontal_scroll_view"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="-2dp"
                 android:background="@drawable/down_arrow" />
-
-            <RelativeLayout
-                android:id="@+id/projection_horizontal_scroll_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/triangle"
-                android:layout_marginBottom="2dp">
-
-
-            </RelativeLayout>
         </RelativeLayout>
 
         <RelativeLayout

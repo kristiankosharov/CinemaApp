@@ -1,7 +1,5 @@
 package Models;
 
-import java.util.HashMap;
-
 /**
  * Created by kristian on 15-2-25.
  */
@@ -11,15 +9,15 @@ public class Movie {
     String movieTitle;
     String imageUrl;
     int movieProgress;
-    HashMap<String, HashMap<String, String[]>> allProjections;
+//    HashMap<String, HashMap<String, String[]>> allProjections;
 
-    public HashMap<String, HashMap<String, String[]>> getAllProjections() {
-        return allProjections;
-    }
-
-    public void setAllProjections(HashMap<String, HashMap<String, String[]>> allProjections) {
-        this.allProjections = allProjections;
-    }
+//    public HashMap<String, HashMap<String, String[]>> getAllProjections() {
+//        return allProjections;
+//    }
+//
+//    public void setAllProjections(HashMap<String, HashMap<String, String[]>> allProjections) {
+//        this.allProjections = allProjections;
+//    }
 
 
     public String getNewForWeek() {

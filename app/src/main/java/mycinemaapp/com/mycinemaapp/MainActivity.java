@@ -13,7 +13,6 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import Adapters.MovieAdapter;
 import Models.Movie;
@@ -42,20 +41,7 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
 
         initialize();
 
-        HashMap<String,HashMap<String,String[]>> allProjections = new HashMap<>();
-        HashMap<String,String[]> onlyProjections = new HashMap<>();
-        HashMap<String,String[]> onlyProjections1 = new HashMap<>();
-        String[] projections = {"14:00","15:00","20:00"};
-        String[] projections1 = {"16:00","17:00","22:00"};
 
-
-        onlyProjections.put("10.03.2015",projections);
-        onlyProjections.put("11.03.2015",projections);
-        onlyProjections1.put("12.03.2015",projections1);
-        onlyProjections1.put("13.03.2015",projections1);
-
-        allProjections.put("varna",onlyProjections);
-        allProjections.put("grand",onlyProjections1);
 
 
 
@@ -65,7 +51,7 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
         el.setImageUrl("http://cdn.collider.com/wp-content/uploads/american-sniper-poster-international.jpg");
         el.setMovieProgress(150);
         el.setMovieTitle("American Sniper");
-        el.setAllProjections(allProjections);
+//        el.setAllProjections(allProjections);
         el.setNewForWeek("NOVO TAZI SEDMICA");
 
         list.add(el);

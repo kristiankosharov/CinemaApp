@@ -132,8 +132,8 @@ public class MovieDetailAdapter extends PagerAdapter {
         RelativeLayout projectionLayout = (RelativeLayout) view.findViewById(R.id.projection_horizontal_scroll_view);
 
         //New Thread maybe
-        createDaysScroll(daysLayout, item);
-        createPlaceScroll(mallLayout, item);
+        createDaysScroll(daysLayout, item,projectionLayout);
+        createPlaceScroll(mallLayout, item,projectionLayout);
 
 //        createDaysScroll(projectionLayout, item);
 
@@ -163,17 +163,17 @@ public class MovieDetailAdapter extends PagerAdapter {
         VideoView movieTrailer;
     }
 
-    public void createDaysScroll(RelativeLayout containerLayout, MovieDetail item) {
+    public void createDaysScroll(RelativeLayout containerLayout, MovieDetail item,RelativeLayout containerForProjects) {
 
         float density = context.getResources().getDisplayMetrics().density;
 
         int viewWidth = getScreenWidth() / 3;
-
+        boolean fromAdapter = true;
 
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 viewWidth,
-                (int) (60 * density));
+                (int) (50 * density));
         //layoutParams.setMargins(1,0,1,0);
 
         LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
@@ -188,12 +188,16 @@ public class MovieDetailAdapter extends PagerAdapter {
 
         ArrayList<String> nameOfDays = item.getNameDayOfMonth();
         ArrayList<String> date = item.getDate();
+        ArrayList<String> places = item.getNameOfPlace();
         final ArrayList<String> nameOfPlace = item.getNameOfPlace();
 
 
-        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, item.getNumberOfDays(), viewWidth, viewWidth);
+        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, item.getNumberOfDays(), viewWidth, viewWidth,containerForProjects);
 
         scrollView.setDayAndPlace(nameOfPlace,date,item.getAllProjections());
+        scrollView.setHorizontalScrollBarEnabled(false);
+        scrollView.fromScroll(true, false, false);
+        scrollView.createProjectionScroll(places.get(0),date.get(0),fromAdapter);
 
         TextView dayView;
         TextView dateView;
@@ -264,7 +268,7 @@ public class MovieDetailAdapter extends PagerAdapter {
         containerLayout.addView(scrollView);
     }
 
-    public void createPlaceScroll(RelativeLayout containerLayout, MovieDetail item) {
+    public void createPlaceScroll(RelativeLayout containerLayout, MovieDetail item,RelativeLayout containerForProjects) {
         float density = context.getResources().getDisplayMetrics().density;
         int viewWidth = getScreenWidth() / 3;
 
@@ -272,14 +276,18 @@ public class MovieDetailAdapter extends PagerAdapter {
         final ArrayList<String> nameOfPlace = item.getNameOfPlace();
         ArrayList<String> date = item.getDate();
 
-        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, nameOfPlace.size()-1, viewWidth, viewWidth);
-//        Toast.makeText(context,item.getAllProjections().toString(),Toast.LENGTH_SHORT).show();
+        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, nameOfPlace.size()-1, viewWidth, viewWidth,containerForProjects);
+        scrollView.setHorizontalScrollBarEnabled(false);
+        scrollView.fromScroll(false,true,false);
+
+//   Toast.makeText(context,item.getAllProjections().toString(),Toast.LENGTH_SHORT).show();
         scrollView.setDayAndPlace(nameOfPlace,date,item.getAllProjections());
+        scrollView.createProjectionScroll(nameOfPlace.get(0),date.get(0),true);
 
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 viewWidth,
-                (int) (60 * density));
+                (int) (50 * density));
         //layoutParams.setMargins(1,0,1,0);
 
         LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
@@ -324,7 +332,7 @@ public class MovieDetailAdapter extends PagerAdapter {
 
                 placeView.setWidth(viewWidth);
                 placeView.setLayoutParams(textViewParam);
-                placeView.setGravity(Gravity.CENTER_HORIZONTAL);
+                placeView.setGravity(Gravity.CENTER);
                 placeView.setText(nameOfPlace.get(i));
                 placeView.setTag(i);
 
