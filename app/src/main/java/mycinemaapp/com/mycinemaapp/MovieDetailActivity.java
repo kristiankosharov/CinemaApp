@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import Models.MovieDetail;
 /**
  * Created by kristian on 15-3-4.
  */
-public class MovieDetailActivity extends BaseActivity {
+public class MovieDetailActivity extends BaseActivity implements View.OnClickListener{
 
     private ViewPager mViewPager;
     private MovieDetailAdapter adapter;
@@ -29,6 +30,7 @@ public class MovieDetailActivity extends BaseActivity {
     private static final String TAG = "MovieDetailActivity";
     HorizontalScrollView mHorizontalScrollView;
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
+    private ImageView back,share;
 
     private View v;
 
@@ -40,6 +42,12 @@ public class MovieDetailActivity extends BaseActivity {
         LayoutInflater inflater = getLayoutInflater();
 
         v = inflater.inflate(R.layout.movie_detail_item, null);
+
+        back = (ImageView)findViewById(R.id.back);
+        share = (ImageView) findViewById(R.id.share);
+
+        back.setOnClickListener(this);
+        share.setOnClickListener(this);
 
         //mHorizontalScrollView = (HorizontalScrollView) v.findViewById(R.id.horizontal_scroll_view);
         //mHorizontalScrollView.setNextFocusRightId(R.id.time4);
@@ -68,11 +76,14 @@ public class MovieDetailActivity extends BaseActivity {
         HashMap<String, HashMap<String, String[]>> allProjections = new HashMap<>();
         HashMap<String, String[]> onlyProjections = new HashMap<>();
         HashMap<String, String[]> onlyProjections1 = new HashMap<>();
+        HashMap<String, String[]> onlyProjections2 = new HashMap<>();
         String[] projections = {"14:00", "15:00", "20:00"};
         String[] projections1 = {"16:00", "17:00", "22:00"};
+        String[] projections2 = {""};
 
         allProjections.put("Mall Varna", onlyProjections);
         allProjections.put("Grand", onlyProjections1);
+        allProjections.put("Kino", onlyProjections2);
 
 
         String[] directors = {"az", "ti"};
@@ -84,6 +95,7 @@ public class MovieDetailActivity extends BaseActivity {
         ArrayList<String> nameOfPlaces = new ArrayList<>();
         nameOfPlaces.add("Mall Varna");
         nameOfPlaces.add("Grand");
+        nameOfPlaces.add("Kino");
 
         //Toast.makeText(this,url + "," + title + "," + progress,Toast.LENGTH_LONG).show();
 
@@ -103,7 +115,8 @@ public class MovieDetailActivity extends BaseActivity {
             day = allDay + "." + month + "." + year;
             days.add(day);
             onlyProjections.put(day, projections);
-            onlyProjections1.put(day,projections1);
+            onlyProjections1.put(day, projections1);
+            onlyProjections2.put(day, projections2);
             allDay++;
             nameOfDays.add(symbols.getWeekdays()[2]);
         }
@@ -151,7 +164,8 @@ public class MovieDetailActivity extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         adapter = new MovieDetailAdapter(this, list);
         adapter.notifyDataSetChanged();
-        mViewPager.setCurrentItem(3);
+        mViewPager.setPageMargin(20);
+        mViewPager.setBackgroundColor(this.getResources().getColor(R.color.gray_background_gridview));
         mViewPager.setAdapter(adapter);
 
 
@@ -171,5 +185,16 @@ public class MovieDetailActivity extends BaseActivity {
 
     public void changePagerStatus() {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.back:
+                onBackPressed();
+                break;
+            case R.id.share:
+                break;
+        }
     }
 }

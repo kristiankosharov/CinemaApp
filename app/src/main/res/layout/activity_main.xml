@@ -81,8 +81,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/flexible_space_image_height"
         android:layout_below="@+id/top_layout"
-        android:background="@android:color/black"
-        android:layout_marginTop="-35dp">
+        android:layout_marginTop="-35dp"
+        android:background="@android:color/black">
 
         <VideoView
             android:id="@+id/image"
@@ -144,7 +144,7 @@
             android:numColumns="2"
             android:overScrollMode="never"
             android:padding="10dp"
-            android:verticalSpacing="10dp"/>
+            android:verticalSpacing="10dp" />
 
 
         <FrameLayout
@@ -290,7 +290,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/filter_icon"
+                android:layout_toRightOf="@+id/user_icon"
+                android:gravity="center_horizontal"
                 android:text="@string/app_name"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size" />

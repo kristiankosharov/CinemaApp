@@ -3,13 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
-
-    </android.support.v4.view.ViewPager>
+        android:layout_height="wrap_content" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -37,22 +35,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/share"
+                android:layout_toLeftOf="@+id/confirm"
                 android:layout_toRightOf="@+id/back"
                 android:gravity="center_horizontal"
-                android:text="@string/app_name"
+                android:text="CHOOSE LOCATION"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size" />
+                android:textSize="@dimen/text_size_location" />
 
-            <ImageView
-                android:id="@+id/share"
+            <Button
+                android:id="@+id/confirm"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/starFullySelected"
                 android:clickable="true"
-                android:src="@drawable/share" />
+                android:src="@drawable/share"
+                android:text="CONFIRM"
+                android:textColor="@color/primaryDark"
+                android:textSize="@dimen/text_size_location_button" />
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>

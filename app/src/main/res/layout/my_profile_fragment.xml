@@ -90,7 +90,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/logout"
+                android:layout_toRightOf="@+id/activity_button"
+                android:gravity="center_horizontal"
                 android:text="Profile"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size" />

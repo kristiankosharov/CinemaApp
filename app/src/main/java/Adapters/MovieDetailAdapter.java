@@ -227,7 +227,6 @@ public class MovieDetailAdapter extends PagerAdapter {
 
 //                layout.addView(emptyView);
             } else {
-
                 layout.setLayoutParams(layoutParams);
                 layout.setGravity(Gravity.CENTER_HORIZONTAL);
                 layout.setOrientation(LinearLayout.VERTICAL);
@@ -243,12 +242,10 @@ public class MovieDetailAdapter extends PagerAdapter {
                 dateView.setGravity(Gravity.CENTER_HORIZONTAL);
                 dateView.setText(date.get(i));
 
-
                 layout.addView(dayView);
                 layout.addView(dateView);
 
                 layout.setLayoutParams(layoutParams);
-
             }
             //layout.addView(emptyView);
             day = date.get(item.getStartDay());

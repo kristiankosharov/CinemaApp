@@ -19,18 +19,19 @@ import Models.Movie;
 import observablescrollview.ObservableGridView;
 import observablescrollview.ObservableScrollViewCallbacks;
 
-public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> implements ObservableScrollViewCallbacks,View.OnClickListener {
+public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> implements ObservableScrollViewCallbacks, View.OnClickListener {
 
     private ArrayList<Movie> list = new ArrayList<>();
     private MovieAdapter movieAdapter;
     private ObservableGridView gridView;
     private ImageView myProfile;
 
-    private Button soon,onCinema;
+    private Button soon, onCinema;
+    private ImageView location;
     private VideoView mImageView;
     private RelativeLayout main;
 
-    private Animation animationIn,animationOut;
+    private Animation animationIn, animationOut;
 
     public MainActivity() {
     }
@@ -42,11 +43,6 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
         initialize();
 
 
-
-
-
-
-
         Movie el = new Movie();
         el.setImageUrl("http://cdn.collider.com/wp-content/uploads/american-sniper-poster-international.jpg");
         el.setMovieProgress(150);
@@ -55,7 +51,6 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
         el.setNewForWeek("NOVO TAZI SEDMICA");
 
         list.add(el);
-
 
 
         Movie newItem = new Movie();
@@ -75,26 +70,28 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
             list.add(item);
         }
 
-        movieAdapter = new MovieAdapter(this,R.layout.movie_layout,list);
+        movieAdapter = new MovieAdapter(this, R.layout.movie_layout, list);
         movieAdapter.notifyDataSetChanged();
         gridView.setAdapter(movieAdapter);
 
 
     }
 
-    public void initialize(){
+    public void initialize() {
         gridView = (ObservableGridView) findViewById(R.id.scroll);
-        soon = (Button)findViewById(R.id.soon);
+        soon = (Button) findViewById(R.id.soon);
         soon.setOnClickListener(this);
 
-        myProfile = (ImageView)findViewById(R.id.user_icon);
+        myProfile = (ImageView) findViewById(R.id.user_icon);
         myProfile.setOnClickListener(this);
 
-        onCinema = (Button)findViewById(R.id.on_cinema);
+        onCinema = (Button) findViewById(R.id.on_cinema);
         onCinema.setOnClickListener(this);
-        main = (RelativeLayout)findViewById(R.id.main);
+        main = (RelativeLayout) findViewById(R.id.main);
+        location = (ImageView) findViewById(R.id.location_icon);
+        location.setOnClickListener(this);
 
-        mImageView = (VideoView)findViewById(R.id.image);
+        mImageView = (VideoView) findViewById(R.id.image);
         //mImageView.measure(mVideoLayout.getWidth(),mVideoLayout.getHeight());
 
         String videoUrl = "rtsp://r3---sn-4g57kuek.c.youtube.com/CiILENy73wIaGQk6-2j9f_Wz5RMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp";
@@ -133,14 +130,14 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.user_icon:
 //                main.clearAnimation();
 //                main.setAnimation(animationIn);
 //                main.startAnimation(animationIn);
-                Intent intent = new Intent(this,MyProfileActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.rotate_in,R.anim.rotate_out);
+                Intent intentMyProfile = new Intent(this, MyProfileActivity.class);
+                startActivity(intentMyProfile);
+                overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
                 break;
             case R.id.soon:
                 Toast.makeText(getBaseContext(), "Click", Toast.LENGTH_SHORT).show();
@@ -148,10 +145,16 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
             case R.id.on_cinema:
                 Toast.makeText(getBaseContext(), "Click", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.location_icon:
+                Intent intentLocation = new Intent(this, LocationActivity.class);
+                startActivity(intentLocation);
+                break;
         }
     }
 
-    public void createDatebase(){
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mImageView.start();
     }
 }

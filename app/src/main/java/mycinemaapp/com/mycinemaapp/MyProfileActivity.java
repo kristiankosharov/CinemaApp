@@ -135,5 +135,9 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 //        }
 //
 //    }
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
+    }
 }

@@ -2,6 +2,7 @@ package Helpers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -170,43 +171,15 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 //            Toast.makeText(getContext(), activeItem + "", Toast.LENGTH_SHORT).show();
             returnValue = true;
         }
-
         scrollTo = activeItem * itemWidth;
         this.smoothScrollTo(scrollTo, 0);
 
         return returnValue;
-
-//        boolean returnValue = false;
-//        float ptx1 = 0, ptx2 = 0;
-//        if (e1 == null || e2 == null)
-//            return false;
-//        ptx1 = e1.getX();
-//        ptx2 = e2.getX();
-//        // right to left
-//
-//        if (ptx1 - ptx2 > SWIPE_MIN_DISTANCE
-//                && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-//            if (activeItem < maxItem - 1)
-//                activeItem = activeItem + 1;
-//
-//            returnValue = true;
-//
-//        } else if (ptx2 - ptx1 > SWIPE_MIN_DISTANCE
-//                && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-//            if (activeItem > 0)
-//                activeItem = activeItem - 1;
-//
-//            returnValue = true;
-//        }
-//        Toast.makeText(getContext(), "fling", Toast.LENGTH_SHORT).show();
-//        scrollTo = activeItem * itemWidth;
-//        this.smoothScrollTo(0, scrollTo);
-//        return returnValue;
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        return true;
+        return false;
     }
 
     @Override
@@ -262,13 +235,13 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         if (isDaysScroll) {
 
             activeDay = position;
-            createProjectionScroll(nameOfPlace.get(activePlace), days.get(activeDay),false);
+            createProjectionScroll(nameOfPlace.get(activePlace), days.get(activeDay), false);
 
         } else if (isPlaceScroll) {
 
             activePlace = position;
 //            Toast.makeText(context,activePlace+"",Toast.LENGTH_SHORT).show();
-            createProjectionScroll(nameOfPlace.get(activePlace), days.get(activeDay),false);
+            createProjectionScroll(nameOfPlace.get(activePlace), days.get(activeDay), false);
 
         } else if (isProjectionScroll) {
 
@@ -302,6 +275,8 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         if (!fromAdapter) {
             Animation animation1 = AnimationUtils.loadAnimation(context, R.anim.bottom_to_top);
             final Animation animation2 = AnimationUtils.loadAnimation(context, R.anim.top_to_bottom);
+
+            scrollView.clearAnimation();
             scrollView.startAnimation(animation1);
 
 
@@ -313,6 +288,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+
                     scrollView.startAnimation(animation2);
                 }
 
@@ -326,41 +302,35 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 viewWidth,
                 (int) (40 * density));
-        layoutParams.setMargins(0, 15, 0, 0);
+        layoutParams.setMargins(0, (int) (15 * density), 0, 0);
 
         LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
                 viewWidth,
-                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
+                (int) (50 * density));
         textViewParam.weight = 1;
         int halfViewWidth = viewWidth / 2;
-
-        LinearLayout.LayoutParams emptyViewParam = new LinearLayout.LayoutParams(
-                viewWidth,
-                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
 
         TextView placeView;
         LinearLayout layout;
         LinearLayout emptyLayout;
 
-        String[] dayFromMap;
+        String[] projections;
 //        Toast.makeText(context,place + day,Toast.LENGTH_SHORT).show();
-        dayFromMap = map.get(place).get(day);
+        projections = map.get(place).get(day);
 
-        if (dayFromMap != null) {
+        if (projections != null) {
 //        Toast.makeText(context,map.get(place).toString(),Toast.LENGTH_SHORT).show();
 
-            for (int i = -1; i < dayFromMap.length + 1; i++) {
+            for (int i = -1; i < projections.length + 1; i++) {
 
                 placeView = new TextView(context);
-                //TextView emptyView = new TextView(context);
+                TextView emptyView = new TextView(context);
                 layout = new LinearLayout(context);
-                emptyLayout = new LinearLayout(context);
-                emptyLayout.setLayoutParams(emptyViewParam);
 
 //            Toast.makeText(context,""+item.getStartDay() +" "+ item.getNumberOfDays(),Toast.LENGTH_LONG).show();
 
-                if (i == -1 || i == dayFromMap.length) {
-                    //emptyView.setWidth(viewWidth + halfViewWidth);
+                if (i == -1 || i == projections.length) {
+
 //                emptyView.setLayoutParams(emptyViewParam);
 //                emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
 //                emptyView.setBackgroundColor(context.getResources().getColor(R.color.gray_background_gridview));
@@ -369,6 +339,14 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
                     layout.setVisibility(View.INVISIBLE);
 
 //                layout.addView(emptyView);
+                } else if (projections[i] == "" || projections[i] == null) {
+                    emptyView.setWidth(viewWidth);
+                    emptyView.setText("NO SHOW");
+                    emptyView.setTextColor(Color.WHITE);
+                    emptyView.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+                    layout.setLayoutParams(layoutParams);
+                    layout.setBackgroundColor(getResources().getColor(R.color.primaryDark));
+                    layout.addView(emptyView);
                 } else {
 
                     layout.setLayoutParams(layoutParams);
@@ -378,16 +356,16 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 //                placeView.setWidth(viewWidth);
                     placeView.setLayoutParams(textViewParam);
                     placeView.setGravity(Gravity.CENTER);
-                    placeView.setText(dayFromMap[i]);
+                    placeView.setText(projections[i]);
 //                placeView.setTag(i);
                     layout.addView(placeView);
 
                     layout.setLayoutParams(layoutParams);
-
+                    layout.setBackground(context.getResources().getDrawable(R.drawable.ticket));
 
                 }
                 //layout.addView(emptyView);
-                layout.setBackground(context.getResources().getDrawable(R.drawable.ticket));
+
                 masterLayout.addView(layout);
             }
             scrollView.addView(masterLayout);
