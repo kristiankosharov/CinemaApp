@@ -184,7 +184,6 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
     @Override
     public void onLongPress(MotionEvent e) {
-
     }
 
     @Override

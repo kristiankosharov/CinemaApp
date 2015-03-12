@@ -9,6 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/get_cinemas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="Search for cinemas" />
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -49,11 +58,11 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:background="@color/starFullySelected"
+                android:background="@color/location_confirm_button"
                 android:clickable="true"
                 android:src="@drawable/share"
                 android:text="CONFIRM"
-                android:textColor="@color/primaryDark"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size_location_button" />
         </RelativeLayout>
 

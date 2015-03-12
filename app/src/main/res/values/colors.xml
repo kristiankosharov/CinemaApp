@@ -26,6 +26,7 @@
 
     <color name="gray_background_gridview">#a8a8a8</color>
     <color name="light_gray">#d9d9d9</color>
+    <color name="location_confirm_button">#333333</color>
 
     <color name="white_50_transperant">#80ffffff</color>
     
