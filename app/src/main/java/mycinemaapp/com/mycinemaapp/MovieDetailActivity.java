@@ -137,7 +137,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
             detail.setMovieTitle(title);
             detail.setRating(progress);
             detail.setAllProjections(allProjections);
-
+            detail.setImdbUrl("http://www.imdb.com/title/tt2179136/");
             detail.setDuration("110min . 30.01.15");
             detail.setDate(days);
             detail.setFullDescription("ldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjflj" +

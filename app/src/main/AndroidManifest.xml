@@ -32,6 +32,7 @@
         <activity android:name=".MyProfileActivity" />
         <activity android:name=".MovieDetailActivity" />
         <activity android:name=".LocationActivity" />
+        <activity android:name=".WebViewActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
