@@ -2,6 +2,7 @@ package Helpers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.view.Display;
@@ -21,9 +22,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import mycinemaapp.com.mycinemaapp.R;
+import mycinemaapp.com.mycinemaapp.ReservationSeats;
 
 public class CustomHorizontalScrollView extends HorizontalScrollView implements
-        View.OnTouchListener, GestureDetector.OnGestureListener {
+        View.OnTouchListener, GestureDetector.OnGestureListener, View.OnClickListener {
 
     private static final int SWIPE_MIN_DISTANCE = 10;
 
@@ -51,6 +53,8 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     private boolean isDaysScroll, isPlaceScroll, isProjectionScroll;
     private static int activeDay = 0;
     private static int activePlace = 0;
+
+    private ArrayList<MotionEvent> events = new ArrayList<>();
 
     public CustomHorizontalScrollView(Context context) {
         super(context);
@@ -111,6 +115,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 //        return returnValue;
 //    }
 
+
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                            float velocityY) {
@@ -120,14 +125,13 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 //        }
 
         Boolean returnValue;
-
-//
-        int x = (int) e1.getRawX();
+        int x = 0;
         float ptx1 = 0, ptx2 = 0;
-
-        ptx1 = e1.getX();
-        ptx2 = e2.getX();
-
+        if (e1 != null && e2 != null) {
+            x = (int) e1.getRawX();
+            ptx1 = e1.getX();
+            ptx2 = e2.getX();
+        }
         returnValue = false;
 
         start = true;
@@ -184,6 +188,10 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
     @Override
     public void onLongPress(MotionEvent e) {
+        if (isProjectionScroll) {
+            Intent intent = new Intent(context, ReservationSeats.class);
+            context.startActivity(intent);
+        }
     }
 
     @Override
@@ -227,8 +235,10 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
         return gestureDetector.onTouchEvent(event);
     }
+
 
     private void isFromScroll(boolean isDaysScroll, boolean isPlaceScroll, boolean isProjectionScroll, int position) {
         if (isDaysScroll) {
@@ -269,7 +279,6 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         scrollView.clearAnimation();
         scrollView.setHorizontalScrollBarEnabled(false);
         scrollView.fromScroll(false, false, true);
-
 
         if (!fromAdapter) {
             Animation animation1 = AnimationUtils.loadAnimation(context, R.anim.bottom_to_top);
@@ -361,6 +370,8 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
                     layout.setLayoutParams(layoutParams);
                     layout.setBackground(context.getResources().getDrawable(R.drawable.ticket));
+                    layout.setId(R.id.numbers_view);
+                    layout.setOnClickListener(this);
 
                 }
                 //layout.addView(emptyView);
@@ -381,4 +392,29 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         this.isPlaceScroll = isPlaceScroll;
         this.isProjectionScroll = isProjectionScroll;
     }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.numbers_view) {
+            Intent intent = new Intent(context, ReservationSeats.class);
+            context.startActivity(intent);
+        }
+    }
+
+//    private OnClickListener ticketListener() {
+//        OnClickListener listener = new OnClickListener() {
+//
+//
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(context, "click", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(context, ReservationSeats.class);
+//                context.startActivity(intent);
+//            }
+//
+//
+//        };
+//        return listener;
+//    }
+
 }

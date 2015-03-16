@@ -27,6 +27,7 @@ import Helpers.CustomHorizontalScrollView;
 import Helpers.ImageCacheManager;
 import Models.MovieDetail;
 import mycinemaapp.com.mycinemaapp.R;
+import mycinemaapp.com.mycinemaapp.RateActivity;
 import mycinemaapp.com.mycinemaapp.WebViewActivity;
 
 /**
@@ -150,6 +151,14 @@ public class MovieDetailAdapter extends PagerAdapter {
 //            }
 //        });
 
+        viewHolder.rateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, RateActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
         ((ViewPager) container).addView(view);
         return view;
     }
@@ -252,7 +261,7 @@ public class MovieDetailAdapter extends PagerAdapter {
                 layout.setLayoutParams(layoutParams);
             }
             //layout.addView(emptyView);
-            day = date.get(item.getStartDay());
+            day = date.get(0);
 
             layout.setBackground(context.getResources().getDrawable(R.drawable.scalloped_rectangle));
             masterLayout.addView(layout);
@@ -387,4 +396,6 @@ public class MovieDetailAdapter extends PagerAdapter {
 
         return listener;
     }
+
+
 }

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -56,7 +57,8 @@ public class LocationActivity extends FragmentActivity implements LocationListen
     private float RADIUS = 50000;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
 
-    private Button getCinemas;
+    private Button getCinemas, confirm;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,11 @@ public class LocationActivity extends FragmentActivity implements LocationListen
         setContentView(R.layout.location_layout);
 
         getCinemas = (Button) findViewById(R.id.get_cinemas);
+        back = (ImageView) findViewById(R.id.back);
+        confirm = (Button) findViewById(R.id.confirm);
         getCinemas.setOnClickListener(this);
+        back.setOnClickListener(this);
+        confirm.setOnClickListener(this);
 
         HashMap<String, String[]> allLocations = new HashMap<>();
 
@@ -115,8 +121,9 @@ public class LocationActivity extends FragmentActivity implements LocationListen
 
 
             UiSettings settings = googleMap.getUiSettings();
-            settings.setMyLocationButtonEnabled(false);
+            settings.setMyLocationButtonEnabled(true);
             settings.setZoomControlsEnabled(true);
+            settings.setCompassEnabled(true);
 
 
             // Getting LocationManager object from System Service LOCATION_SERVICE
@@ -265,47 +272,55 @@ public class LocationActivity extends FragmentActivity implements LocationListen
     @Override
     public void onClick(View v) {
         float distance, zoomLevel;
-        boolean isHaveMarker = false, isInZoomLevel = false;
         Marker marker = null;
         LatLngBounds bounds = null;
 
-        if (v.getId() == R.id.get_cinemas) {
+        switch (v.getId()) {
+            case R.id.get_cinemas:
+                googleMap.clear();
 
-            googleMap.clear();
+                Location tempLocation = new Location("");
+                LatLng ltLng = googleMap.getCameraPosition().target;
+                zoomLevel = googleMap.getCameraPosition().zoom;
 
-            Location tempLocation = new Location("");
-            LatLng ltLng = googleMap.getCameraPosition().target;
-            zoomLevel = googleMap.getCameraPosition().zoom;
+                tempLocation.setLongitude(ltLng.longitude);
+                tempLocation.setLatitude(ltLng.latitude);
 
-            tempLocation.setLongitude(ltLng.longitude);
-            tempLocation.setLatitude(ltLng.latitude);
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                markerInArea.clear();
+                for (int i = 0; i < ALL_CINEMA_LOCATION.size(); i++) {
+                    distance = tempLocation.distanceTo(ALL_CINEMA_LOCATION.get(i));
+                    if (distance <= RADIUS && zoomLevel > MAX_SEARCH_ZOOM_LEVEL) {
 
-            markerInArea.clear();
-            for (int i = 0; i < ALL_CINEMA_LOCATION.size(); i++) {
-                distance = tempLocation.distanceTo(ALL_CINEMA_LOCATION.get(i));
-                if (distance <= RADIUS && zoomLevel > MAX_SEARCH_ZOOM_LEVEL) {
-
-                    marker = googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(ALL_CINEMA_LOCATION.get(i).getLatitude()
-                                    , ALL_CINEMA_LOCATION.get(i).getLongitude())));
-                    markerInArea.add(marker);
-                    builder.include(marker.getPosition());
+                        marker = googleMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(ALL_CINEMA_LOCATION.get(i).getLatitude()
+                                        , ALL_CINEMA_LOCATION.get(i).getLongitude())));
+                        markerInArea.add(marker);
+                        builder.include(marker.getPosition());
+                    }
                 }
-            }
 
-            if (!markerInArea.isEmpty()) {
-                bounds = builder.build();
-                if (markerInArea.size() == 1) {
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 12F));
+                if (!markerInArea.isEmpty()) {
+                    bounds = builder.build();
+                    if (markerInArea.size() == 1) {
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 12F));
+                    } else {
+                        // Showing the current location in Google Map
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
+                    }
                 } else {
-                    // Showing the current location in Google Map
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
+                    Toast.makeText(this, "Cinemas wasn't found.", Toast.LENGTH_LONG).show();
                 }
-            } else {
-                Toast.makeText(this, "Cinemas wasn't found.", Toast.LENGTH_LONG).show();
-            }
+
+                break;
+
+            case R.id.confirm:
+                break;
+
+            case R.id.back:
+                onBackPressed();
+                break;
         }
     }
 }

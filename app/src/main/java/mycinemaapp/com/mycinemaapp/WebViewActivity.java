@@ -31,7 +31,7 @@ public class WebViewActivity extends Activity implements View.OnClickListener {
     private void initialize() {
         webView = (WebView) findViewById(R.id.web_view);
         backPage = (ImageView) findViewById(R.id.back_page);
-        frontPage = (ImageView) findViewById(R.id.back_page);
+        frontPage = (ImageView) findViewById(R.id.front_page);
         refreshPage = (ImageView) findViewById(R.id.refresh_page);
         back = (ImageView) findViewById(R.id.back);
 
@@ -48,8 +48,10 @@ public class WebViewActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.back_page:
+                webView.goBack();
                 break;
             case R.id.front_page:
+                webView.goForward();
                 break;
             case R.id.refresh_page:
                 webView.reload();

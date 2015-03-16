@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/gray_background_gridview">
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:numStars="5" />
+
+        <RelativeLayout
+            android:id="@+id/comments_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rating_bar"
+            android:layout_margin="10dp"
+            android:background="@drawable/round_corners_ratingtext"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/notebook_page"
+                android:gravity="start"
+                android:lineSpacingExtra="10dp"
+                android:maxLength="150"
+                android:textSize="17sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_layout"
+        android:layout_marginTop="30dp">
+
+        <View
+            android:id="@+id/center"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+
+        <RelativeLayout
+            android:id="@+id/your_rating_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/center"
+            android:layout_toLeftOf="@+id/center"
+            android:gravity="center">
+
+
+            <TextView
+                android:id="@+id/your_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0.0"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/your_rating_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/your_rating"
+                android:gravity="center"
+                android:text="Your rating" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/imdb_rating_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/center"
+            android:layout_toRightOf="@+id/center"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/imdb_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0.0"
+                android:textSize="@dimen/text_size_rating"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/imdb_rating_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imdb_rating"
+                android:gravity="center"
+                android:text="IMDb" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/users_rating_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/center"
+            android:layout_toLeftOf="@+id/center"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/users_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="4.3"
+                android:textSize="@dimen/text_size_rating"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/users_rating_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/users_rating"
+                android:gravity="center"
+                android:text="users" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/center"
+            android:layout_toRightOf="@+id/center"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/rotten_tomatoes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="0%"
+                android:textSize="@dimen/text_size_rating"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/rotten_tomatoes_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rotten_tomatoes"
+                android:gravity="center"
+                android:text="Rotten Tomatoes" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/primaryDark"
+        android:minHeight="?attr/actionBarSize">
+
+        <RelativeLayout
+            android:id="@+id/layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:src="@drawable/back" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/confirm"
+                android:layout_toRightOf="@+id/back"
+                android:gravity="center_horizontal"
+                android:text="CHOOSE LOCATION"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_location" />
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@color/location_confirm_button"
+                android:clickable="true"
+                android:src="@drawable/share"
+                android:text="RATE"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_location_button" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+</RelativeLayout>

@@ -33,6 +33,8 @@
         <activity android:name=".MovieDetailActivity" />
         <activity android:name=".LocationActivity" />
         <activity android:name=".WebViewActivity" />
+        <activity android:name=".RateActivity" />
+        <activity android:name=".ReservationSeats" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
