@@ -20,9 +20,9 @@
     <color name="accent">#eeff41</color>
     <color name="accentLight">#F4FF81</color>
 
-    <color name="starFullySelected">#FF9912</color>
+    <color name="starFullySelected">#f1c40f</color>
     <color name="starPartiallySelected">#000000</color>
-    <color name="starNotSelected">#d3d3d3</color>
+    <color name="starNotSelected">#a8a8a8</color>
 
     <color name="gray_background_gridview">#a8a8a8</color>
     <color name="light_gray">#d9d9d9</color>

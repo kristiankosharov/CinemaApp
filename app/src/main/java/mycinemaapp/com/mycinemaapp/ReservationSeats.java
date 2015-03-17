@@ -21,8 +21,8 @@ public class ReservationSeats extends Activity {
         setContentView(R.layout.reservation_layout);
         List<Seat> seatList = new ArrayList<Seat>();
 
-        for (int i = 1; i <= 20; i++) {
-            for (int j = 1; j <= 20; j++) {
+        for (int i = 1; i <= 10; i++) {
+            for (int j = 1; j <= 10; j++) {
                 Seat s = new Seat();
 
                 s.setRow(i);
@@ -39,11 +39,20 @@ public class ReservationSeats extends Activity {
                 seatList.add(s);
             }
         }
-        SeatView sv = new SeatView(this, seatList);
 
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+
+        final SeatView sv = new SeatView(this, seatList);
+
+
+
+
+        sv.setLayoutParams(layoutParams);
         RelativeLayout seatContainer = (RelativeLayout) findViewById(R.id.rl_SeatContainer);
 
         seatContainer.addView(sv);
-
     }
 }

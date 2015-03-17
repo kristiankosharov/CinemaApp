@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/master"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:id="@+id/master">
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/new_movie"
@@ -31,37 +31,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/movie_image"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="Zaglavie na film"
-        android:layout_marginBottom="5dp"
         android:textSize="15sp" />
 
     <View
         android:id="@+id/dash_line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_below="@+id/movie_title"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_below="@+id/movie_title"
         android:background="@drawable/dash_line" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/movie_image"
         android:layout_alignLeft="@+id/movie_image"
-        android:layout_marginTop="5dp"
+        android:layout_alignRight="@+id/movie_image"
+        android:layout_below="@+id/dash_line"
         android:layout_marginBottom="5dp"
-        android:layout_below="@+id/dash_line">
+        android:layout_marginTop="5dp">
 
 
         <RatingBar
             android:id="@+id/rating_bar"
+            style="?android:ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?android:ratingBarStyleSmall"
-            android:isIndicator="true"
             android:layout_alignParentLeft="true"
+            android:isIndicator="true"
             android:stepSize="1.0" />
 
         <ImageView

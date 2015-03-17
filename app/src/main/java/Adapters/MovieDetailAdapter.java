@@ -3,8 +3,6 @@ package Adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.LayerDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Display;
@@ -91,10 +89,10 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.ratingBar.setProgress(item.getRating());
 //        Toast.makeText(context, "progress" + item.getRating(), Toast.LENGTH_SHORT).show();
 
-        LayerDrawable stars = (LayerDrawable) viewHolder.ratingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(context.getResources().getColor(R.color.starFullySelected), PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
+//        LayerDrawable stars = (LayerDrawable) viewHolder.ratingBar.getProgressDrawable();
+//        stars.getDrawable(2).setColorFilter(context.getResources().getColor(R.color.starFullySelected), PorterDuff.Mode.SRC_ATOP);
+//        stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
+//        stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
 
         //viewHolder.movieImage.setImageUrl("", null);
         viewHolder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());

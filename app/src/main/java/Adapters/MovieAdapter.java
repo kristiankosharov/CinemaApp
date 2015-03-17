@@ -70,7 +70,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         holder.movieImage.setDefaultImageResId(R.drawable.example);
 
         LayerDrawable stars = (LayerDrawable) holder.ratingBar.getProgressDrawable();
-
+//
         stars.getDrawable(2).setColorFilter(context.getResources().getColor(R.color.starFullySelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);

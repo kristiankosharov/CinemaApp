@@ -271,6 +271,7 @@
         android:layout_gravity="top"
         android:background="@color/primaryDark"
         android:minHeight="?attr/actionBarSize"
+        app:contentInsetStart="0dp"
         app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
         app:theme="@style/Toolbar">
 
@@ -285,6 +286,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/user" />
 
             <TextView
