@@ -17,9 +17,11 @@
 package mycinemaapp.com.mycinemaapp;
 
 import android.content.res.TypedArray;
+import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 public abstract class BaseActivity extends ActionBarActivity {
     private static final int NUM_OF_ITEMS = 100;
     private static final int NUM_OF_ITEMS_FEW = 3;
+    private float density;
 
     protected int getActionBarSize() {
         TypedValue typedValue = new TypedValue();
@@ -117,5 +120,16 @@ public abstract class BaseActivity extends ActionBarActivity {
         recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(this, getDummyData(), headerView));
     }
 
+    public float getDensity(){
+        density = getResources().getDisplayMetrics().density;
+        return density;
+    }
 
+    public int getViewWidth(){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        return screenWidth / 3;
+    }
 }

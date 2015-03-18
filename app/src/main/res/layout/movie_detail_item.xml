@@ -40,8 +40,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
-                android:padding="10dp"
                 android:background="@drawable/button_selector"
+                android:padding="10dp"
                 android:text="RATE A MOVIE!"
                 android:textSize="10sp" />
 
@@ -261,18 +261,30 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/dash_line1"
                 android:text="FULL DESRIPTION" />
-            <!--
-                        <VideoView
-                            android:id="@+id/movie_trailer"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentRight="true"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
 
-                            android:layout_below="@+id/full_desription" />
-                            -->
+            <RelativeLayout
+                android:id="@+id/movie_trailer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_below="@+id/full_desription">
+
+                <VideoView
+                    android:id="@+id/movie_trailer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true" />
+
+                <ImageButton
+                    android:id="@+id/play_trailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/play_button" />
+            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

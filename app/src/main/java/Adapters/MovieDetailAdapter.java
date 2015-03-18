@@ -2,15 +2,16 @@ package Adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import Helpers.CustomHorizontalScrollView;
 import Helpers.ImageCacheManager;
 import Models.MovieDetail;
+import mycinemaapp.com.mycinemaapp.BaseActivity;
+import mycinemaapp.com.mycinemaapp.MovieTrailerLandscape;
 import mycinemaapp.com.mycinemaapp.R;
 import mycinemaapp.com.mycinemaapp.RateActivity;
 import mycinemaapp.com.mycinemaapp.WebViewActivity;
@@ -37,10 +40,9 @@ public class MovieDetailAdapter extends PagerAdapter {
     private ArrayList<MovieDetail> list;
     private String day;
     private String place;
-//    RatingBar ratingBar;
-//    Button rateBtn;
-//    NetworkImageView movieImage;
-//    TextView title,genre,director,actors,duration;
+
+    private float density;
+    private int viewWidth;
 
     public MovieDetailAdapter(Activity context, ArrayList<MovieDetail> list) {
         this.context = context;
@@ -60,10 +62,13 @@ public class MovieDetailAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
+        density = ((BaseActivity) context).getDensity();
+        viewWidth = ((BaseActivity) context).getViewWidth();
+
         LayoutInflater inflater = context.getLayoutInflater();
         View view = inflater.inflate(R.layout.movie_detail_item, null, false);
 
-        PagerHolder viewHolder = new PagerHolder();
+        final PagerHolder viewHolder = new PagerHolder();
         viewHolder.ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
         viewHolder.rateBtn = (Button) view.findViewById(R.id.rate_button);
         viewHolder.movieImage = (NetworkImageView) view.findViewById(R.id.image);
@@ -76,24 +81,20 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.titleDescription = (TextView) view.findViewById(R.id.title_details);
         viewHolder.imdb = (Button) view.findViewById(R.id.imdb);
         viewHolder.fullDescription = (TextView) view.findViewById(R.id.full_desription);
-        //viewHolder.movieTrailer = (VideoView) view.findViewById(R.id.movie_trailer);
+        viewHolder.movieTrailer = (VideoView) view.findViewById(R.id.movie_trailer);
+        viewHolder.playTrailer = (ImageButton) view.findViewById(R.id.play_trailer);
+        RelativeLayout l = (RelativeLayout) view.findViewById(R.id.rating_layout);
+        l.requestFocus();
 
         view.setTag(viewHolder);
 
         //PagerHolder holder = (PagerHolder) view.getTag();
 
 
-        MovieDetail item = list.get(position);
+        final MovieDetail item = list.get(position);
 
         viewHolder.ratingBar.setMax(300);
         viewHolder.ratingBar.setProgress(item.getRating());
-//        Toast.makeText(context, "progress" + item.getRating(), Toast.LENGTH_SHORT).show();
-
-//        LayerDrawable stars = (LayerDrawable) viewHolder.ratingBar.getProgressDrawable();
-//        stars.getDrawable(2).setColorFilter(context.getResources().getColor(R.color.starFullySelected), PorterDuff.Mode.SRC_ATOP);
-//        stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
-//        stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
-
         //viewHolder.movieImage.setImageUrl("", null);
         viewHolder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());
         viewHolder.movieImage.setDefaultImageResId(R.drawable.example);
@@ -123,9 +124,39 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.duration.setText(item.getDuration());
         viewHolder.titleDescription.setText(item.getMovieTitle());
         viewHolder.fullDescription.setText(item.getFullDescription());
-        //viewHolder.movieTrailer.setVideoURI(Uri.parse(item.getMovieTrailerUrl()));
-//        viewHolder.movieTrailer.setMediaController(new android.widget.MediaController(context));
-//        viewHolder.movieTrailer.pause();
+
+
+        viewHolder.movieTrailer.setVideoURI(Uri.parse(item.getMovieTrailerUrl()));
+        viewHolder.movieTrailer.setBackground(context.getResources().getDrawable(R.drawable.trailer_tumbnail));
+
+        viewHolder.movieTrailer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setVolume(0, 0);
+            }
+        });
+
+        viewHolder.movieTrailer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MovieTrailerLandscape.class);
+                intent.putExtra("url", item.getMovieTrailerUrl());
+                context.startActivity(intent);
+            }
+        });
+
+        viewHolder.playTrailer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MovieTrailerLandscape.class);
+                intent.putExtra("url", item.getMovieTrailerUrl());
+                context.startActivity(intent);
+            }
+        });
+
+        viewHolder.movieTrailer.clearFocus();
+
+//        viewHolder
 
         viewHolder.imdb.setOnClickListener(imdbListener(item));
 
@@ -138,17 +169,6 @@ public class MovieDetailAdapter extends PagerAdapter {
         createDaysScroll(daysLayout, item, projectionLayout);
         createPlaceScroll(mallLayout, item, projectionLayout);
 
-//        createDaysScroll(projectionLayout, item);
-
-//        final ScrollView scroll = (ScrollView)view.findViewById(R.id.movie_detail_item_scroll);
-//
-//        scroll.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                scroll.fullScroll(ScrollView.FOCUS_UP);
-//            }
-//        });
-
         viewHolder.rateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +176,6 @@ public class MovieDetailAdapter extends PagerAdapter {
                 context.startActivity(intent);
             }
         });
-
         ((ViewPager) container).addView(view);
         return view;
     }
@@ -172,36 +191,30 @@ public class MovieDetailAdapter extends PagerAdapter {
         NetworkImageView movieImage;
         TextView title, genre, director, actors, duration, titleDescription, fullDescription;
         VideoView movieTrailer;
+        ImageButton playTrailer;
     }
 
     public void createDaysScroll(RelativeLayout containerLayout, MovieDetail item, RelativeLayout containerForProjects) {
-
-        float density = context.getResources().getDisplayMetrics().density;
-
-        int viewWidth = getScreenWidth() / 3;
         boolean fromAdapter = true;
+        ArrayList<String> nameOfDays = item.getNameDayOfMonth();
+        ArrayList<String> date = item.getDate();
+        ArrayList<String> places = item.getNameOfPlace();
+        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
+
+        TextView dayView;
+        TextView dateView;
+        LinearLayout layout;
 
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 viewWidth,
                 (int) (50 * density));
-        //layoutParams.setMargins(1,0,1,0);
 
         LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
                 viewWidth,
                 (int) (50 * density), Gravity.CENTER_HORIZONTAL);
         textViewParam.weight = 1;
         int halfViewWidth = viewWidth / 2;
-
-        LinearLayout.LayoutParams emptyViewParam = new LinearLayout.LayoutParams(
-                viewWidth + halfViewWidth,
-                (int) (50 * density), Gravity.CENTER_HORIZONTAL);
-
-        ArrayList<String> nameOfDays = item.getNameDayOfMonth();
-        ArrayList<String> date = item.getDate();
-        ArrayList<String> places = item.getNameOfPlace();
-        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
-
 
         final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, item.getNumberOfDays(), viewWidth, viewWidth, containerForProjects);
 
@@ -210,33 +223,14 @@ public class MovieDetailAdapter extends PagerAdapter {
         scrollView.fromScroll(true, false, false);
         scrollView.createProjectionScroll(places.get(0), date.get(0), fromAdapter);
 
-        TextView dayView;
-        TextView dateView;
-        LinearLayout layout;
-        LinearLayout emptyLayout;
-
-//        Toast.makeText(context,item.getStartDay() + "",Toast.LENGTH_SHORT).show();
-
         for (int i = -1; i < item.getNumberOfDays() + 2; i++) {
 
             dayView = new TextView(context);
             dateView = new TextView(context);
-            //TextView emptyView = new TextView(context);
             layout = new LinearLayout(context);
-            emptyLayout = new LinearLayout(context);
-            emptyLayout.setLayoutParams(emptyViewParam);
-
-//            Toast.makeText(context,""+item.getStartDay() +" "+ item.getNumberOfDays(),Toast.LENGTH_LONG).show();
 
             if (i == -1 || i == item.getNumberOfDays() + 1) {
-                //emptyView.setWidth(viewWidth + halfViewWidth);
-//                emptyView.setLayoutParams(emptyViewParam);
-//                emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
-//                emptyView.setBackgroundColor(context.getResources().getColor(R.color.gray_background_gridview));
-                //emptyLayout.addView(emptyView);
                 layout.setLayoutParams(layoutParams);
-
-//                layout.addView(emptyView);
             } else {
                 layout.setLayoutParams(layoutParams);
                 layout.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -258,28 +252,16 @@ public class MovieDetailAdapter extends PagerAdapter {
 
                 layout.setLayoutParams(layoutParams);
             }
-            //layout.addView(emptyView);
             day = date.get(0);
 
             layout.setBackground(context.getResources().getDrawable(R.drawable.scalloped_rectangle));
             masterLayout.addView(layout);
-
-
         }
         scrollView.addView(masterLayout);
-//        scrollView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//            }
-//        });
-//        scrollView.setScrollTo(viewWidth/2, 0);
         containerLayout.addView(scrollView);
     }
 
     public void createPlaceScroll(RelativeLayout containerLayout, MovieDetail item, RelativeLayout containerForProjects) {
-        float density = context.getResources().getDisplayMetrics().density;
-        int viewWidth = getScreenWidth() / 3;
-
 
         final ArrayList<String> nameOfPlace = item.getNameOfPlace();
         ArrayList<String> date = item.getDate();
@@ -288,7 +270,6 @@ public class MovieDetailAdapter extends PagerAdapter {
         scrollView.setHorizontalScrollBarEnabled(false);
         scrollView.fromScroll(false, true, false);
 
-//   Toast.makeText(context,item.getAllProjections().toString(),Toast.LENGTH_SHORT).show();
         scrollView.setDayAndPlace(nameOfPlace, date, item.getAllProjections());
         scrollView.createProjectionScroll(nameOfPlace.get(0), date.get(0), true);
 
@@ -296,7 +277,6 @@ public class MovieDetailAdapter extends PagerAdapter {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 viewWidth,
                 (int) (50 * density));
-        //layoutParams.setMargins(1,0,1,0);
 
         LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(
                 viewWidth,
@@ -316,22 +296,9 @@ public class MovieDetailAdapter extends PagerAdapter {
         for (int i = -1; i < nameOfPlace.size() + 1; i++) {
 
             placeView = new TextView(context);
-            //TextView emptyView = new TextView(context);
             layout = new LinearLayout(context);
-            emptyLayout = new LinearLayout(context);
-            emptyLayout.setLayoutParams(emptyViewParam);
-
-//            Toast.makeText(context,""+item.getStartDay() +" "+ item.getNumberOfDays(),Toast.LENGTH_LONG).show();
-
             if (i == -1 || i == nameOfPlace.size()) {
-                //emptyView.setWidth(viewWidth + halfViewWidth);
-//                emptyView.setLayoutParams(emptyViewParam);
-//                emptyView.setGravity(Gravity.CENTER_HORIZONTAL);
-//                emptyView.setBackgroundColor(context.getResources().getColor(R.color.gray_background_gridview));
-                //emptyLayout.addView(emptyView);
                 layout.setLayoutParams(layoutParams);
-
-//                layout.addView(emptyView);
             } else {
 
                 layout.setLayoutParams(layoutParams);
@@ -345,41 +312,13 @@ public class MovieDetailAdapter extends PagerAdapter {
                 placeView.setTag(i);
 
                 layout.addView(placeView);
-
                 layout.setLayoutParams(layoutParams);
-
             }
-            //layout.addView(emptyView);
-//            place = nameOfPlace[position];
-
             layout.setBackground(context.getResources().getDrawable(R.drawable.scalloped_rectangle));
             masterLayout.addView(layout);
-
-
         }
-//        scrollView.setDayAndPlace(nameOfPlace, position);
         scrollView.addView(masterLayout);
-//        scrollView.setScrollTo(viewWidth/2, 0);
         containerLayout.addView(scrollView);
-    }
-
-
-    // funkciq za vsqka projekciq prez parametur dannite koito shte se setvat sprqmo cikula za dnite (dannite moje bi ot modela)
-
-//    private String[] searchProjections(int position, String day, String place, HashMap<String, HashMap<String, String[]>> map) {
-//        HashMap<String, String[]> days = map.get(place);
-//        String[] projections = days.get(day);
-//        return projections;
-//    }
-
-
-    public int getScreenWidth() {
-
-        Display display = context.getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        return screenWidth;
     }
 
     private View.OnClickListener imdbListener(final MovieDetail item) {

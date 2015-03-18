@@ -63,14 +63,13 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         } else {
             holder.newForWeek.setText(item.getNewForWeek());
             holder.newForWeek.setVisibility(View.VISIBLE);
-            //Toast.makeText(context,"Vliza",Toast.LENGTH_LONG).show();
         }
 
         holder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());
         holder.movieImage.setDefaultImageResId(R.drawable.example);
 
         LayerDrawable stars = (LayerDrawable) holder.ratingBar.getProgressDrawable();
-//
+
         stars.getDrawable(2).setColorFilter(context.getResources().getColor(R.color.starFullySelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
@@ -78,8 +77,6 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         holder.ratingBar.setMax(300);
 
         holder.ratingBar.setClickable(false);
-//        holder.ratingBar.setEnabled(false);
-
 
         holder.ratingBar.setProgress(item.getMovieProgress());
 
@@ -92,7 +89,6 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                 intent.putExtra("PROGRESS", item.getMovieProgress());
                 intent.putExtra("URL", item.getImageUrl());
                 intent.putExtra("TITLE", item.getMovieTitle());
-//                intent.putExtra("PROJECTIONS",item.getAllProjections());
                 context.startActivity(intent);
             }
         });

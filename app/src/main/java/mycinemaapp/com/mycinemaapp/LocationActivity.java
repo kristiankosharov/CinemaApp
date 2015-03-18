@@ -96,7 +96,7 @@ public class LocationActivity extends FragmentActivity implements LocationListen
         ALL_CINEMA_LOCATION.add(storeVarna);
         ALL_CINEMA_LOCATION.add(storeShumen);
 
-// Getting Google Play availability status
+        // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
         // Showing status
@@ -114,7 +114,7 @@ public class LocationActivity extends FragmentActivity implements LocationListen
 
 
             // Getting GoogleMap object from the fragment
-//            googleMap = fm.getMap();
+            // googleMap = fm.getMap();
 
             // Enabling MyLocation Layer of Google Map
             googleMap.setMyLocationEnabled(true);

@@ -2,6 +2,9 @@ package mycinemaapp.com.mycinemaapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -21,10 +24,14 @@ public class ReservationSeats extends Activity {
         setContentView(R.layout.reservation_layout);
         List<Seat> seatList = new ArrayList<Seat>();
 
+
+        ViewGroup.LayoutParams viewParams ;
+
+
         for (int i = 1; i <= 10; i++) {
             for (int j = 1; j <= 10; j++) {
                 Seat s = new Seat();
-
+//
                 s.setRow(i);
                 s.setColumn(j);
 
@@ -36,6 +43,11 @@ public class ReservationSeats extends Activity {
                     s.setState(1);
                 }
 
+                viewParams = new ViewGroup.LayoutParams(
+                        j*10,
+                        i*10);
+
+//                s.setLayoutParams(viewParams);
                 seatList.add(s);
             }
         }
@@ -47,12 +59,21 @@ public class ReservationSeats extends Activity {
 
         final SeatView sv = new SeatView(this, seatList);
 
-
-
-
         sv.setLayoutParams(layoutParams);
         RelativeLayout seatContainer = (RelativeLayout) findViewById(R.id.rl_SeatContainer);
 
         seatContainer.addView(sv);
+    }
+
+
+    private View.OnTouchListener listener(final Seat s) {
+        View.OnTouchListener listener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                s.setState(1);
+                return true;
+            }
+        };
+        return listener;
     }
 }

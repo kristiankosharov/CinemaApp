@@ -22,7 +22,7 @@ import Models.MovieDetail;
 /**
  * Created by kristian on 15-3-4.
  */
-public class MovieDetailActivity extends BaseActivity implements View.OnClickListener{
+public class MovieDetailActivity extends BaseActivity implements View.OnClickListener {
 
     private ViewPager mViewPager;
     private MovieDetailAdapter adapter;
@@ -30,7 +30,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
     private static final String TAG = "MovieDetailActivity";
     HorizontalScrollView mHorizontalScrollView;
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
-    private ImageView back,share;
+    private ImageView back, share;
 
     private View v;
 
@@ -43,35 +43,16 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
 
         v = inflater.inflate(R.layout.movie_detail_item, null);
 
-        back = (ImageView)findViewById(R.id.back);
+        back = (ImageView) findViewById(R.id.back);
         share = (ImageView) findViewById(R.id.share);
 
         back.setOnClickListener(this);
         share.setOnClickListener(this);
 
-        //mHorizontalScrollView = (HorizontalScrollView) v.findViewById(R.id.horizontal_scroll_view);
-        //mHorizontalScrollView.setNextFocusRightId(R.id.time4);
-
-//        Display display = getWindowManager().getDefaultDisplay();
-//        Point size = new Point();
-//        display.getSize(size);
-//        int screenWidth = size.x;
-//        int viewWidth = screenWidth / 3;
-
-
-//        TextView txt = new TextView(this);
-//        txt.setId(generateViewId());
-//        txt.setText("2222");
-//        mHorizontalScrollView.setBackgroundColor(getResources().getColor(R.color.gray_background_gridview));
-//        mHorizontalScrollView.addView(txt);
-
         Intent intent = getIntent();
         String url = intent.getStringExtra("URL");
         String title = intent.getStringExtra("TITLE");
         int progress = intent.getIntExtra("PROGRESS", 0);
-//        HashMap<String, HashMap<String, String[]>> projections = (HashMap<String, HashMap<String, String[]>>) intent.getSerializableExtra("PROJECTIONS");
-
-//        Toast.makeText(this, "projections" + projections.toString(), Toast.LENGTH_SHORT).show();
 
         HashMap<String, HashMap<String, String[]>> allProjections = new HashMap<>();
         HashMap<String, String[]> onlyProjections = new HashMap<>();
@@ -97,8 +78,6 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         nameOfPlaces.add("Grand");
         nameOfPlaces.add("Kino");
 
-        //Toast.makeText(this,url + "," + title + "," + progress,Toast.LENGTH_LONG).show();
-
         Calendar calendar = new GregorianCalendar();
         int countOfDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -106,7 +85,6 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
         DateFormatSymbols symbols = new DateFormatSymbols(Locale.getDefault());
-
 
         int allDay = dayOfMonth;
         String day;
@@ -120,11 +98,6 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
             allDay++;
             nameOfDays.add(symbols.getWeekdays()[2]);
         }
-
-//        for (int i =0;i<days.size();i++){
-//            Toast.makeText(this, days.get(i), Toast.LENGTH_SHORT).show();
-//        }
-
         countOfDays = countOfDays - dayOfMonth;
 
 
@@ -155,20 +128,16 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
             detail.setTimeOfProjection(new String[]{});
             detail.setNumberOfDays(countOfDays);
             detail.setStartDay(dayOfMonth);
-            detail.setMovieTrailerUrl("rtsp://r1---sn-4g57kues.c.youtube.com/CiILENy73wIaGQnVYkLyUyJ2kRMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp");
+            detail.setMovieTrailerUrl("rtsp://r1---sn-4g57kued.c.youtube.com/CiILENy73wIaGQl1YugnSFX8aBMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp");
             list.add(detail);
         }
 
-
-        //Toast.makeText(this,list.toString(),Toast.LENGTH_LONG).show();
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         adapter = new MovieDetailAdapter(this, list);
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
         mViewPager.setBackgroundColor(this.getResources().getColor(R.color.gray_background_gridview));
         mViewPager.setAdapter(adapter);
-
-
     }
 
     public static int generateViewId() {
@@ -183,13 +152,9 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    public void changePagerStatus() {
-
-    }
-
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.back:
                 onBackPressed();
                 break;

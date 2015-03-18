@@ -17,24 +17,39 @@
         android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+
         android:theme="@style/AppTheme">
 
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyProfileActivity" />
-        <activity android:name=".MovieDetailActivity" />
-        <activity android:name=".LocationActivity" />
-        <activity android:name=".WebViewActivity" />
-        <activity android:name=".RateActivity" />
-        <activity android:name=".ReservationSeats" />
+        <activity
+            android:name=".MyProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MovieDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LocationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WebViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ReservationSeats"
+            android:screenOrientation="portrait" />
+        <activity android:name=".MovieTrailerLandscape" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

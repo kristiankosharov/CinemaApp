@@ -98,8 +98,10 @@ public class SeatView extends View {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
+
                 zoomPos.x = event.getX();
                 zoomPos.y = event.getY();
+
                 zooming = true;
                 this.invalidate();
                 break;

@@ -2,10 +2,10 @@ package mycinemaapp.com.mycinemaapp;
 
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -100,6 +100,12 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mImageView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setVolume(0, 0);
+            }
+        });
 
 //        mImageView.setMediaController(new MediaController(this));
 //        mImageView.requestFocus();
@@ -118,13 +124,6 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
         gridView.setScrollViewCallbacks(this);
 
         gridView.setAdapter(movieAdapter);
-//        setDummyData(gridView);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(MainActivity.this, "Item " + (position + 1) + " clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
         return gridView;
     }
 
