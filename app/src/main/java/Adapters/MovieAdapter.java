@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import Helpers.ImageCacheManager;
 import Models.Movie;
+
 import mycinemaapp.com.mycinemaapp.MovieDetailActivity;
 import mycinemaapp.com.mycinemaapp.R;
 
@@ -66,7 +67,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         }
 
         holder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());
-        holder.movieImage.setDefaultImageResId(R.drawable.example);
+        holder.movieImage.setDefaultImageResId(R.drawable.image);
 
         LayerDrawable stars = (LayerDrawable) holder.ratingBar.getProgressDrawable();
 
@@ -74,7 +75,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
 
-        holder.ratingBar.setMax(300);
+        holder.ratingBar.setMax(100);
 
         holder.ratingBar.setClickable(false);
 

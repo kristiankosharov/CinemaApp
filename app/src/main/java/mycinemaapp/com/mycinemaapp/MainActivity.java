@@ -1,6 +1,8 @@
 package mycinemaapp.com.mycinemaapp;
 
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -12,26 +14,34 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import Adapters.MovieAdapter;
+import Helpers.CustomGridView;
+import Helpers.RequestManager;
 import Models.Movie;
-import observablescrollview.ObservableGridView;
-import observablescrollview.ObservableScrollViewCallbacks;
 
-public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> implements ObservableScrollViewCallbacks, View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
 
     private ArrayList<Movie> list = new ArrayList<>();
     private MovieAdapter movieAdapter;
-    private ObservableGridView gridView;
-    private ImageView myProfile;
+    private CustomGridView gridView;
+    private ImageView myProfile, location, filter;
 
     private Button soon, onCinema;
-    private ImageView location;
     private VideoView mImageView;
     private RelativeLayout main;
 
     private Animation animationIn, animationOut;
+//    private static boolean isClick;
 
     public MainActivity() {
     }
@@ -39,46 +49,15 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_main);
         initialize();
-
-
-        Movie el = new Movie();
-        el.setImageUrl("http://cdn.collider.com/wp-content/uploads/american-sniper-poster-international.jpg");
-        el.setMovieProgress(150);
-        el.setMovieTitle("American Sniper");
-//        el.setAllProjections(allProjections);
-        el.setNewForWeek("NOVO TAZI SEDMICA");
-
-        list.add(el);
-
-
-        Movie newItem = new Movie();
-        newItem.setImageUrl("http://img3.wikia.nocookie.net/__cb20140811182139/spongebob/images/d/d6/Spongebob_2.jpg");
-        newItem.setMovieProgress(150);
-        newItem.setMovieTitle("Sponge Bob 2015");
-        newItem.setNewForWeek("NOVO TAZI SEDMICA");
-
-        list.add(newItem);
-
-        for (int i = 0; i <= 10; i++) {
-            Movie item = new Movie();
-            item.setImageUrl("http://www.logostage.com/logos/New_Line_Cinema.png");
-            item.setMovieProgress(30 * i);
-            //item.setNewForWeek("");
-            item.setMovieTitle("Titles:" + i);
-            list.add(item);
-        }
-
-        movieAdapter = new MovieAdapter(this, R.layout.movie_layout, list);
-        movieAdapter.notifyDataSetChanged();
-        gridView.setAdapter(movieAdapter);
-
-
+        movieRequest();
     }
 
     public void initialize() {
-        gridView = (ObservableGridView) findViewById(R.id.scroll);
+        gridView = (CustomGridView) findViewById(R.id.scroll);
+        gridView.setExpanded(true);
+
         soon = (Button) findViewById(R.id.soon);
         soon.setOnClickListener(this);
 
@@ -90,7 +69,8 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
         main = (RelativeLayout) findViewById(R.id.main);
         location = (ImageView) findViewById(R.id.location_icon);
         location.setOnClickListener(this);
-
+        filter = (ImageView) findViewById(R.id.filter_icon);
+        filter.setOnClickListener(this);
         mImageView = (VideoView) findViewById(R.id.image);
         //mImageView.measure(mVideoLayout.getWidth(),mVideoLayout.getHeight());
 
@@ -113,27 +93,64 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
         mImageView.start();
     }
 
-    @Override
-    protected int getLayoutResId() {
-        return R.layout.activity_main;
-    }
+//    @Override
+//    protected int getLayoutResId() {
+//        return R.layout.activity_main;
+//    }
 
-    @Override
-    protected ObservableGridView createScrollable() {
-        ObservableGridView gridView = (ObservableGridView) findViewById(R.id.scroll);
-        gridView.setScrollViewCallbacks(this);
+//    @Override
+//    protected ObservableGridView createScrollable() {
+//        ObservableGridView gridView = (ObservableGridView) findViewById(R.id.scroll);
+//        gridView.setScrollViewCallbacks(this);
+//
+//        gridView.setAdapter(movieAdapter);
+//        return gridView;
+//    }
 
-        gridView.setAdapter(movieAdapter);
-        return gridView;
+    public void movieRequest() {
+
+        String url = "http://www.json-generator.com/api/json/get/coGSGsomCq?indent=2";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject obj = jsonArray.getJSONObject(i);
+
+                                Movie movie = new Movie();
+                                movie.setImageUrl(obj.getString("image_url"));
+                                movie.setMovieProgress(Integer.parseInt(obj.getString("rating")));
+                                movie.setMovieTitle(obj.getString("title"));
+                                movie.setNewForWeek(obj.getString("new_for_week"));
+
+                                list.add(movie);
+                            }
+                            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list);
+                            movieAdapter.notifyDataSetChanged();
+                            gridView.setAdapter(movieAdapter);
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        // Add the request to the RequestQueue.
+        RequestManager.getRequestQueue().add(stringRequest);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_icon:
-//                main.clearAnimation();
-//                main.setAnimation(animationIn);
-//                main.startAnimation(animationIn);
                 Intent intentMyProfile = new Intent(this, MyProfileActivity.class);
                 startActivity(intentMyProfile);
                 overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
@@ -144,12 +161,27 @@ public class MainActivity extends SlidingUpBaseActivity<ObservableGridView> impl
             case R.id.on_cinema:
                 Toast.makeText(getBaseContext(), "Click", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.filter_icon:
+                SortFragment sortFragment = new SortFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.addToBackStack("Sort Fragment");
+                transaction.add(R.id.fragment_container, sortFragment);
+                transaction.commit();
+                break;
             case R.id.location_icon:
                 Intent intentLocation = new Intent(this, LocationActivity.class);
                 startActivity(intentLocation);
                 break;
         }
     }
+
+//    public void setIsClick(boolean isClick) {
+//        this.isClick = isClick;
+//    }
+//
+//    public boolean getIsClick() {
+//        return isClick;
+//    }
 
     @Override
     protected void onResume() {

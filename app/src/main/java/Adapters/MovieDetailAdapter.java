@@ -93,7 +93,7 @@ public class MovieDetailAdapter extends PagerAdapter {
 
         final MovieDetail item = list.get(position);
 
-        viewHolder.ratingBar.setMax(300);
+        viewHolder.ratingBar.setMax(100);
         viewHolder.ratingBar.setProgress(item.getRating());
         //viewHolder.movieImage.setImageUrl("", null);
         viewHolder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());

@@ -32,5 +32,10 @@
 
     <color name="seat_selected">#FF9912</color>
     <color name="seat_empty">#d3d3d3</color>
-    
+
+    <color name="layout_background_sort">#1Af7f7f7</color>
+    <color name="circul_element_sort">#1Af7f7f7</color>
+    <color name="circul_element_sort_selected">#FF9912</color>
+    <color name="filter_layout_transparent_background">#E6000000</color>
+
 </resources>

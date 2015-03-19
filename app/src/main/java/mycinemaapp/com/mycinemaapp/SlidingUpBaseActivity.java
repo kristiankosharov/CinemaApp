@@ -112,14 +112,14 @@ public abstract class SlidingUpBaseActivity<S extends Scrollable> extends BaseAc
 
         mHeader = findViewById(R.id.header);
         mHeaderBar = findViewById(R.id.header_bar);
-        mHeaderOverlay = findViewById(R.id.header_overlay);
-        mHeaderFlexibleSpace = findViewById(R.id.header_flexible_space);
+//        mHeaderOverlay = findViewById(R.id.header_overlay);
+//        mHeaderFlexibleSpace = findViewById(R.id.header_flexible_space);
         mImageView = (VideoView) findViewById(R.id.image);
 
         topLayout = (LinearLayout) findViewById(R.id.top_layout);
         mFabMargin = (int)(getResources().getDimensionPixelSize(R.dimen.margin_standard) * density);
 
-        mInterceptionLayout = (TouchInterceptionFrameLayout) findViewById(R.id.scroll_wrapper);
+//        mInterceptionLayout = (TouchInterceptionFrameLayout) findViewById(R.id.scroll_wrapper);
         mTitle = (Button) findViewById(R.id.all_days);
         //mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 

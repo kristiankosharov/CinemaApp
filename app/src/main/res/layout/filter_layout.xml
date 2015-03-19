@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/filter_layout_transparent_background">
+
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="40dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="SORT"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_rating" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="movies by"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_location" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/close"
+        android:layout_below="@+id/title_layout">
+
+        <View
+            android:id="@+id/center"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@+id/center">
+
+            <ImageButton
+                android:id="@+id/alphabetic_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_sort_element"
+                android:padding="10dp"
+                android:src="@drawable/alphabetic_sort" />
+
+            <TextView
+                android:id="@+id/alphabetic_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/alphabetic_sort"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Alphabetical"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/center">
+
+            <ImageButton
+                android:id="@+id/popularity_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/selector_sort_element"
+                android:padding="10dp"
+                android:src="@drawable/alphabetic_sort" />
+
+            <TextView
+                android:id="@+id/popularity_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/popularity_sort"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Popularity"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@+id/center">
+
+            <ImageButton
+                android:id="@+id/release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/selector_sort_element"
+                android:padding="10dp"
+                android:src="@drawable/calendar" />
+
+            <TextView
+                android:id="@+id/release_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/release_date"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Release Date"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/center">
+
+            <ImageButton
+                android:id="@+id/rating_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/selector_sort_element"
+                android:padding="10dp"
+                android:src="@drawable/star" />
+
+            <TextView
+                android:id="@+id/rating_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rating_sort"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Rating"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="Tap to close"
+        android:textColor="@android:color/white" />
+</RelativeLayout>
