@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -40,9 +39,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private VideoView mImageView;
     private RelativeLayout main;
 
-    private Animation animationIn, animationOut;
-//    private static boolean isClick;
-
     public MainActivity() {
     }
 
@@ -50,11 +46,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initialize();
+        initialize(savedInstanceState);
         movieRequest();
     }
 
-    public void initialize() {
+    public void initialize(Bundle savedInstanceState) {
         gridView = (CustomGridView) findViewById(R.id.scroll);
         gridView.setContext(this);
 
@@ -74,7 +70,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         filter = (ImageView) findViewById(R.id.filter_icon);
         filter.setOnClickListener(this);
         mImageView = (VideoView) findViewById(R.id.image);
-        //mImageView.measure(mVideoLayout.getWidth(),mVideoLayout.getHeight());
 
         String videoUrl = "rtsp://r3---sn-4g57kuek.c.youtube.com/CiILENy73wIaGQk6-2j9f_Wz5RMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp";
         try {
@@ -88,27 +83,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 mp.setVolume(0, 0);
             }
         });
-
-//        mImageView.setMediaController(new MediaController(this));
-//        mImageView.requestFocus();
-
         mImageView.start();
     }
-
-//    @Override
-//    protected int getLayoutResId() {
-//        return R.layout.activity_main;
-//    }
-
-//    @Override
-//    protected ObservableGridView createScrollable() {
-//        ObservableGridView gridView = (ObservableGridView) findViewById(R.id.scroll);
-//        gridView.setScrollViewCallbacks(this);
-//
-//        gridView.setAdapter(movieAdapter);
-//        return gridView;
-//    }
-
 
     public void movieRequest() {
 
@@ -178,14 +154,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
-
-//    public void setIsClick(boolean isClick) {
-//        this.isClick = isClick;
-//    }
-//
-//    public boolean getIsClick() {
-//        return isClick;
-//    }
 
     @Override
     protected void onResume() {

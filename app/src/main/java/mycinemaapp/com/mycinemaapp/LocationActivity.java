@@ -52,7 +52,7 @@ public class LocationActivity extends FragmentActivity implements LocationListen
     private LatLng ltLng;
     private LocationManager locationManager;
 
-    private static final ArrayList<Location> ALL_CINEMA_LOCATION = new ArrayList<>();
+    private  ArrayList<Location> ALL_CINEMA_LOCATION = new ArrayList<>();
     private ArrayList<Marker> markerInArea = new ArrayList<>();
     private float RADIUS = 50000;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
