@@ -38,4 +38,8 @@
     <color name="circul_element_sort_selected">#FF9912</color>
     <color name="filter_layout_transparent_background">#E6000000</color>
 
+    <color name="facebook_blue">#206694</color>
+    <color name="twitter_blue">#3498db</color>
+    <color name="email_red">#e74c3c</color>
+    <color name="sms_yellow">#f1c40f</color>
 </resources>

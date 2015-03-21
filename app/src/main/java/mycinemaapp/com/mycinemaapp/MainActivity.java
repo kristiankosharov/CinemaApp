@@ -56,6 +56,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void initialize() {
         gridView = (CustomGridView) findViewById(R.id.scroll);
+        gridView.setContext(this);
+
         gridView.setExpanded(true);
 
         soon = (Button) findViewById(R.id.soon);
@@ -107,9 +109,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //        return gridView;
 //    }
 
+
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/coGSGsomCq?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/bVqDMConTm?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -133,6 +136,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list);
                             movieAdapter.notifyDataSetChanged();
                             gridView.setAdapter(movieAdapter);
+//                            gridView.setGridViewHeightBasedOnChildren(2);
 
                         } catch (Exception e) {
 

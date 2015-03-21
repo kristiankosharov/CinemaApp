@@ -1,5 +1,6 @@
 package mycinemaapp.com.mycinemaapp;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -159,6 +160,11 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
                 onBackPressed();
                 break;
             case R.id.share:
+                ShareFragment shareFragment = new ShareFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.addToBackStack("Share Fragment");
+                transaction.add(R.id.fragment_container, shareFragment);
+                transaction.commit();
                 break;
         }
     }

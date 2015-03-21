@@ -27,8 +27,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -156,19 +157,24 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <Helpers.CustomGridView
-                android:id="@+id/scroll"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/header"
-                android:background="@color/gray_background_gridview"
-                android:fitsSystemWindows="true"
-                android:horizontalSpacing="10dp"
-                android:numColumns="2"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:verticalSpacing="15dp" />
+                android:layout_below="@+id/header">
 
+                <Helpers.CustomGridView
+                    android:id="@+id/scroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:background="@color/gray_background_gridview"
+                    android:horizontalSpacing="10dp"
+                    android:isScrollContainer="false"
+                    android:numColumns="2"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:verticalSpacing="15dp" />
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
 

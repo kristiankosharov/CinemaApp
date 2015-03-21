@@ -35,6 +35,9 @@ public abstract class BaseActivity extends ActionBarActivity {
     private static final int NUM_OF_ITEMS_FEW = 3;
     private float density;
 
+    BaseActivity() {
+    };
+
     protected int getActionBarSize() {
         TypedValue typedValue = new TypedValue();
         int[] textSizeAttr = new int[]{android.R.attr.actionBarSize};
@@ -120,16 +123,18 @@ public abstract class BaseActivity extends ActionBarActivity {
         recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(this, getDummyData(), headerView));
     }
 
-    public float getDensity(){
+    public float getDensity() {
         density = getResources().getDisplayMetrics().density;
         return density;
     }
 
-    public int getViewWidth(){
+    public int getViewWidth() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int screenWidth = size.x;
         return screenWidth / 3;
     }
+
+
 }
