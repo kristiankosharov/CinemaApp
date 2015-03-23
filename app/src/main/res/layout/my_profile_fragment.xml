@@ -69,8 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:background="@color/primaryDark"
-        app:contentInsetStart="0dp"
         android:minHeight="?attr/actionBarSize"
+        app:contentInsetStart="0dp"
         app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
         app:theme="@style/Toolbar">
 
@@ -83,9 +83,9 @@
                 android:id="@+id/activity_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:clickable="true"
                 android:src="@drawable/list" />
 

@@ -2,8 +2,7 @@ package Adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -12,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -24,7 +25,9 @@ import java.util.ArrayList;
 
 import Helpers.CustomHorizontalScrollView;
 import Helpers.ImageCacheManager;
-import Models.MovieDetail;
+import Models.AddMovies;
+import Models.Movie;
+import Models.SaveTempMovieModel;
 import mycinemaapp.com.mycinemaapp.BaseActivity;
 import mycinemaapp.com.mycinemaapp.MovieTrailerLandscape;
 import mycinemaapp.com.mycinemaapp.R;
@@ -37,14 +40,14 @@ import mycinemaapp.com.mycinemaapp.WebViewActivity;
 public class MovieDetailAdapter extends PagerAdapter {
 
     private Activity context;
-    private ArrayList<MovieDetail> list;
+    private ArrayList<Movie> list;
     private String day;
     private String place;
 
     private float density;
     private int viewWidth;
 
-    public MovieDetailAdapter(Activity context, ArrayList<MovieDetail> list) {
+    public MovieDetailAdapter(Activity context, ArrayList<Movie> list) {
         this.context = context;
         this.list = list;
     }
@@ -60,7 +63,7 @@ public class MovieDetailAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
 
         density = ((BaseActivity) context).getDensity();
         viewWidth = ((BaseActivity) context).getViewWidth();
@@ -77,6 +80,8 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.director = (TextView) view.findViewById(R.id.names_director);
         viewHolder.actors = (TextView) view.findViewById(R.id.names_actors);
         viewHolder.duration = (TextView) view.findViewById(R.id.duration);
+        viewHolder.addButton = (ImageView) view.findViewById(R.id.add_button);
+        viewHolder.userRatingIcon = (TextView) view.findViewById(R.id.rating);
 
         viewHolder.titleDescription = (TextView) view.findViewById(R.id.title_details);
         viewHolder.imdb = (Button) view.findViewById(R.id.imdb);
@@ -91,10 +96,11 @@ public class MovieDetailAdapter extends PagerAdapter {
         //PagerHolder holder = (PagerHolder) view.getTag();
 
 
-        final MovieDetail item = list.get(position);
+        final Movie item = list.get(position);
 
-        viewHolder.ratingBar.setMax(100);
-        viewHolder.ratingBar.setProgress(item.getRating());
+        viewHolder.ratingBar.setMax(5);
+        viewHolder.ratingBar.setStepSize(0.5f);
+        viewHolder.ratingBar.setRating(item.getMovieProgress());
         //viewHolder.movieImage.setImageUrl("", null);
         viewHolder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());
         viewHolder.movieImage.setDefaultImageResId(R.drawable.example);
@@ -124,26 +130,6 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.duration.setText(item.getDuration());
         viewHolder.titleDescription.setText(item.getMovieTitle());
         viewHolder.fullDescription.setText(item.getFullDescription());
-
-
-        viewHolder.movieTrailer.setVideoURI(Uri.parse(item.getMovieTrailerUrl()));
-        viewHolder.movieTrailer.setBackground(context.getResources().getDrawable(R.drawable.trailer_tumbnail));
-
-        viewHolder.movieTrailer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setVolume(0, 0);
-            }
-        });
-
-        viewHolder.movieTrailer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, MovieTrailerLandscape.class);
-                intent.putExtra("url", item.getMovieTrailerUrl());
-                context.startActivity(intent);
-            }
-        });
 
         viewHolder.playTrailer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +162,30 @@ public class MovieDetailAdapter extends PagerAdapter {
                 context.startActivity(intent);
             }
         });
+
+        if (item.isAdd()) {
+            viewHolder.addButton.setImageResource(R.drawable.check_icon);
+            viewHolder.addButton.setPadding(10, 10, 10, 10);
+        } else if (item.getUserRating() != 0) {
+            viewHolder.addButton.setVisibility(View.GONE);
+            viewHolder.userRatingIcon.setText(String.valueOf(item.getUserRating()));
+            viewHolder.userRatingIcon.setTextColor(Color.WHITE);
+            viewHolder.userRatingIcon.setVisibility(View.VISIBLE);
+
+        }
+
+        viewHolder.addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddMovies.addMovie.add(SaveTempMovieModel.getItem(position));
+                item.setAdd(true);
+                viewHolder.addButton.setImageResource(R.drawable.check_icon);
+                Toast.makeText(context, "Add movie to list.", Toast.LENGTH_LONG).show();
+            }
+        });
+
         ((ViewPager) container).addView(view);
+
         return view;
     }
 
@@ -189,12 +198,13 @@ public class MovieDetailAdapter extends PagerAdapter {
         RatingBar ratingBar;
         Button rateBtn, imdb;
         NetworkImageView movieImage;
-        TextView title, genre, director, actors, duration, titleDescription, fullDescription;
+        TextView title, genre, director, actors, duration, titleDescription, fullDescription, userRatingIcon;
         VideoView movieTrailer;
         ImageButton playTrailer;
+        ImageView addButton;
     }
 
-    public void createDaysScroll(RelativeLayout containerLayout, MovieDetail item, RelativeLayout containerForProjects) {
+    public void createDaysScroll(RelativeLayout containerLayout, Movie item, RelativeLayout containerForProjects) {
         boolean fromAdapter = true;
         ArrayList<String> nameOfDays = item.getNameDayOfMonth();
         ArrayList<String> date = item.getDate();
@@ -261,7 +271,7 @@ public class MovieDetailAdapter extends PagerAdapter {
         containerLayout.addView(scrollView);
     }
 
-    public void createPlaceScroll(RelativeLayout containerLayout, MovieDetail item, RelativeLayout containerForProjects) {
+    public void createPlaceScroll(RelativeLayout containerLayout, Movie item, RelativeLayout containerForProjects) {
 
         final ArrayList<String> nameOfPlace = item.getNameOfPlace();
         ArrayList<String> date = item.getDate();
@@ -321,7 +331,7 @@ public class MovieDetailAdapter extends PagerAdapter {
         containerLayout.addView(scrollView);
     }
 
-    private View.OnClickListener imdbListener(final MovieDetail item) {
+    private View.OnClickListener imdbListener(final Movie item) {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,6 +343,4 @@ public class MovieDetailAdapter extends PagerAdapter {
 
         return listener;
     }
-
-
 }

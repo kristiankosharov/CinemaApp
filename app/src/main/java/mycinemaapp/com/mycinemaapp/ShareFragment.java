@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class ShareFragment extends Fragment implements View.OnClickListener {
     private ImageButton facebook, twitter, email, sms;
     private RelativeLayout container;
     private UiLifecycleHelper uiHelper;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -44,6 +46,7 @@ public class ShareFragment extends Fragment implements View.OnClickListener {
         twitter.setOnClickListener(this);
         container = (RelativeLayout) view.findViewById(R.id.container);
         container.setOnClickListener(this);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         uiHelper = new UiLifecycleHelper(getActivity(), null);
         uiHelper.onCreate(savedInstanceState);
@@ -86,7 +89,7 @@ public class ShareFragment extends Fragment implements View.OnClickListener {
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
                 break;
             case R.id.facebook:
-                makeIntentToFacebook("http://facebook.com");
+                new AsyncTask().execute("");
 
                 break;
             case R.id.twitter:
@@ -120,14 +123,13 @@ public class ShareFragment extends Fragment implements View.OnClickListener {
     public static String urlEncode(String s) {
         try {
             return URLEncoder.encode(s, "UTF-8");
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             Log.d("urlEncode", "UTF-8 should always be supported", e);
             throw new RuntimeException("URLEncoder.encode() failed for " + s);
         }
     }
 
-    private void makeIntentToFacebook(String message) {
+    private Intent makeIntentToFacebook(String message) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         String urlToShare = "http://facebook.com";
 
@@ -141,6 +143,8 @@ public class ShareFragment extends Fragment implements View.OnClickListener {
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(sharerUrl));
             startActivity(intent);
         }
+
+        return intent;
     }
 
     private boolean havePackage(String namePackage) {
@@ -182,5 +186,26 @@ public class ShareFragment extends Fragment implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         uiHelper.onDestroy();
+    }
+
+    class AsyncTask extends android.os.AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            makeIntentToFacebook("http://facebook.com");
+            return "Execute";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }

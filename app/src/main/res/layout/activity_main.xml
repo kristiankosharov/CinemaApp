@@ -166,14 +166,14 @@
                     android:id="@+id/scroll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:background="@color/gray_background_gridview"
                     android:horizontalSpacing="10dp"
-                    android:isScrollContainer="false"
+                    android:isScrollContainer="true"
                     android:numColumns="2"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:verticalSpacing="15dp" />
+                    android:paddingBottom="10dp"
+                    android:verticalSpacing="30dp" />
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>

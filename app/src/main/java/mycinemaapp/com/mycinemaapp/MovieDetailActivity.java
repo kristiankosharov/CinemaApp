@@ -9,16 +9,10 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 
-import java.text.DateFormatSymbols;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Adapters.MovieDetailAdapter;
-import Models.MovieDetail;
+import Models.SaveTempMovieModel;
 
 /**
  * Created by kristian on 15-3-4.
@@ -27,7 +21,6 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
 
     private ViewPager mViewPager;
     private MovieDetailAdapter adapter;
-    private ArrayList<MovieDetail> list = new ArrayList<>();
     private static final String TAG = "MovieDetailActivity";
     HorizontalScrollView mHorizontalScrollView;
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
@@ -51,94 +44,16 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         share.setOnClickListener(this);
 
         Intent intent = getIntent();
-        String url = intent.getStringExtra("URL");
-        String title = intent.getStringExtra("TITLE");
-        int progress = intent.getIntExtra("PROGRESS", 0);
-
-        HashMap<String, HashMap<String, String[]>> allProjections = new HashMap<>();
-        HashMap<String, String[]> onlyProjections = new HashMap<>();
-        HashMap<String, String[]> onlyProjections1 = new HashMap<>();
-        HashMap<String, String[]> onlyProjections2 = new HashMap<>();
-        String[] projections = {"14:00", "15:00", "20:00"};
-        String[] projections1 = {"16:00", "17:00", "22:00"};
-        String[] projections2 = {""};
-
-        allProjections.put("Mall Varna", onlyProjections);
-        allProjections.put("Grand", onlyProjections1);
-        allProjections.put("Kino", onlyProjections2);
-
-
-        String[] directors = {"az", "ti"};
-        String[] genres = {"az", "ti"};
-        String[] actors = {"az", "ti"};
-
-        ArrayList<String> days = new ArrayList<>();
-        ArrayList<String> nameOfDays = new ArrayList<>();
-        ArrayList<String> nameOfPlaces = new ArrayList<>();
-        nameOfPlaces.add("Mall Varna");
-        nameOfPlaces.add("Grand");
-        nameOfPlaces.add("Kino");
-
-        Calendar calendar = new GregorianCalendar();
-        int countOfDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int year = calendar.get(Calendar.YEAR);
-        DateFormatSymbols symbols = new DateFormatSymbols(Locale.getDefault());
-
-        int allDay = dayOfMonth;
-        String day;
-        for (int i = dayOfMonth; i < countOfDays + 1; i++) {
-
-            day = allDay + "." + month + "." + year;
-            days.add(day);
-            onlyProjections.put(day, projections);
-            onlyProjections1.put(day, projections1);
-            onlyProjections2.put(day, projections2);
-            allDay++;
-            nameOfDays.add(symbols.getWeekdays()[2]);
-        }
-        countOfDays = countOfDays - dayOfMonth;
-
-
-        for (int i = 0; i < 10; i++) {
-            MovieDetail detail = new MovieDetail();
-            detail.setImageUrl(url);
-            detail.setMovieDirectors(directors);
-            detail.setMovieActors(actors);
-            detail.setMovieGenre(genres);
-            detail.setMovieTitle(title);
-            detail.setRating(progress);
-            detail.setAllProjections(allProjections);
-            detail.setImdbUrl("http://www.imdb.com/title/tt2179136/");
-            detail.setDuration("110min . 30.01.15");
-            detail.setDate(days);
-            detail.setFullDescription("ldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjflj" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf" +
-                    "sdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjfldjfljsdfhlkjfldksjf");
-            detail.setNameOfPlace(nameOfPlaces);
-            detail.setNameDayOfMonth(nameOfDays);
-            detail.setTimeOfProjection(new String[]{});
-            detail.setNumberOfDays(countOfDays);
-            detail.setStartDay(dayOfMonth);
-            detail.setMovieTrailerUrl("rtsp://r1---sn-4g57kued.c.youtube.com/CiILENy73wIaGQl1YugnSFX8aBMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp");
-            list.add(detail);
-        }
+        int position = intent.getIntExtra("POSITION", 0);
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        adapter = new MovieDetailAdapter(this, list);
+        adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies());
+
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
         mViewPager.setBackgroundColor(this.getResources().getColor(R.color.gray_background_gridview));
         mViewPager.setAdapter(adapter);
+        mViewPager.setCurrentItem(position);
     }
 
     public static int generateViewId() {

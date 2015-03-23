@@ -36,7 +36,9 @@ public abstract class BaseActivity extends ActionBarActivity {
     private float density;
 
     BaseActivity() {
-    };
+    }
+
+    ;
 
     protected int getActionBarSize() {
         TypedValue typedValue = new TypedValue();
@@ -135,6 +137,4 @@ public abstract class BaseActivity extends ActionBarActivity {
         int screenWidth = size.x;
         return screenWidth / 3;
     }
-
-
 }

@@ -25,8 +25,8 @@ public class MovieTrailerLandscape extends Activity {
         mVideoView = (VideoView) findViewById(R.id.movie_trailer);
         if (url != "" && url != null) {
             mVideoView.setVideoURI(Uri.parse(url));
-            mVideoView.start();
         }
+        mVideoView.start();
         mVideoView.setMediaController(new MediaController(this));
     }
 

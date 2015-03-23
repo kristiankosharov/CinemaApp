@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import Helpers.ImageCacheManager;
 import Models.Movie;
-
 import mycinemaapp.com.mycinemaapp.MovieDetailActivity;
 import mycinemaapp.com.mycinemaapp.R;
 
@@ -75,11 +74,11 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         stars.getDrawable(1).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(0).setColorFilter(context.getResources().getColor(R.color.starNotSelected), PorterDuff.Mode.SRC_ATOP);
 
-        holder.ratingBar.setMax(100);
+        holder.ratingBar.setMax(5);
 
         holder.ratingBar.setClickable(false);
-
-        holder.ratingBar.setProgress(item.getMovieProgress());
+        holder.ratingBar.setStepSize(0.5f);
+        holder.ratingBar.setRating(item.getMovieProgress());
 
         holder.movieTitle.setText(item.getMovieTitle());
 
@@ -87,13 +86,14 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MovieDetailActivity.class);
-                intent.putExtra("PROGRESS", item.getMovieProgress());
-                intent.putExtra("URL", item.getImageUrl());
-                intent.putExtra("TITLE", item.getMovieTitle());
+                intent.putExtra("POSITION", position);
                 context.startActivity(intent);
             }
         });
 
+
+        int height = rowView.getMeasuredHeight();
+        item.setHeightView(height * ((int) (context.getResources().getDisplayMetrics().density)));
         return rowView;
     }
 
