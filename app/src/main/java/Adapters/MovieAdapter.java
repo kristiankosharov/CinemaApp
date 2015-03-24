@@ -28,11 +28,15 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
     private Activity context;
     private ArrayList<Movie> list;
+    private boolean isList, isRated, isBought;
 
-    public MovieAdapter(Activity context, int textViewResourceId, ArrayList<Movie> list) {
+    public MovieAdapter(Activity context, int textViewResourceId, ArrayList<Movie> list, boolean isList, boolean isRated, boolean isBought) {
         super(context, textViewResourceId, list);
         this.list = list;
         this.context = context;
+        this.isList = isList;
+        this.isRated = isRated;
+        this.isBought = isBought;
     }
 
     @Override
@@ -59,7 +63,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         final Movie item = list.get(position);
 
         if (item.getNewForWeek() == null || item.getNewForWeek().equals("")) {
-            holder.newForWeek.setVisibility(View.GONE);
+            holder.newForWeek.setVisibility(View.INVISIBLE);
         } else {
             holder.newForWeek.setText(item.getNewForWeek());
             holder.newForWeek.setVisibility(View.VISIBLE);
@@ -86,11 +90,17 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MovieDetailActivity.class);
+//                if (item.getPosition() != 0) {
+//                    intent.putExtra("POSITION", item.getPosition());
+//                } else {
                 intent.putExtra("POSITION", position);
+//                }
+                intent.putExtra("ISLIST", isList);
+                intent.putExtra("ISRATED", isRated);
+                intent.putExtra("ISBOUGHT", isBought);
                 context.startActivity(intent);
             }
         });
-
 
         int height = rowView.getMeasuredHeight();
         item.setHeightView(height * ((int) (context.getResources().getDisplayMetrics().density)));

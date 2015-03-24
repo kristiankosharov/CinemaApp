@@ -19,6 +19,7 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:it.sephiroth.android.library.fork.grid="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,10 +27,12 @@
     android:clipChildren="false">
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:isScrollContainer="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -162,20 +165,22 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/header">
 
-                <Helpers.CustomGridView
+                <origamilabs.library.views.StaggeredGridView
                     android:id="@+id/scroll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/gray_background_gridview"
                     android:horizontalSpacing="10dp"
-                    android:isScrollContainer="true"
-                    android:numColumns="2"
+                    android:isScrollContainer="false"
+                    android:paddingBottom="10dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingBottom="10dp"
-                    android:verticalSpacing="30dp" />
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="30dp"
+                    app:numColumns="2" />
             </RelativeLayout>
         </RelativeLayout>
+
     </ScrollView>
 
     <android.support.v7.widget.Toolbar

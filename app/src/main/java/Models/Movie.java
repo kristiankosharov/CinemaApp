@@ -8,12 +8,14 @@ import java.util.HashMap;
  */
 public class Movie {
 
+
+    int position;
+
     String newForWeek;
     float movieProgress;
 
-
     int rating;
-    int userRating;
+    float userRating;
     String duration;
     String imageUrl;
     String movieTitle;
@@ -42,6 +44,14 @@ public class Movie {
 
     private boolean isAdd;
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     public int getHeightView() {
         return heightView;
     }
@@ -52,11 +62,11 @@ public class Movie {
 
     private int heightView;
 
-    public int getUserRating() {
+    public float getUserRating() {
         return userRating;
     }
 
-    public void setUserRating(int userRating) {
+    public void setUserRating(float userRating) {
         this.userRating = userRating;
     }
 

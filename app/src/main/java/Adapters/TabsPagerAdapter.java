@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import mycinemaapp.com.mycinemaapp.ListOfMoviewFragment;
-import mycinemaapp.com.mycinemaapp.MarkFragment;
+import mycinemaapp.com.mycinemaapp.RatedFragment;
 import mycinemaapp.com.mycinemaapp.TicketFragment;
 
 /**
@@ -31,7 +31,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new TicketFragment();
             case 2:
-                return new MarkFragment();
+                return new RatedFragment();
         }
         return null;
     }

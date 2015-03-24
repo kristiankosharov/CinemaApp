@@ -77,6 +77,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         mSlidingTabLayout.setCustomTabView(R.layout.pager_item, R.id.item_title);
         mSlidingTabLayout.setViewPager(viewPager);
 
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("");

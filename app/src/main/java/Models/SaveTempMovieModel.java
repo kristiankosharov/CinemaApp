@@ -25,6 +25,6 @@ public class SaveTempMovieModel {
         for (int i = 0; i < movies.size(); i++) {
             height += movies.get(i).getHeightView();
         }
-        return (height + 200);
+        return height;
     }
 }

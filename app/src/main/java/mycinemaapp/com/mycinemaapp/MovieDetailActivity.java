@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Adapters.MovieDetailAdapter;
+import Models.AddMovies;
+import Models.RatedMovies;
 import Models.SaveTempMovieModel;
 
 /**
@@ -45,10 +47,19 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
 
         Intent intent = getIntent();
         int position = intent.getIntExtra("POSITION", 0);
+        boolean isList = intent.getBooleanExtra("ISLIST", false);
+        boolean isRated = intent.getBooleanExtra("ISRATED", false);
+        boolean isBought = intent.getBooleanExtra("ISBOUGHT", false);
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies());
-
+        if (isList) {
+            adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie());
+        } else if (isRated) {
+            adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies());
+        } else if (isBought) {
+        } else {
+            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies());
+        }
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
         mViewPager.setBackgroundColor(this.getResources().getColor(R.color.gray_background_gridview));

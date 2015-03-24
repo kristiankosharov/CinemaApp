@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -29,10 +30,10 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import Adapters.MovieAdapter;
-import Helpers.CustomGridView;
 import Helpers.RequestManager;
 import Models.Movie;
 import Models.SaveTempMovieModel;
+import origamilabs.library.views.StaggeredGridView;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -50,6 +51,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ArrayList<String> nameOfPlaces = new ArrayList<>();
     private int countOfDays;
     private int dayOfMonth;
+
+    private ScrollView scrollView;
 
     public MainActivity() {
     }
@@ -115,6 +118,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         filter = (ImageView) findViewById(R.id.filter_icon);
         filter.setOnClickListener(this);
         mImageView = (VideoView) findViewById(R.id.image);
+        scrollView = (ScrollView) findViewById(R.id.scroll_view);
+//        main.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                scrollView.set
+//            }
+//        });
 
         String videoUrl = "rtsp://r3---sn-4g57kuek.c.youtube.com/CiILENy73wIaGQk6-2j9f_Wz5RMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp";
         try {
@@ -183,12 +193,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 list.add(movie);
                             }
 
-                            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list);
+                            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false,false,false);
                             movieAdapter.notifyDataSetChanged();
                             SaveTempMovieModel.setMovies(list);
+                            StaggeredGridView gridView = (StaggeredGridView) findViewById(R.id.scroll);
+//                            gridView.setExpanded(true);
 
-                            CustomGridView gridView = (CustomGridView) findViewById(R.id.scroll);
-                            gridView.setExpanded(true);
                             gridView.setAdapter(movieAdapter);
                         } catch (Exception e) {
 

@@ -32,6 +32,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import Models.AddMovies;
+import Models.Movie;
+import Models.RatedMovies;
 import mycinemaapp.com.mycinemaapp.R;
 
 /**
@@ -210,20 +213,36 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private void populateTabStrip() {
         final PagerAdapter adapter = mViewPager.getAdapter();
+
         final OnClickListener tabClickListener = new TabClickListener();
+
+        ArrayList<ArrayList<Movie>> arrayList = new ArrayList<>();
+        arrayList.add(AddMovies.getAddMovie());
+        arrayList.add(new ArrayList<Movie>());
+        arrayList.add(RatedMovies.getRatedMovies());
+
+//        ArrayList<TextView> views = new ArrayList<>();
+//        TextView numbersView1 = null;
+//        TextView numbersView2 = null;
+//        TextView numbersView3 = null;
+//        views.add(numbersView1);
+//        views.add(numbersView2);
+//        views.add(numbersView3);
 
         for (int i = 0; i < adapter.getCount(); i++) {
             View tabView = null;
-            TextView tabTitleView = null;
-            TextView numbersView = null;
+            TextView tabTitleView1 = null;
+            TextView numbersView1 = null;
+            TextView numbersView2 = null;
+            TextView numbersView3 = null;
 
             if (mTabViewLayoutId != 0) {
                 // If there is a custom tab view layout id set, try and inflate it
                 tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
                         false);
-                tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
-                numbersView = (TextView)tabView.findViewById(R.id.numbers);
-                numbersView.setText(""+adapter.getCount());
+                tabTitleView1 = (TextView) tabView.findViewById(mTabViewTextViewId);
+                numbersView1 = (TextView) tabView.findViewById(R.id.numbers);
+                numbersView1.setText("" + arrayList.get(i).size());
                 //tabTitleView.setText(adapter.getPageTitle(i));
             }
 
@@ -231,14 +250,17 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 tabView = createDefaultTabView(getContext());
             }
 
-            if (tabTitleView == null && TextView.class.isInstance(tabView)) {
-                tabTitleView = (TextView) tabView;
+            if ((tabTitleView1 == null && TextView.class.isInstance(tabView))) {
+                tabTitleView1 = (TextView) tabView;
             }
 
-            tabTitleView.setText(adapter.getPageTitle(i));
+            tabTitleView1.setText(adapter.getPageTitle(i));
+
             tabView.setOnClickListener(tabClickListener);
             ArrayList<View> arr = new ArrayList<View>();
-            arr.add(numbersView);
+            arr.add(numbersView1);
+            arr.add(numbersView2);
+            arr.add(numbersView3);
 
             tabView.addChildrenForAccessibility(arr);
 
@@ -334,7 +356,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     public static int generateViewId() {
-        for (;;) {
+        for (; ; ) {
             final int result = sNextGeneratedId.get();
             // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
             int newValue = result + 1;

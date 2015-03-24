@@ -27,7 +27,6 @@ import Helpers.CustomHorizontalScrollView;
 import Helpers.ImageCacheManager;
 import Models.AddMovies;
 import Models.Movie;
-import Models.SaveTempMovieModel;
 import mycinemaapp.com.mycinemaapp.BaseActivity;
 import mycinemaapp.com.mycinemaapp.MovieTrailerLandscape;
 import mycinemaapp.com.mycinemaapp.R;
@@ -141,9 +140,6 @@ public class MovieDetailAdapter extends PagerAdapter {
         });
 
         viewHolder.movieTrailer.clearFocus();
-
-//        viewHolder
-
         viewHolder.imdb.setOnClickListener(imdbListener(item));
 
 
@@ -159,6 +155,7 @@ public class MovieDetailAdapter extends PagerAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, RateActivity.class);
+                intent.putExtra("POSITION", position);
                 context.startActivity(intent);
             }
         });
@@ -177,9 +174,13 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddMovies.addMovie.add(SaveTempMovieModel.getItem(position));
                 item.setAdd(true);
+                item.setPosition(position);
+                AddMovies.addMovie.add(item);
+
+//                item.setPosition(position);
                 viewHolder.addButton.setImageResource(R.drawable.check_icon);
+                viewHolder.addButton.setPadding(10, 10, 10, 10);
                 Toast.makeText(context, "Add movie to list.", Toast.LENGTH_LONG).show();
             }
         });
