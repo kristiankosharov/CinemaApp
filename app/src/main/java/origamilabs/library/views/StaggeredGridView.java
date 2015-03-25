@@ -269,7 +269,7 @@ public class StaggeredGridView extends ViewGroup {
                 return;
             }
             ensureMargins();
-            mMargins[col * 2] = margin;
+            mMargins[col * 2] = margin + 10;
         }
 
         public final void setMarginBelow(int col, int margin) {
@@ -277,7 +277,7 @@ public class StaggeredGridView extends ViewGroup {
                 return;
             }
             ensureMargins();
-            mMargins[col * 2 + 1] = margin;
+            mMargins[col * 2 + 1] = margin + 10;
         }
 
         @Override

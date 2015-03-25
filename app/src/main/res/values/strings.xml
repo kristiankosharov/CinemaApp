@@ -15,6 +15,6 @@
     <string-array name="tabs">
         <item>List</item>
         <item>Ticket</item>
-        <item>Mark</item>
+        <item>Rated</item>
     </string-array>
 </resources>

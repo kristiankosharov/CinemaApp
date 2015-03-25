@@ -143,7 +143,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/bZQedNXOzS?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/bLrikWyaXm?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -190,10 +190,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 movie.setNumberOfDays(countOfDays);
                                 movie.setStartDay(dayOfMonth);
                                 movie.setMovieTrailerUrl(obj.getString("trailer_url"));
+                                movie.setImdbRating(obj.getString("imdb_rating"));
                                 list.add(movie);
                             }
 
-                            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false,false,false);
+                            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false, false, false);
                             movieAdapter.notifyDataSetChanged();
                             SaveTempMovieModel.setMovies(list);
                             StaggeredGridView gridView = (StaggeredGridView) findViewById(R.id.scroll);
@@ -217,7 +218,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_icon:
-                Intent intentMyProfile = new Intent(this, MyProfileActivity.class);
+//                LoginFragment loginFragment = new LoginFragment();
+//                FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
+//                loginTransaction.addToBackStack("Login Fragment");
+//                loginTransaction.add(R.id.fragment_container, loginFragment);
+//                loginTransaction.setCustomAnimations(R.anim.rotate_in, R.anim.rotate_out);
+//                loginTransaction.commit();
+
+                Intent intentMyProfile = new Intent(this, LoginActivity.class);
                 startActivity(intentMyProfile);
                 overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
                 break;
@@ -229,10 +237,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.filter_icon:
                 SortFragment sortFragment = new SortFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.addToBackStack("Sort Fragment");
-                transaction.add(R.id.fragment_container, sortFragment);
-                transaction.commit();
+                FragmentTransaction sortTransaction = getFragmentManager().beginTransaction();
+                sortTransaction.addToBackStack("Sort Fragment");
+                sortTransaction.add(R.id.fragment_container, sortFragment);
+                sortTransaction.commit();
                 break;
             case R.id.location_icon:
                 Intent intentLocation = new Intent(this, LocationActivity.class);

@@ -18,16 +18,25 @@ import origamilabs.library.views.StaggeredGridView;
 public class RatedFragment extends Fragment {
 
     private MovieAdapter adapter;
+    private StaggeredGridView mGridView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rated_tab_fragment, container, false);
 
         adapter = new MovieAdapter(getActivity(), R.layout.movie_layout, RatedMovies.getRatedMovies(), false, true, false);
-        StaggeredGridView mGridView = (StaggeredGridView) view.findViewById(R.id.scroll);
+        mGridView = (StaggeredGridView) view.findViewById(R.id.scroll);
 //        mGridView.setExpanded(true);
+        adapter.notifyDataSetChanged();
         mGridView.setAdapter(adapter);
 
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 }

@@ -163,12 +163,12 @@ public class MovieDetailAdapter extends PagerAdapter {
         if (item.isAdd()) {
             viewHolder.addButton.setImageResource(R.drawable.check_icon);
             viewHolder.addButton.setPadding(10, 10, 10, 10);
-        } else if (item.getUserRating() != 0) {
+        }
+        if (item.getUserRating() != 0) {
             viewHolder.addButton.setVisibility(View.GONE);
             viewHolder.userRatingIcon.setText(String.valueOf(item.getUserRating()));
             viewHolder.userRatingIcon.setTextColor(Color.WHITE);
             viewHolder.userRatingIcon.setVisibility(View.VISIBLE);
-
         }
 
         viewHolder.addButton.setOnClickListener(new View.OnClickListener() {

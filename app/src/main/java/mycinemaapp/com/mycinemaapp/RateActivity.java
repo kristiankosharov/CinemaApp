@@ -1,6 +1,7 @@
 package mycinemaapp.com.mycinemaapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import Helpers.CustomEditText;
+import Models.AddMovies;
 import Models.Movie;
 import Models.RatedMovies;
 import Models.SaveTempMovieModel;
@@ -28,14 +30,20 @@ public class RateActivity extends Activity implements View.OnClickListener {
     private Button confirm;
 
     private int position;
+    private boolean isRated, isList;
+    private ArrayList<Movie> movies = SaveTempMovieModel.getMovies();
+    private ArrayList<Movie> ratedMovie = RatedMovies.getRatedMovies();
+    private ArrayList<Movie> addMovie = AddMovies.getAddMovie();
 
-    @Override
+    private TextView imdbRating;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rate_movie_layout);
 
         position = getIntent().getIntExtra("POSITION", 0);
-        final ArrayList<Movie> movies = SaveTempMovieModel.getMovies();
+        isRated = getIntent().getBooleanExtra("ISRATED", false);
+        isList = getIntent().getBooleanExtra("ISLIST", false);
 
         comments = (CustomEditText) findViewById(R.id.comments);
         back = (ImageView) findViewById(R.id.back);
@@ -44,15 +52,45 @@ public class RateActivity extends Activity implements View.OnClickListener {
         confirm.setOnClickListener(this);
         ratingBar = (RatingBar) findViewById(R.id.rating_bar);
         yourRating = (TextView) findViewById(R.id.your_rating);
+        imdbRating = (TextView) findViewById(R.id.imdb_rating);
 
-        if (movies.get(position).getUserRating() != 0) {
+        if (isRated) {
+            ratingBar.setRating(ratedMovie.get(position).getUserRating());
+            yourRating.setText(String.valueOf(ratedMovie.get(position).getUserRating()));
+            if (ratedMovie.get(position).getImdbRating() == null || ratedMovie.get(position).getImdbRating().equals("")) {
+                imdbRating.setText("0.0");
+            } else {
+                imdbRating.setText(ratedMovie.get(position).getImdbRating());
+            }
+        } else if (isList) {
+            ratingBar.setRating(addMovie.get(position).getUserRating());
+            yourRating.setText(String.valueOf(addMovie.get(position).getUserRating()));
+            if (addMovie.get(position).getImdbRating() == null || addMovie.get(position).getImdbRating().equals("")) {
+                imdbRating.setText("0.0");
+            } else {
+                imdbRating.setText(addMovie.get(position).getImdbRating());
+            }
+        } else {
             ratingBar.setRating(movies.get(position).getUserRating());
+            yourRating.setText(String.valueOf(movies.get(position).getUserRating()));
+            if (movies.get(position).getImdbRating() == null || movies.get(position).getImdbRating().equals("")) {
+                imdbRating.setText("0.0");
+            } else {
+                imdbRating.setText(movies.get(position).getImdbRating());
+            }
         }
+
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 yourRating.setText(ratingBar.getRating() + "");
-                movies.get(position).setUserRating(ratingBar.getRating());
+                if (isRated) {
+                    ratedMovie.get(position).setUserRating(ratingBar.getRating());
+                } else if (isList) {
+                    addMovie.get(position).setUserRating(ratingBar.getRating());
+                } else {
+                    movies.get(position).setUserRating(ratingBar.getRating());
+                }
             }
         });
 
@@ -75,9 +113,44 @@ public class RateActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.confirm:
                 Toast.makeText(this, "Give rate successfully!", Toast.LENGTH_LONG).show();
-                RatedMovies.ratedMovies.add(SaveTempMovieModel.getItem(position));
+
+                // Rate from List in MyProfile
+                if (isList) {
+
+                    ratedMovie.add(addMovie.get(position));
+                    addMovie.remove(position);
+
+//                    movies.get(position).setAdd(false);
+//                    for (int i = 0; i < addMovie.size(); i++) {
+//                        if (movies.get(position).getMovieTitle().equals(addMovie.get(i).getMovieTitle())) {
+//                            addMovie.remove(i);
+//                        }
+//                    }
+                } else if (isRated) {
+                    // Rate from Rated in MyProfile
+                    ratedMovie.get(position).setUserRating(ratingBar.getRating());
+                } else if (movies.get(position).isAdd()) {
+                    // First add item and then rate
+                    movies.get(position).setAdd(false);
+                    for (int i = 0; i < addMovie.size(); i++) {
+                        if (movies.get(position).getMovieTitle().equals(addMovie.get(i).getMovieTitle())) {
+                            ratedMovie.add(addMovie.get(i));
+                            addMovie.remove(i);
+                        }
+                    }
+                } else {
+                    // Rate without add
+                    ratedMovie.add(SaveTempMovieModel.getItem(position));
+                }
                 onBackPressed();
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("POSITION", position);
+        super.onBackPressed();
     }
 }

@@ -14,7 +14,11 @@ public class AddMovies {
     }
 
     public static void setAddMovie(ArrayList<Movie> addMovie) {
-        AddMovies.addMovie = addMovie;
+        for (int i = 0; i < addMovie.size(); i++) {
+            if (addMovie.get(i).isAdd()) {
+                AddMovies.addMovie.add(addMovie.get(i));
+            }
+        }
     }
 
     public static void setNewItem(Movie movie) {

@@ -43,6 +43,7 @@
     <dimen name="text_size_location">15sp</dimen>
     <dimen name="text_size_location_button">12sp</dimen>
     <dimen name="text_size_rating">28sp</dimen>
+    <dimen name="text_size_movie_layout_profile_rating">14sp</dimen>
 
 
     <!-- Define standard dimensions to comply with Holo-style grids and rhythm. -->

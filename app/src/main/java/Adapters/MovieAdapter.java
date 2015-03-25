@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
 
@@ -20,6 +22,7 @@ import Helpers.ImageCacheManager;
 import Models.Movie;
 import mycinemaapp.com.mycinemaapp.MovieDetailActivity;
 import mycinemaapp.com.mycinemaapp.R;
+import mycinemaapp.com.mycinemaapp.RateActivity;
 
 /**
  * Created by kristian on 15-2-25.
@@ -55,6 +58,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             viewHolder.ratingBar = (RatingBar) rowView
                     .findViewById(R.id.rating_bar);
             viewHolder.master = (RelativeLayout) rowView.findViewById(R.id.master);
+            viewHolder.dash = (View) rowView.findViewById(R.id.dash_line);
+            viewHolder.rateMovie = (Button) rowView.findViewById(R.id.rate_movie);
+            viewHolder.rateLayout = (RelativeLayout) rowView.findViewById(R.id.rate_layout);
             rowView.setTag(viewHolder);
         }
 
@@ -63,7 +69,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         final Movie item = list.get(position);
 
         if (item.getNewForWeek() == null || item.getNewForWeek().equals("")) {
-            holder.newForWeek.setVisibility(View.INVISIBLE);
+            holder.newForWeek.setVisibility(View.GONE);
         } else {
             holder.newForWeek.setText(item.getNewForWeek());
             holder.newForWeek.setVisibility(View.VISIBLE);
@@ -102,6 +108,28 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             }
         });
 
+        holder.rateMovie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, RateActivity.class);
+                intent.putExtra("POSITION", position);
+                Toast.makeText(context, position + "", Toast.LENGTH_LONG).show();
+                intent.putExtra("ISRATED", isRated);
+                intent.putExtra("ISLIST", isList);
+                context.startActivity(intent);
+            }
+        });
+
+        if (isList) {
+            holder.dash.setVisibility(View.GONE);
+            holder.rateLayout.setVisibility(View.GONE);
+            holder.rateMovie.setVisibility(View.VISIBLE);
+        } else if (isRated) {
+            holder.dash.setVisibility(View.GONE);
+            holder.rateLayout.setVisibility(View.GONE);
+            holder.rateMovie.setVisibility(View.VISIBLE);
+            holder.rateMovie.setText(item.getUserRating() + " - YOUR RATING");
+        }
         int height = rowView.getMeasuredHeight();
         item.setHeightView(height * ((int) (context.getResources().getDisplayMetrics().density)));
         return rowView;
@@ -119,7 +147,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         TextView newForWeek, movieTitle;
         NetworkImageView movieImage;
         RatingBar ratingBar;
-        RelativeLayout master;
+        RelativeLayout master, rateLayout;
+        View dash;
+        Button rateMovie;
     }
 
 }

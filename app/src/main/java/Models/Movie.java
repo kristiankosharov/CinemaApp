@@ -16,6 +16,9 @@ public class Movie {
 
     int rating;
     float userRating;
+
+
+
     String duration;
     String imageUrl;
     String movieTitle;
@@ -26,6 +29,7 @@ public class Movie {
     String movieTrailerUrl;
     String fullDescription;
     String imdbUrl;
+    String imdbRating;
 
     String commentUserImageUrl;
     String commentUserName;
@@ -43,6 +47,14 @@ public class Movie {
     HashMap<String, HashMap<String, String[]>> allProjections;
 
     private boolean isAdd;
+
+    public String getImdbRating() {
+        return imdbRating;
+    }
+
+    public void setImdbRating(String imdbRating) {
+        this.imdbRating = imdbRating;
+    }
 
     public int getPosition() {
         return position;

@@ -221,14 +221,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
         arrayList.add(new ArrayList<Movie>());
         arrayList.add(RatedMovies.getRatedMovies());
 
-//        ArrayList<TextView> views = new ArrayList<>();
-//        TextView numbersView1 = null;
-//        TextView numbersView2 = null;
-//        TextView numbersView3 = null;
-//        views.add(numbersView1);
-//        views.add(numbersView2);
-//        views.add(numbersView3);
-
         for (int i = 0; i < adapter.getCount(); i++) {
             View tabView = null;
             TextView tabTitleView1 = null;
