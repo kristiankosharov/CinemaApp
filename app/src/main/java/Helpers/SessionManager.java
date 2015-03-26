@@ -5,12 +5,15 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
     private static final String GLOBAL_SETTINGS = "global";
-    private static final String USER_FIRTS_NAME = "user.firstName";
-    private static final String USER_LAST_NAME = "user.lastName";
+    private static final String USER_NAMES = "user.names";
     private static final String USER_EMAIL = "user.email";
+    private static final String USER_PASSWORD = "user.password";
     private static final String USER_MANUAL_LOGIN = "user.manual.login";
     private static final String USER_REMEMBER_ME = "user.remember.me";
     private static final String USER_FACEBOOK_LOGIN = "user.facebook.login";
+    private static final String MYPROFILE_AVATAR_PATH_GALLERY = "user.myprofile.avatar.path";
+    private static final String MYPROFILE_AVATAR_CAPTURE_PATH = "user.myprofile.capture.path";
+    private static final String FACEBOOK_USER_ID = "facebook.user.id";
 
     private SharedPreferences sp;
 
@@ -20,21 +23,12 @@ public class SessionManager {
     }
 
     /* GET SET First Name*/
-    public String getFirstName() {
-        return sp.getString(USER_FIRTS_NAME, null);
+    public String getUserNames() {
+        return sp.getString(USER_NAMES, null);
     }
 
-    public void setFirstName(String first_name) {
-        sp.edit().putString(USER_FIRTS_NAME, first_name).commit();
-    }
-
-    /* GET SET Last Name*/
-    public String getLastName() {
-        return sp.getString(USER_LAST_NAME, null);
-    }
-
-    public void setLastName(String last_name) {
-        sp.edit().putString(USER_LAST_NAME, last_name).commit();
+    public void setUserNames(String names) {
+        sp.edit().putString(USER_NAMES, names).commit();
     }
 
     /* GET SET Email*/
@@ -45,6 +39,16 @@ public class SessionManager {
     public void setEmail(String email) {
         sp.edit().putString(USER_EMAIL, email).commit();
     }
+
+    /* GET SET Password*/
+    public String getUserPassword() {
+        return sp.getString(USER_PASSWORD, null);
+    }
+
+    public void setUserPassword(String pass) {
+        sp.edit().putString(USER_PASSWORD, pass).commit();
+    }
+
 
     /* GET SET Manual Login*/
     public boolean getManualLogin() {
@@ -71,6 +75,33 @@ public class SessionManager {
 
     public void setFacebookLogin(boolean manualLogin) {
         sp.edit().putBoolean(USER_MANUAL_LOGIN, manualLogin).commit();
+    }
+
+    /* GET SET MyProfile Avatar image from gallery */
+    public String getMyProfileAvatarPath() {
+        return sp.getString(MYPROFILE_AVATAR_PATH_GALLERY, null);
+    }
+
+    public void setMyProfileAvatarPath(String galleryPath) {
+        sp.edit().putString(MYPROFILE_AVATAR_PATH_GALLERY, galleryPath).commit();
+    }
+
+    /* GET SET MyProfile Avatar campture image */
+    public String getMyProfileAvatarCapturePath() {
+        return sp.getString(MYPROFILE_AVATAR_CAPTURE_PATH, null);
+    }
+
+    public void setMyProfileAvatarCapturePath(String captureImage) {
+        sp.edit().putString(MYPROFILE_AVATAR_CAPTURE_PATH, captureImage).commit();
+    }
+
+    /* GET SET Facebook User id */
+    public String getFacebookUserId() {
+        return sp.getString(FACEBOOK_USER_ID, null);
+    }
+
+    public void setFacebookUserId(String userId) {
+        sp.edit().putString(FACEBOOK_USER_ID, userId).commit();
     }
 
     // Clear all values from SharedPreferences

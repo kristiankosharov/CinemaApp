@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/master"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/filter_layout_transparent_background">
@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:text="LOGIN"
+            android:text="SAY CHEESE"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_rating" />
 
@@ -29,7 +29,7 @@
             android:layout_marginTop="30dp"
             android:ems="13"
             android:gravity="center"
-            android:text="Please log in first!"
+            android:text="Make your profile picture perfect and add photo!"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_location" />
     </RelativeLayout>
@@ -54,20 +54,21 @@
             android:layout_marginBottom="20dp">
 
             <ImageButton
-                android:id="@+id/facebook"
+                android:id="@+id/take_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/facebook_circul"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/take_picture_circle"
                 android:padding="10dp"
-                android:src="@drawable/facebook_letter" />
+                android:src="@drawable/take_picture" />
 
             <TextView
                 android:id="@+id/alphabetic_string"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/facebook"
+                android:layout_below="@+id/take_picture"
                 android:layout_centerHorizontal="true"
-                android:text="Facebook"
+                android:text="Take from camera"
                 android:textColor="@android:color/white" />
         </RelativeLayout>
 
@@ -79,21 +80,21 @@
             android:layout_marginTop="20dp">
 
             <ImageButton
-                android:id="@+id/email"
+                android:id="@+id/gallery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/email_circul"
                 android:padding="10dp"
-                android:src="@drawable/message" />
+                android:src="@drawable/gallery" />
 
             <TextView
                 android:id="@+id/release_string"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/email"
+                android:layout_below="@+id/gallery"
                 android:layout_centerHorizontal="true"
-                android:text="Email"
+                android:text="Select from gallery"
                 android:textColor="@android:color/white" />
         </RelativeLayout>
     </RelativeLayout>

@@ -1,6 +1,9 @@
 package mycinemaapp.com.mycinemaapp;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -11,14 +14,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import Adapters.TabsPagerAdapter;
+import Helpers.SessionManager;
 import Helpers.SlidingTabLayout;
 
 /**
@@ -36,7 +40,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
     private NetworkImageView profileImage;
     private TextView profileName, profileEmail;
-
+    private SessionManager sm;
     private RelativeLayout main;
     /**
      * List of {@link SamplePagerItem} which represent this sample's tabs.
@@ -47,7 +51,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_profile_fragment);
-
+        sm = new SessionManager(this);
         Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.rotate_out);
 
 //        main = (RelativeLayout)findViewById(R.id.main);
@@ -110,7 +114,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 //                startActivity(intent);
                 break;
             case R.id.logout:
-                Toast.makeText(this, "Click", Toast.LENGTH_SHORT).show();
+                logoutDialog();
                 break;
         }
     }
@@ -146,5 +150,44 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
+    }
+
+    private void logoutDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        })
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sm.logOut();
+
+                        Session session = Session.getActiveSession();
+                        if (session != null) {
+
+                            if (!session.isClosed()) {
+                                session.closeAndClearTokenInformation();
+                                //clear your preferences if saved
+                            }
+                        } else {
+
+                            session = new Session(MyProfileActivity.this);
+                            Session.setActiveSession(session);
+
+                            session.closeAndClearTokenInformation();
+                            //clear your preferences if saved
+
+                        }
+
+                        Intent intent = new Intent(MyProfileActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setMessage("Do you want to log out?");
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

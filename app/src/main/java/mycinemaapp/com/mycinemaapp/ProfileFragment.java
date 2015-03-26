@@ -6,35 +6,52 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
-import Helpers.ImageCacheManager;
+import Helpers.RoundedImageView;
+import Helpers.SessionManager;
 
 /**
  * Created by kristian on 15-2-27.
  */
 public class ProfileFragment extends Fragment {
 
-    private NetworkImageView profileImage;
-    private TextView profileName,profileEmail;
+    private ImageView profileImage;
+    private TextView profileName, profileEmail;
+    private SessionManager sm;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.profile_fragment, container, false);
-
-        profileImage = (NetworkImageView) v.findViewById(R.id.profile_image);
+        sm = new SessionManager(getActivity());
+        profileImage = (ImageView) v.findViewById(R.id.profile_image);
         profileName = (TextView) v.findViewById(R.id.user_name);
         profileEmail = (TextView) v.findViewById(R.id.user_email);
 
-        profileImage.setImageUrl("https://pbs.twimg.com/profile_images/604644048/sign051.gif", ImageCacheManager.getInstance().getImageLoader());
-        profileImage.setDefaultImageResId(R.drawable.example);
+        if (sm.getMyProfileAvatarPath() != null) {
+            loadAvatar(sm.getMyProfileAvatarPath());
+        }
+        if (sm.getMyProfileAvatarCapturePath() != null) {
+            loadAvatar(sm.getMyProfileAvatarCapturePath());
+        }
+        if (sm.getFacebookLogin()) {
+            loadAvatar("https://graph.facebook.com/" + sm.getFacebookUserId() + "/picture?type=large");
+        }
 
-        profileName.setText("Kristian Kosharov");
-        profileEmail.setText("kristiann.n@abv.bg");
+        profileName.setText(sm.getUserNames());
+        profileEmail.setText(sm.getEmail());
 
         return v;
+    }
+
+    private void loadAvatar(String path) {
+        Picasso.with(getActivity())
+                .load(path)
+                .transform(new RoundedImageView())
+                .into(profileImage);
     }
 }

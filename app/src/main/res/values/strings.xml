@@ -17,4 +17,7 @@
         <item>Ticket</item>
         <item>Rated</item>
     </string-array>
+
+    <string name="terms">I have read and accept the Terms of Service and Privacy Policy!</string>
+    <string name="forgot_password">Forgotten password?</string>
 </resources>

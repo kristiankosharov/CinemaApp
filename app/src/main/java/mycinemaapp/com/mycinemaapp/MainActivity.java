@@ -4,8 +4,13 @@ package mycinemaapp.com.mycinemaapp;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,10 +23,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.facebook.Session;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +39,7 @@ import java.util.Locale;
 
 import Adapters.MovieAdapter;
 import Helpers.RequestManager;
+import Helpers.SessionManager;
 import Models.Movie;
 import Models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
@@ -51,7 +60,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ArrayList<String> nameOfPlaces = new ArrayList<>();
     private int countOfDays;
     private int dayOfMonth;
-
+    private SessionManager sm;
     private ScrollView scrollView;
 
     public MainActivity() {
@@ -62,6 +71,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialize(savedInstanceState);
+        sm = new SessionManager(this);
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "mycinemaapp.com.mycinemaapp",
+                    PackageManager.GET_SIGNATURES);
+
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+        } catch (NoSuchAlgorithmException e) {
+        }
+
 
         HashMap<String, String[]> onlyProjections = new HashMap<>();
         HashMap<String, String[]> onlyProjections1 = new HashMap<>();
@@ -218,16 +243,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_icon:
-//                LoginFragment loginFragment = new LoginFragment();
-//                FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
-//                loginTransaction.addToBackStack("Login Fragment");
-//                loginTransaction.add(R.id.fragment_container, loginFragment);
-//                loginTransaction.setCustomAnimations(R.anim.rotate_in, R.anim.rotate_out);
-//                loginTransaction.commit();
 
-                Intent intentMyProfile = new Intent(this, LoginActivity.class);
-                startActivity(intentMyProfile);
-                overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
+                if (sm.getRemember()) {
+                    Intent intent = new Intent(this, MyProfileActivity.class);
+                    startActivity(intent);
+                } else {
+                    LoginFragment loginFragment = new LoginFragment();
+                    FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
+                    loginTransaction.addToBackStack("Login Fragment");
+                    loginTransaction.add(R.id.fragment_container, loginFragment);
+                    loginTransaction.commit();
+                }
+//                Intent intentMyProfile = new Intent(this, LoginActivity.class);
+//                startActivity(intentMyProfile);
+//                overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
                 break;
             case R.id.soon:
                 Toast.makeText(getBaseContext(), "Click", Toast.LENGTH_SHORT).show();
@@ -253,5 +282,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         mImageView.start();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+
     }
 }
