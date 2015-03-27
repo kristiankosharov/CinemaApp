@@ -24,7 +24,7 @@ import mycinemaapp.com.mycinemaapp.R;
 import mycinemaapp.com.mycinemaapp.ReservationSeats;
 
 public class CustomHorizontalScrollView extends HorizontalScrollView implements
-        View.OnTouchListener, GestureDetector.OnGestureListener, View.OnClickListener {
+        View.OnTouchListener, View.OnClickListener {
 
     private static final int SWIPE_MIN_DISTANCE = 10;
 
@@ -66,7 +66,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         this(context);
         this.maxItem = maxItem;
         this.itemWidth = itemWidth;
-        gestureDetector = new GestureDetector(this);
+        gestureDetector = new GestureDetector(context, gestureListener());
         this.setOnTouchListener(this);
         this.overScrollX = overScrollX;
         this.context = context;
@@ -115,87 +115,91 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 //    }
 
 
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                           float velocityY) {
-        Boolean returnValue;
-        int x = 0;
-        float ptx1 = 0, ptx2 = 0;
-        if (e1 != null && e2 != null) {
-            x = (int) e1.getRawX();
-            ptx1 = e1.getX();
-            ptx2 = e2.getX();
-        }
-        returnValue = false;
-
-        start = true;
-        this.currentScrollX = x;
-        int minFactor = itemWidth
-                / 2;
-        int minFactorMinus = -minFactor;
-
-        if (ptx1 - ptx2 > 0 && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-            //right to left slide
-            //positive residue
-            if ((ptx1 - ptx2) < minFactor
-                    && activeItem != maxItem
-                    ) {
-                activeItem = activeItem + 1;
-
-                isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
-            } else if (activeItem < maxItem - 2) {
-                activeItem = activeItem + 3;
-                isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
+    private GestureDetector.OnGestureListener gestureListener() {
+        GestureDetector.OnGestureListener listener = new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
             }
 
-            returnValue = true;
+            @Override
+            public void onShowPress(MotionEvent e) {
 
-        } else if (ptx1 - ptx2 < 0 && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-            //left to right
-            // negative residue
-            if ((ptx1 - ptx2) > minFactorMinus
-                    && activeItem != 0
-                    ) {
-                activeItem = activeItem - 1;
-                isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
-            } else if (activeItem > 2) {
-                activeItem = activeItem - 3;
-                isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
             }
-            returnValue = true;
-        }
-        scrollTo = activeItem * itemWidth;
-        this.smoothScrollTo(scrollTo, 0);
 
-        return returnValue;
-    }
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return false;
+            }
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
 
-    @Override
-    public void onLongPress(MotionEvent e) {
-        if (isProjectionScroll) {
-            Intent intent = new Intent(context, ReservationSeats.class);
-            context.startActivity(intent);
-        }
-    }
+            @Override
+            public void onLongPress(MotionEvent e) {
+                if (isProjectionScroll) {
+                    Intent intent = new Intent(context, ReservationSeats.class);
+                    context.startActivity(intent);
+                }
+            }
 
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-                            float distanceY) {
-        return false;
-    }
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                Boolean returnValue;
+                int x = 0;
+                float ptx1 = 0, ptx2 = 0;
+                if (e1 != null && e2 != null) {
+                    x = (int) e1.getRawX();
+                    ptx1 = e1.getX();
+                    ptx2 = e2.getX();
+                }
+                returnValue = false;
 
-    @Override
-    public void onShowPress(MotionEvent e) {
-    }
+                start = true;
+                CustomHorizontalScrollView.this.currentScrollX = x;
+                int minFactor = itemWidth
+                        / 2;
+                int minFactorMinus = -minFactor;
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
+                if (ptx1 - ptx2 > 0 && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    //right to left slide
+                    //positive residue
+                    if ((ptx1 - ptx2) < minFactor
+                            && activeItem != maxItem
+                            ) {
+                        activeItem = activeItem + 1;
+
+                        isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
+                    } else if (activeItem < maxItem - 2) {
+                        activeItem = activeItem + 3;
+                        isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
+                    }
+
+                    returnValue = true;
+
+                } else if (ptx1 - ptx2 < 0 && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    //left to right
+                    // negative residue
+                    if ((ptx1 - ptx2) > minFactorMinus
+                            && activeItem != 0
+                            ) {
+                        activeItem = activeItem - 1;
+                        isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
+                    } else if (activeItem > 2) {
+                        activeItem = activeItem - 3;
+                        isFromScroll(isDaysScroll, isPlaceScroll, isProjectionScroll, activeItem);
+                    }
+                    returnValue = true;
+                }
+                scrollTo = activeItem * itemWidth;
+                CustomHorizontalScrollView.this.smoothScrollTo(scrollTo, 0);
+
+                return returnValue;
+            }
+        };
+        return listener;
     }
 
     @Override
@@ -332,7 +336,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 //        handler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-                scrollView.startAnimation(animation1);
+        scrollView.startAnimation(animation1);
 //            }
 //        }, 500);
 

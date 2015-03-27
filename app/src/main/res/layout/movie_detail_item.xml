@@ -60,7 +60,7 @@
             android:layout_below="@+id/rating_layout"
             android:layout_toRightOf="@+id/movie_image">
 
-            <com.android.volley.toolbox.NetworkImageView
+            <ImageView
                 android:id="@+id/image"
                 android:layout_width="180dp"
                 android:layout_height="250dp"
@@ -184,10 +184,10 @@
 
         <RelativeLayout
             android:id="@+id/projections_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/movie_info"
-            android:background="@color/gray_background_gridview">
+            android:background="@drawable/background">
 
             <RelativeLayout
                 android:id="@+id/days_horizontal_scroll_view"

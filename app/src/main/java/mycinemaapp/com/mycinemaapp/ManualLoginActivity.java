@@ -1,9 +1,11 @@
 package mycinemaapp.com.mycinemaapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -56,7 +58,8 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
         createAccount.setOnClickListener(this);
         terms.setOnClickListener(this);
         back.setOnClickListener(this);
-        logIn.setOnClickListener(this);
+        logIn.setOnClickListener(listenerFromCreateAcc());
+
         sm.setUserNames(names.getText().toString());
 //        float density = getResources().getDisplayMetrics().density;
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (120 * density), (int) (120 * density));
@@ -91,28 +94,13 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                 takePictureTransaction.add(R.id.fragment_container, takePictureFragment);
                 takePictureTransaction.commit();
                 break;
-            case R.id.log_in:
-                String namesString = names.getText().toString();
-                String emailString = email.getText().toString();
-                String passString = password.getText().toString();
-
-                if (validateLoginElements(namesString, emailString, passString)) {
-                    sm.setUserNames(namesString);
-                    sm.setEmail(emailString);
-                    sm.setUserPassword(passString);
-                    sm.setRemember(true);
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                }
-
-                break;
             case R.id.back:
                 onBackPressed();
                 break;
             case R.id.sign_in:
                 signIn.setTextColor(Color.WHITE);
                 createAccount.setTextColor(getResources().getColor(R.color.light_gray));
-
+                logIn.setOnClickListener(listenerFromLogin());
                 userPicture.setVisibility(View.INVISIBLE);
                 names.setVisibility(View.GONE);
                 terms.setText(getResources().getString(R.string.forgot_password));
@@ -120,7 +108,7 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
             case R.id.create_account:
                 createAccount.setTextColor(Color.WHITE);
                 signIn.setTextColor(getResources().getColor(R.color.light_gray));
-
+                logIn.setOnClickListener(listenerFromCreateAcc());
                 userPicture.setVisibility(View.VISIBLE);
                 names.setVisibility(View.VISIBLE);
                 terms.setText(getResources().getString(R.string.terms));
@@ -165,7 +153,7 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
         }
     }
 
-    public boolean validateLoginElements(String namesString, String emailString, String passString) {
+    public boolean validateCreateElements(String namesString, String emailString, String passString) {
         boolean check = true;
         // If email is empty or not matching of pattern set error on EditText
         if (emailString.isEmpty()
@@ -188,6 +176,23 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
         return check;
     }
 
+    public boolean validateLoginElements(String emailString, String passString) {
+        boolean check = true;
+        // If email is empty or not matching of pattern set error on EditText
+        if (emailString.isEmpty()
+                || !android.util.Patterns.EMAIL_ADDRESS.matcher(emailString)
+                .matches()) {
+            email.setError("Please input correct e-mail!");
+            check = false;
+        }
+        // If password is empty or smaller than 4 symbols set error on EditText
+        if (passString.isEmpty() || passString.length() < 4) {
+            password.setError("Please input correct password!");
+            check = false;
+        }
+        return check;
+    }
+
     private void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         View f = activity.getCurrentFocus();
@@ -195,5 +200,64 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
             imm.hideSoftInputFromWindow(f.getWindowToken(), 0);
         else
             activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+
+    private void withoutImage() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        })
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setMessage("Save without profile image?");
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private View.OnClickListener listenerFromCreateAcc() {
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String namesString = names.getText().toString();
+                String emailString = email.getText().toString();
+                String passString = password.getText().toString();
+
+                if (validateCreateElements(namesString, emailString, passString)) {
+                    sm.setUserNames(namesString);
+                    sm.setEmail(emailString);
+                    sm.setUserPassword(passString);
+                    sm.setRemember(true);
+                }
+                if (sm.getMyProfileAvatarPath() == null && sm.getMyProfileAvatarCapturePath() == null) {
+                    withoutImage();
+                }
+            }
+        };
+        return listener;
+    }
+
+    private View.OnClickListener listenerFromLogin() {
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String emailString = email.getText().toString();
+                String pass = password.getText().toString();
+                if (validateLoginElements(emailString, pass)) {
+                    sm.setRemember(true);
+                    Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        };
+        return listener;
     }
 }

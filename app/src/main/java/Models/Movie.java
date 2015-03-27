@@ -18,13 +18,12 @@ public class Movie {
     float userRating;
 
 
-
     String duration;
     String imageUrl;
     String movieTitle;
-    String[] movieGenre;
-    String[] movieDirectors;
-    String[] movieActors;
+    ArrayList<String> movieGenre;
+    ArrayList<String> movieDirectors;
+    ArrayList<String> movieActors;
 
     String movieTrailerUrl;
     String fullDescription;
@@ -183,11 +182,11 @@ public class Movie {
         this.duration = duration;
     }
 
-    public String[] getMovieActors() {
+    public ArrayList<String> getMovieActors() {
         return movieActors;
     }
 
-    public void setMovieActors(String[] movieActors) {
+    public void setMovieActors(ArrayList<String> movieActors) {
         this.movieActors = movieActors;
     }
 
@@ -199,32 +198,32 @@ public class Movie {
         this.rating = rating;
     }
 
-    public String[] getMovieGenre() {
+    public ArrayList<String> getMovieGenre() {
         return movieGenre;
     }
 
-    public void setMovieGenre(String[] movieGenre) {
+    public void setMovieGenre(ArrayList<String> movieGenre) {
         this.movieGenre = movieGenre;
     }
 
     public int getCountGenre() {
-        return movieGenre.length;
+        return movieGenre.size();
     }
 
-    public String[] getMovieDirectors() {
+    public ArrayList<String> getMovieDirectors() {
         return movieDirectors;
     }
 
-    public void setMovieDirectors(String[] movieDirectors) {
+    public void setMovieDirectors(ArrayList<String> movieDirectors) {
         this.movieDirectors = movieDirectors;
     }
 
     public int getCountDeirectors() {
-        return movieDirectors.length;
+        return movieDirectors.size();
     }
 
     public int getCountActors() {
-        return movieActors.length;
+        return movieActors.size();
     }
 
     public String getNewForWeek() {

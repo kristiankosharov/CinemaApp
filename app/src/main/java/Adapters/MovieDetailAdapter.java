@@ -19,12 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import Helpers.CustomHorizontalScrollView;
-import Helpers.ImageCacheManager;
+import Helpers.SessionManager;
 import Models.AddMovies;
 import Models.Movie;
 import mycinemaapp.com.mycinemaapp.BaseActivity;
@@ -45,6 +45,7 @@ public class MovieDetailAdapter extends PagerAdapter {
 
     private float density;
     private int viewWidth;
+    private SessionManager sm;
 
     public MovieDetailAdapter(Activity context, ArrayList<Movie> list) {
         this.context = context;
@@ -66,14 +67,14 @@ public class MovieDetailAdapter extends PagerAdapter {
 
         density = ((BaseActivity) context).getDensity();
         viewWidth = ((BaseActivity) context).getViewWidth();
-
+        sm = new SessionManager(context);
         LayoutInflater inflater = context.getLayoutInflater();
         View view = inflater.inflate(R.layout.movie_detail_item, null, false);
 
         final PagerHolder viewHolder = new PagerHolder();
         viewHolder.ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
         viewHolder.rateBtn = (Button) view.findViewById(R.id.rate_button);
-        viewHolder.movieImage = (NetworkImageView) view.findViewById(R.id.image);
+        viewHolder.movieImage = (ImageView) view.findViewById(R.id.image);
         viewHolder.title = (TextView) view.findViewById(R.id.title);
         viewHolder.genre = (TextView) view.findViewById(R.id.genre);
         viewHolder.director = (TextView) view.findViewById(R.id.names_director);
@@ -101,32 +102,43 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.ratingBar.setStepSize(0.5f);
         viewHolder.ratingBar.setRating(item.getMovieProgress());
         //viewHolder.movieImage.setImageUrl("", null);
-        viewHolder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());
-        viewHolder.movieImage.setDefaultImageResId(R.drawable.example);
+        Picasso.with(context).load(item.getImageUrl()).into(viewHolder.movieImage);
         viewHolder.title.setText(item.getMovieTitle());
 
         String genresString = "";
-        String[] genresArray = item.getMovieGenre();
+        ArrayList<String> genresArray = item.getMovieGenre();
         for (int i = 0; i < item.getCountGenre(); i++) {
-            genresString = genresString + genresArray[i] + ".";
-            viewHolder.genre.setText(genresString);
+            if (genresArray.get(i) == null) {
+                genresArray.remove(i);
+                genresArray.add(i, "");
+            }
+            genresString = genresString + genresArray.get(i) + ".";
         }
+        viewHolder.genre.setText(genresString);
 
         String directorsString = "";
-        String[] directorsArray = item.getMovieDirectors();
+        ArrayList<String> directorsArray = item.getMovieDirectors();
         for (int i = 0; i < item.getCountDeirectors(); i++) {
-            directorsString = directorsString + directorsArray[i] + "\n";
-            viewHolder.director.setText(directorsString);
+            if (directorsArray.get(i) == null) {
+                directorsArray.remove(i);
+                directorsArray.add(i, "");
+            }
+            directorsString = directorsString + directorsArray.get(i) + "\n";
         }
+        viewHolder.director.setText(directorsString);
 
         String actorsString = "";
-        String[] actorsArray = item.getMovieActors();
+        ArrayList<String> actorsArray = item.getMovieActors();
         for (int i = 0; i < item.getCountActors(); i++) {
-            actorsString = actorsString + actorsArray[i] + "\n";
-            viewHolder.actors.setText(actorsString);
+            if (actorsArray.get(i) == null) {
+                actorsArray.remove(i);
+                actorsArray.add("");
+            }
+            actorsString = actorsString + actorsArray.get(i) + "\n";
         }
+        viewHolder.actors.setText(actorsString);
 
-        viewHolder.duration.setText(item.getDuration());
+        viewHolder.duration.setText(item.getDuration() + "min");
         viewHolder.titleDescription.setText(item.getMovieTitle());
         viewHolder.fullDescription.setText(item.getFullDescription());
 
@@ -174,14 +186,19 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                item.setAdd(true);
-                item.setPosition(position);
-                AddMovies.addMovie.add(item);
+                if (sm.getRemember()) {
+                    item.setAdd(true);
+                    item.setPosition(position);
+                    AddMovies.addMovie.add(item);
 
 //                item.setPosition(position);
-                viewHolder.addButton.setImageResource(R.drawable.check_icon);
-                viewHolder.addButton.setPadding(10, 10, 10, 10);
-                Toast.makeText(context, "Add movie to list.", Toast.LENGTH_LONG).show();
+                    viewHolder.addButton.setImageResource(R.drawable.check_icon);
+                    viewHolder.addButton.setPadding(10, 10, 10, 10);
+                    viewHolder.addButton.setOnClickListener(null);
+                    Toast.makeText(context, "Add movie to list.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, "First you must log in!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -198,7 +215,7 @@ public class MovieDetailAdapter extends PagerAdapter {
     static class PagerHolder {
         RatingBar ratingBar;
         Button rateBtn, imdb;
-        NetworkImageView movieImage;
+        ImageView movieImage;
         TextView title, genre, director, actors, duration, titleDescription, fullDescription, userRatingIcon;
         VideoView movieTrailer;
         ImageButton playTrailer;

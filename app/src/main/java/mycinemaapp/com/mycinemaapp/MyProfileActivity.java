@@ -101,7 +101,9 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        mAdapter.notifyDataSetChanged();
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), tabs, 3);
+        viewPager.setAdapter(mAdapter);
+        mSlidingTabLayout.setViewPager(viewPager);
     }
 
     @Override
@@ -176,7 +178,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
                             session = new Session(MyProfileActivity.this);
                             Session.setActiveSession(session);
-
                             session.closeAndClearTokenInformation();
                             //clear your preferences if saved
 
@@ -189,5 +190,11 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 .setMessage("Do you want to log out?");
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void resetAdapter(){
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), tabs, 3);
+        viewPager.setAdapter(mAdapter);
+        mSlidingTabLayout.setViewPager(viewPager);
     }
 }

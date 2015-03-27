@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import Helpers.CustomEditText;
+import Helpers.SessionManager;
 import Models.AddMovies;
 import Models.Movie;
 import Models.RatedMovies;
@@ -36,10 +37,12 @@ public class RateActivity extends Activity implements View.OnClickListener {
     private ArrayList<Movie> addMovie = AddMovies.getAddMovie();
 
     private TextView imdbRating;
+    private SessionManager sm;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rate_movie_layout);
+        sm = new SessionManager(this);
 
         position = getIntent().getIntExtra("POSITION", 0);
         isRated = getIntent().getBooleanExtra("ISRATED", false);
@@ -112,13 +115,14 @@ public class RateActivity extends Activity implements View.OnClickListener {
 
                 break;
             case R.id.confirm:
-                Toast.makeText(this, "Give rate successfully!", Toast.LENGTH_LONG).show();
+                if (sm.getRemember()) {
+                    Toast.makeText(this, "Give rate successfully!", Toast.LENGTH_LONG).show();
 
-                // Rate from List in MyProfile
-                if (isList) {
+                    // Rate from List in MyProfile
+                    if (isList) {
 
-                    ratedMovie.add(addMovie.get(position));
-                    addMovie.remove(position);
+                        ratedMovie.add(addMovie.get(position));
+                        addMovie.remove(position);
 
 //                    movies.get(position).setAdd(false);
 //                    for (int i = 0; i < addMovie.size(); i++) {
@@ -126,23 +130,26 @@ public class RateActivity extends Activity implements View.OnClickListener {
 //                            addMovie.remove(i);
 //                        }
 //                    }
-                } else if (isRated) {
-                    // Rate from Rated in MyProfile
-                    ratedMovie.get(position).setUserRating(ratingBar.getRating());
-                } else if (movies.get(position).isAdd()) {
-                    // First add item and then rate
-                    movies.get(position).setAdd(false);
-                    for (int i = 0; i < addMovie.size(); i++) {
-                        if (movies.get(position).getMovieTitle().equals(addMovie.get(i).getMovieTitle())) {
-                            ratedMovie.add(addMovie.get(i));
-                            addMovie.remove(i);
+                    } else if (isRated) {
+                        // Rate from Rated in MyProfile
+                        ratedMovie.get(position).setUserRating(ratingBar.getRating());
+                    } else if (movies.get(position).isAdd()) {
+                        // First add item and then rate
+                        movies.get(position).setAdd(false);
+                        for (int i = 0; i < addMovie.size(); i++) {
+                            if (movies.get(position).getMovieTitle().equals(addMovie.get(i).getMovieTitle())) {
+                                ratedMovie.add(addMovie.get(i));
+                                addMovie.remove(i);
+                            }
                         }
+                    } else {
+                        // Rate without add
+                        ratedMovie.add(SaveTempMovieModel.getItem(position));
                     }
+                    onBackPressed();
                 } else {
-                    // Rate without add
-                    ratedMovie.add(SaveTempMovieModel.getItem(position));
+                    Toast.makeText(this, "First you must log in!", Toast.LENGTH_LONG).show();
                 }
-                onBackPressed();
                 break;
         }
     }

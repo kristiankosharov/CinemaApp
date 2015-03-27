@@ -69,6 +69,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         initialize(savedInstanceState);
         sm = new SessionManager(this);
@@ -91,17 +92,26 @@ public class MainActivity extends Activity implements View.OnClickListener {
         HashMap<String, String[]> onlyProjections = new HashMap<>();
         HashMap<String, String[]> onlyProjections1 = new HashMap<>();
         HashMap<String, String[]> onlyProjections2 = new HashMap<>();
+        HashMap<String, String[]> onlyProjections3 = new HashMap<>();
+        HashMap<String, String[]> onlyProjections4 = new HashMap<>();
+
         String[] projections = {"14:00", "15:00", "20:00"};
         String[] projections1 = {"16:00", "17:00", "22:00"};
         String[] projections2 = {""};
+        String[] projections3 = {"13:30", "15:22", "11:11"};
+        String[] projections4 = {"16:30", "22:22", "24:24"};
 
         allProjections.put("Mall Varna", onlyProjections);
         allProjections.put("Grand", onlyProjections1);
         allProjections.put("Kino", onlyProjections2);
+        allProjections.put("Kino2", onlyProjections3);
+        allProjections.put("Kino3", onlyProjections4);
 
         nameOfPlaces.add("Mall Varna");
         nameOfPlaces.add("Grand");
         nameOfPlaces.add("Kino");
+        nameOfPlaces.add("Kino2");
+        nameOfPlaces.add("Kino3");
 
         Calendar calendar = new GregorianCalendar();
         countOfDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -120,6 +130,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             onlyProjections.put(day, projections);
             onlyProjections1.put(day, projections1);
             onlyProjections2.put(day, projections2);
+            onlyProjections3.put(day, projections3);
+            onlyProjections4.put(day, projections4);
             allDay++;
             nameOfDays.add(symbols.getWeekdays()[2]);
         }
@@ -168,37 +180,40 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/bLrikWyaXm?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/cpimtsWJvm?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String[] genre = new String[3];
-                        String[] directors = new String[3];
-                        String[] actors = new String[3];
+
                         try {
                             JSONArray jsonArray = new JSONArray(response);
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject obj = jsonArray.getJSONObject(i);
 
+                                ArrayList<String> genre = new ArrayList<>();
+                                ArrayList<String> directors = new ArrayList<>();
+                                ArrayList<String> actors = new ArrayList<>();
+
                                 Movie movie = new Movie();
                                 movie.setImageUrl(obj.getString("image_url"));
                                 movie.setMovieProgress(Float.parseFloat(obj.getString("rating")));
                                 movie.setMovieTitle(obj.getString("title"));
                                 movie.setNewForWeek(obj.getString("new_for_week"));
+
                                 for (int j = 0; j < obj.getJSONArray("movie_directors").length(); j++) {
-                                    directors[j] = obj.getJSONArray("movie_directors").getString(j);
+                                    directors.add(obj.getJSONArray("movie_directors").getString(j));
                                 }
                                 movie.setMovieDirectors(directors);
                                 for (int k = 0; k < obj.getJSONArray("movie_genre").length(); k++) {
-                                    genre[k] = obj.getJSONArray("movie_genre").getString(k);
+                                    genre.add(obj.getJSONArray("movie_genre").getString(k));
                                 }
                                 movie.setMovieGenre(genre);
                                 for (int l = 0; l < obj.getJSONArray("movie_actors").length(); l++) {
-                                    actors[l] = obj.getJSONArray("movie_actors").getString(l);
+                                    actors.add(obj.getJSONArray("movie_actors").getString(l));
                                 }
                                 movie.setMovieActors(actors);
                                 if (!obj.getString("user_rating").equals("")) {
@@ -247,6 +262,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 if (sm.getRemember()) {
                     Intent intent = new Intent(this, MyProfileActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
+
                 } else {
                     LoginFragment loginFragment = new LoginFragment();
                     FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
