@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import Adapters.MovieAdapter;
 import Models.RatedMovies;
@@ -19,6 +20,7 @@ public class RatedFragment extends Fragment {
 
     private MovieAdapter adapter;
     private StaggeredGridView mGridView;
+    private TextView emptyView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -26,7 +28,13 @@ public class RatedFragment extends Fragment {
 
         adapter = new MovieAdapter(getActivity(), R.layout.movie_layout, RatedMovies.getRatedMovies(), false, true, false);
         mGridView = (StaggeredGridView) view.findViewById(R.id.scroll);
+        emptyView = (TextView) view.findViewById(R.id.empty_list_view);
 //        mGridView.setExpanded(true);
+
+        if (adapter.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+        }
+
         adapter.notifyDataSetChanged();
         mGridView.setAdapter(adapter);
 

@@ -104,6 +104,7 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                 userPicture.setVisibility(View.INVISIBLE);
                 names.setVisibility(View.GONE);
                 terms.setText(getResources().getString(R.string.forgot_password));
+                terms.setOnClickListener(termsFromLogin());
                 break;
             case R.id.create_account:
                 createAccount.setTextColor(Color.WHITE);
@@ -256,6 +257,34 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                     Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
+            }
+        };
+        return listener;
+    }
+
+    private View.OnClickListener termsFromLogin() {
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ManualLoginActivity.this);
+                View view = getLayoutInflater().inflate(R.layout.forgot_password, null);
+                EditText email = (EditText) view.findViewById(R.id.email);
+                builder.setView(getLayoutInflater().inflate(R.layout.forgot_password, null));
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         };
         return listener;

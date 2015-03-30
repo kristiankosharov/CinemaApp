@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -63,9 +64,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         tabs = getResources().getStringArray(R.array.tabs);
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), tabs, 3);
 
-
         viewPager.setAdapter(mAdapter);
-
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
 
         LayoutInflater inflater = getLayoutInflater();
@@ -77,8 +76,11 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         activityButton.setOnClickListener(this);
         logoutButton.setOnClickListener(this);
 
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int width = displaymetrics.widthPixels;
 
-        mSlidingTabLayout.setCustomTabView(R.layout.pager_item, R.id.item_title);
+        mSlidingTabLayout.setCustomTabView(R.layout.pager_item, R.id.item_title, width / 3);
         mSlidingTabLayout.setViewPager(viewPager);
 
 
@@ -192,9 +194,26 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         alertDialog.show();
     }
 
-    public void resetAdapter(){
-        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), tabs, 3);
-        viewPager.setAdapter(mAdapter);
-        mSlidingTabLayout.setViewPager(viewPager);
+    public void resetAdapter(boolean isList, boolean isRated, boolean isBought) {
+        if (isList) {
+            mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), tabs, 3);
+            viewPager.setAdapter(mAdapter);
+
+            mSlidingTabLayout.setViewPager(viewPager);
+            viewPager.setCurrentItem(0);
+        }
+        if (isRated) {
+            mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), tabs, 3);
+            viewPager.setAdapter(mAdapter);
+            mSlidingTabLayout.setViewPager(viewPager);
+            viewPager.setCurrentItem(2);
+        }
+        if (isBought) {
+            mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), tabs, 3);
+            viewPager.setAdapter(mAdapter);
+
+            mSlidingTabLayout.setViewPager(viewPager);
+            viewPager.setCurrentItem(1);
+        }
     }
 }

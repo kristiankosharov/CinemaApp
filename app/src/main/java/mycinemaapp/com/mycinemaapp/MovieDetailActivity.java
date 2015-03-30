@@ -57,12 +57,12 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         if (isList) {
-            adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie());
+            adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
         } else if (isRated) {
-            adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies());
+            adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
         } else if (isBought) {
         } else {
-            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies());
+            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
@@ -87,18 +87,31 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         if (isList) {
-            adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie());
+            adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
         } else if (isRated) {
-            adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies());
+            adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
         } else if (isBought) {
         } else {
-            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies());
+            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
+        if (adapter.getCount() == 0) {
+            onBackPressed();
+        }
         mViewPager.setPageMargin(20);
         mViewPager.setBackgroundColor(this.getResources().getColor(R.color.gray_background_gridview));
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(position);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == 1) {
+                position = data.getIntExtra("POSITION", 0);
+            }
+        }
     }
 
     @Override
@@ -115,5 +128,15 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
                 transaction.commit();
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent();
+        intent.putExtra("ISLIST", position);
+        intent.putExtra("ISRATED", position);
+        intent.putExtra("ISBOUGHT", position);
+        super.onBackPressed();
     }
 }

@@ -3,11 +3,14 @@ package mycinemaapp.com.mycinemaapp;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -15,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -61,7 +63,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private int countOfDays;
     private int dayOfMonth;
     private SessionManager sm;
-    private ScrollView scrollView;
 
     public MainActivity() {
     }
@@ -155,7 +156,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         filter = (ImageView) findViewById(R.id.filter_icon);
         filter.setOnClickListener(this);
         mImageView = (VideoView) findViewById(R.id.image);
-        scrollView = (ScrollView) findViewById(R.id.scroll_view);
 //        main.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -175,7 +175,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 mp.setVolume(0, 0);
             }
         });
-        mImageView.start();
+        if (isOnline()) {
+            mImageView.start();
+        } else {
+            Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void movieRequest() {
@@ -307,4 +311,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 }

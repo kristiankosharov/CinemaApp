@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -107,7 +106,6 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             public void onClick(View v) {
                 Intent intent = new Intent(context, RateActivity.class);
                 intent.putExtra("POSITION", position);
-                Toast.makeText(context, position + "", Toast.LENGTH_LONG).show();
                 intent.putExtra("ISRATED", isRated);
                 intent.putExtra("ISLIST", isList);
                 context.startActivity(intent);
@@ -175,14 +173,16 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             public void onClick(View v) {
                 if (isList) {
                     AddMovies.addMovie.remove(position);
-                } else {
+                } else if(isRated) {
                     RatedMovies.ratedMovies.remove(position);
+                } else {
+
                 }
 
                 MovieAdapter.this.notifyDataSetChanged();
                 holder.deleteItem.setVisibility(View.GONE);
                 item.setAdd(false);
-                ((MyProfileActivity) context).resetAdapter();
+                ((MyProfileActivity) context).resetAdapter(isList, isRated, isBought);
             }
         };
         return listener;

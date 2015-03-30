@@ -46,10 +46,14 @@ public class MovieDetailAdapter extends PagerAdapter {
     private float density;
     private int viewWidth;
     private SessionManager sm;
+    private boolean isList, isRated, isBought;
 
-    public MovieDetailAdapter(Activity context, ArrayList<Movie> list) {
+    public MovieDetailAdapter(Activity context, ArrayList<Movie> list, boolean isList, boolean isRated, boolean isBought) {
         this.context = context;
         this.list = list;
+        this.isList = isList;
+        this.isRated = isRated;
+        this.isBought = isBought;
     }
 
     @Override
@@ -94,7 +98,6 @@ public class MovieDetailAdapter extends PagerAdapter {
         view.setTag(viewHolder);
 
         //PagerHolder holder = (PagerHolder) view.getTag();
-
 
         final Movie item = list.get(position);
 
@@ -147,7 +150,8 @@ public class MovieDetailAdapter extends PagerAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(context, MovieTrailerLandscape.class);
                 intent.putExtra("url", item.getMovieTrailerUrl());
-                context.startActivity(intent);
+                intent.putExtra("POSITION", position);
+                context.startActivityForResult(intent, 1);
             }
         });
 
@@ -167,6 +171,8 @@ public class MovieDetailAdapter extends PagerAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, RateActivity.class);
+                intent.putExtra("ISRATED", isRated);
+                intent.putExtra("ISLIST", isList);
                 intent.putExtra("POSITION", position);
                 context.startActivity(intent);
             }
@@ -175,6 +181,7 @@ public class MovieDetailAdapter extends PagerAdapter {
         if (item.isAdd()) {
             viewHolder.addButton.setImageResource(R.drawable.check_icon);
             viewHolder.addButton.setPadding(10, 10, 10, 10);
+            viewHolder.addButton.setOnClickListener(null);
         }
         if (item.getUserRating() != 0) {
             viewHolder.addButton.setVisibility(View.GONE);
@@ -182,25 +189,25 @@ public class MovieDetailAdapter extends PagerAdapter {
             viewHolder.userRatingIcon.setTextColor(Color.WHITE);
             viewHolder.userRatingIcon.setVisibility(View.VISIBLE);
         }
+        if (!item.isAdd()) {
+            viewHolder.addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (sm.getRemember()) {
+                        item.setAdd(true);
+                        item.setPosition(position);
+                        AddMovies.addMovie.add(item);
 
-        viewHolder.addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (sm.getRemember()) {
-                    item.setAdd(true);
-                    item.setPosition(position);
-                    AddMovies.addMovie.add(item);
-
-//                item.setPosition(position);
-                    viewHolder.addButton.setImageResource(R.drawable.check_icon);
-                    viewHolder.addButton.setPadding(10, 10, 10, 10);
-                    viewHolder.addButton.setOnClickListener(null);
-                    Toast.makeText(context, "Add movie to list.", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(context, "First you must log in!", Toast.LENGTH_LONG).show();
+                        viewHolder.addButton.setImageResource(R.drawable.check_icon);
+                        viewHolder.addButton.setPadding(10, 10, 10, 10);
+                        viewHolder.addButton.setOnClickListener(null);
+                        Toast.makeText(context, "Add movie to list.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, "First you must log in!", Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         ((ViewPager) container).addView(view);
 

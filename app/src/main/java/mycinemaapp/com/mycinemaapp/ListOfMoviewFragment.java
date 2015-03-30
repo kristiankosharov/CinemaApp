@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import Adapters.MovieAdapter;
 import Models.AddMovies;
@@ -20,6 +21,7 @@ public class ListOfMoviewFragment extends Fragment {
 
     private MovieAdapter adapter;
     private StaggeredGridView mGridView;
+    private TextView emptyView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -27,6 +29,11 @@ public class ListOfMoviewFragment extends Fragment {
 
         adapter = new MovieAdapter(getActivity(), R.layout.movie_layout, AddMovies.getAddMovie(), true, false, false);
         mGridView = (StaggeredGridView) view.findViewById(R.id.scroll);
+        emptyView = (TextView) view.findViewById(R.id.empty_list_view);
+
+        if (adapter.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+        }
 //        mGridView.setExpanded(true);
         mGridView.setAdapter(adapter);
 

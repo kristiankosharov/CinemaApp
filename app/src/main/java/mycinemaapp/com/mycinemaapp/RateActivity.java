@@ -146,6 +146,7 @@ public class RateActivity extends Activity implements View.OnClickListener {
                         // Rate without add
                         ratedMovie.add(SaveTempMovieModel.getItem(position));
                     }
+//                    Toast.makeText(this, position + "", Toast.LENGTH_LONG).show();
                     onBackPressed();
                 } else {
                     Toast.makeText(this, "First you must log in!", Toast.LENGTH_LONG).show();

@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -84,6 +85,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private int mTabViewLayoutId;
     private int mTabViewTextViewId;
+    private int viewWidth;
 
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
@@ -156,9 +158,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * @param layoutResId Layout id to be inflated
      * @param textViewId  id of the {@link android.widget.TextView} in the inflated view
      */
-    public void setCustomTabView(int layoutResId, int textViewId) {
+    public void setCustomTabView(int layoutResId, int textViewId, int widthView) {
         mTabViewLayoutId = layoutResId;
         mTabViewTextViewId = textViewId;
+        viewWidth = widthView;
     }
 
     /**
@@ -228,11 +231,14 @@ public class SlidingTabLayout extends HorizontalScrollView {
             TextView numbersView2 = null;
             TextView numbersView3 = null;
 
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(viewWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
             if (mTabViewLayoutId != 0) {
                 // If there is a custom tab view layout id set, try and inflate it
                 tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
                         false);
                 tabTitleView1 = (TextView) tabView.findViewById(mTabViewTextViewId);
+                tabView.setLayoutParams(params);
                 numbersView1 = (TextView) tabView.findViewById(R.id.numbers);
                 numbersView1.setText("" + arrayList.get(i).size());
                 //tabTitleView.setText(adapter.getPageTitle(i));
