@@ -80,7 +80,10 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             holder.newForWeek.setVisibility(View.VISIBLE);
         }
 
-        Picasso.with(context).load(item.getImageUrl()).into(holder.movieImage);
+        Picasso.with(context)
+                .load(item.getImageUrl())
+                .noPlaceholder()
+                .into(holder.movieImage);
 
 //        holder.movieImage.setImageUrl(item.getImageUrl(), ImageCacheManager.getInstance().getImageLoader());
 //        holder.movieImage.setDefaultImageResId(R.drawable.image);

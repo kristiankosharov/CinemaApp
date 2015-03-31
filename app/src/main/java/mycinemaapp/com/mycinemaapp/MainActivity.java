@@ -1,8 +1,6 @@
 package mycinemaapp.com.mycinemaapp;
 
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -12,6 +10,8 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -46,14 +46,14 @@ import Models.Movie;
 import Models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
     private ArrayList<Movie> list = new ArrayList<>();
     private MovieAdapter movieAdapter;
 
     private ImageView myProfile, location, filter;
 
-    private Button soon, onCinema;
+    private Button soon, onCinema, allDays;
     private VideoView mImageView;
     private RelativeLayout main;
     private HashMap<String, HashMap<String, String[]>> allProjections = new HashMap<>();
@@ -156,6 +156,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         filter = (ImageView) findViewById(R.id.filter_icon);
         filter.setOnClickListener(this);
         mImageView = (VideoView) findViewById(R.id.image);
+        allDays = (Button) findViewById(R.id.all_days);
+        allDays.setOnClickListener(this);
 //        main.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -270,7 +272,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 } else {
                     LoginFragment loginFragment = new LoginFragment();
-                    FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
+                    FragmentTransaction loginTransaction = getSupportFragmentManager().beginTransaction();
                     loginTransaction.addToBackStack("Login Fragment");
                     loginTransaction.add(R.id.fragment_container, loginFragment);
                     loginTransaction.commit();
@@ -287,7 +289,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.filter_icon:
                 SortFragment sortFragment = new SortFragment();
-                FragmentTransaction sortTransaction = getFragmentManager().beginTransaction();
+                FragmentTransaction sortTransaction = getSupportFragmentManager().beginTransaction();
                 sortTransaction.addToBackStack("Sort Fragment");
                 sortTransaction.add(R.id.fragment_container, sortFragment);
                 sortTransaction.commit();
@@ -295,6 +297,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.location_icon:
                 Intent intentLocation = new Intent(this, LocationActivity.class);
                 startActivity(intentLocation);
+                break;
+            case R.id.all_days:
+                TabsFragment tabsFragment = new TabsFragment(this);
+                FragmentTransaction tabsTransaction = getSupportFragmentManager().beginTransaction();
+                tabsTransaction.addToBackStack("Tabs Fragment");
+                tabsTransaction.add(R.id.fragment_container, tabsFragment);
+                tabsTransaction.commit();
                 break;
         }
     }
@@ -319,4 +328,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+    }
 }

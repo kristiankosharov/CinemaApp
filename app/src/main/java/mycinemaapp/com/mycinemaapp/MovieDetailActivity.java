@@ -24,6 +24,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
     private ViewPager mViewPager;
     private MovieDetailAdapter adapter;
     private static final String TAG = "MovieDetailActivity";
+    private static final int RESULT_CODE = 1;
     HorizontalScrollView mHorizontalScrollView;
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
     private ImageView back, share;
@@ -108,7 +109,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if (resultCode == 1) {
+            if (resultCode == RESULT_CODE) {
                 position = data.getIntExtra("POSITION", 0);
             }
         }

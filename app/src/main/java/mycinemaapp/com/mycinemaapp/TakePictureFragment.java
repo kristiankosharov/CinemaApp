@@ -2,24 +2,26 @@ package mycinemaapp.com.mycinemaapp;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import Helpers.SessionManager;
 
@@ -35,6 +37,8 @@ public class TakePictureFragment extends Fragment implements View.OnClickListene
     private static final int RESULT_LOAD_IMAGE = 2;
     private SessionManager sm;
     private RelativeLayout master;
+    private static int counter = 0;
+    private String mCurrentPhotoPath;
 
     TakePictureFragment(ImageView userAvatar) {
         this.userAvatar = userAvatar;
@@ -75,13 +79,21 @@ public class TakePictureFragment extends Fragment implements View.OnClickListene
     }
 
     public void takePhoto() {
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        File photo = new File(Environment.getExternalStorageDirectory(), "Pic.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                Uri.fromFile(photo));
-        imageUri = Uri.fromFile(photo);
-        Toast.makeText(getActivity(), imageUri.toString(), Toast.LENGTH_LONG).show();
-        startActivityForResult(intent, TAKE_PICTURE);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, TAKE_PICTURE);
+            }
+        }
     }
 
     @Override
@@ -90,29 +102,28 @@ public class TakePictureFragment extends Fragment implements View.OnClickListene
         switch (requestCode) {
             case TAKE_PICTURE:
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedImage = imageUri;
-                    sm.setMyProfileAvatarCapturePath(imageUri.toString());
-                    sm.setMyProfileAvatarPath(null);
-                    getActivity().getContentResolver().notifyChange(selectedImage, null);
-//                    ImageView imageView = (ImageView) findViewById(R.id.user_icon);
-                    ContentResolver cr = getActivity().getContentResolver();
-                    Bitmap bitmap;
+                    // Save Image To Gallery
+                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    File f = new File(mCurrentPhotoPath);
+                    Uri contentUri = Uri.fromFile(f);
+                    mediaScanIntent.setData(contentUri);
+                    getActivity().sendBroadcast(mediaScanIntent);
+
+                    float density = getActivity().getResources().getDisplayMetrics().density;
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (120 * density), (int) (120 * density));
+                    params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    params.setMargins(0, (int) (30 * density), 0, (int) (30 * density));
+                    userAvatar.setLayoutParams(params);
+                    userAvatar.setImageURI(null);
+
                     try {
-                        bitmap = android.provider.MediaStore.Images.Media
-                                .getBitmap(cr, selectedImage);
-                        float density = getActivity().getResources().getDisplayMetrics().density;
-                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (120 * density), (int) (120 * density));
-                        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                        params.setMargins(0, (int) (30 * density), 0, (int) (30 * density));
-                        userAvatar.setLayoutParams(params);
-                        userAvatar.setImageBitmap(bitmap);
-                        Log.d("Image Directory", selectedImage.toString());
-                        getFragmentManager().popBackStack();
-                    } catch (Exception e) {
-                        Toast.makeText(getActivity(), "Failed to load", Toast.LENGTH_SHORT)
-                                .show();
-                        Log.e("Camera", e.toString());
+                        userAvatar.setImageBitmap(decodeUri(contentUri));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+
                     }
+                    sm.setMyProfileAvatarCapturePath(contentUri.toString());
+                    getFragmentManager().popBackStack();
                 }
                 break;
             case RESULT_LOAD_IMAGE:
@@ -124,11 +135,53 @@ public class TakePictureFragment extends Fragment implements View.OnClickListene
                 params.addRule(RelativeLayout.CENTER_HORIZONTAL);
                 params.setMargins(0, (int) (30 * density), 0, (int) (30 * density));
                 userAvatar.setLayoutParams(params);
+//                sm.setMyProfileAvatarPath(null);
                 sm.setMyProfileAvatarPath(selectedImageUri.toString());
                 sm.setMyProfileAvatarCapturePath(null);
                 userAvatar.setImageURI(selectedImageUri);
                 getFragmentManager().popBackStack();
                 break;
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",     /* suffix */
+                storageDir      /* directory */
+        );
+        mCurrentPhotoPath = image.getAbsolutePath();
+
+        return image;
+    }
+
+    private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(
+                getActivity().getContentResolver().openInputStream(selectedImage), null, o);
+
+        final int REQUIRED_SIZE = 100;
+
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(
+                getActivity().getContentResolver().openInputStream(selectedImage), null, o2);
     }
 }

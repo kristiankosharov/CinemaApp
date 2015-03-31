@@ -39,6 +39,7 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
     private Button logIn;
     private TextView signIn, createAccount, terms;
     private SessionManager sm;
+    private boolean isOk = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,6 +206,7 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
 
 
     private void withoutImage() {
+        isOk = false;
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -237,9 +239,14 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                     sm.setEmail(emailString);
                     sm.setUserPassword(passString);
                     sm.setRemember(true);
+                    isOk = true;
                 }
                 if (sm.getMyProfileAvatarPath() == null && sm.getMyProfileAvatarCapturePath() == null) {
                     withoutImage();
+                }
+                if (isOk) {
+                    Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
             }
         };
@@ -254,6 +261,8 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                 String pass = password.getText().toString();
                 if (validateLoginElements(emailString, pass)) {
                     sm.setRemember(true);
+                    sm.setEmail(emailString);
+                    sm.setUserPassword(pass);
                     Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }

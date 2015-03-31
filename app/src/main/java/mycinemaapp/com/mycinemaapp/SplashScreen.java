@@ -29,4 +29,17 @@ public class SplashScreen extends Activity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        video.stopPlayback();
+        video.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        video.pause();
+    }
 }

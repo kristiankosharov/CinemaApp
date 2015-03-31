@@ -105,7 +105,10 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.ratingBar.setStepSize(0.5f);
         viewHolder.ratingBar.setRating(item.getMovieProgress());
         //viewHolder.movieImage.setImageUrl("", null);
-        Picasso.with(context).load(item.getImageUrl()).into(viewHolder.movieImage);
+        Picasso.with(context)
+                .load(item.getImageUrl())
+                .noPlaceholder()
+                .into(viewHolder.movieImage);
         viewHolder.title.setText(item.getMovieTitle());
 
         String genresString = "";
