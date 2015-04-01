@@ -1,6 +1,9 @@
 package mycinemaapp.com.mycinemaapp;
 
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -10,13 +13,12 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -42,19 +44,21 @@ import java.util.Locale;
 import Adapters.MovieAdapter;
 import Helpers.RequestManager;
 import Helpers.SessionManager;
+import Models.AllDaysFilters;
+import Models.Filter;
 import Models.Movie;
 import Models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
 
     private ArrayList<Movie> list = new ArrayList<>();
     private MovieAdapter movieAdapter;
 
     private ImageView myProfile, location, filter;
 
-    private Button soon, onCinema, allDays;
-    private VideoView mImageView;
+    private Button soon, onCinema, allDays, allCinemas, allGenres;
+    private VideoView mVideoView;
     private RelativeLayout main;
     private HashMap<String, HashMap<String, String[]>> allProjections = new HashMap<>();
     private ArrayList<String> days = new ArrayList<>();
@@ -63,6 +67,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private int countOfDays;
     private int dayOfMonth;
     private SessionManager sm;
+    private RelativeLayout videoLayout, filterContainer;
+    private LinearLayout topLayout;
 
     public MainActivity() {
     }
@@ -74,6 +80,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         initialize(savedInstanceState);
         sm = new SessionManager(this);
+
+        String clear = getIntent().getStringExtra("CLEAR");
+        if (clear != null && clear.equals("clear")) {
+            allDays.setText("ALL DAYS");
+            allGenres.setText("ALL GENRES");
+            allCinemas.setText("ALL CINEMAS");
+        }
 
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -127,6 +140,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         for (int i = dayOfMonth; i < countOfDays + 1; i++) {
 
             day = allDay + "." + month + "." + year;
+            if (i == dayOfMonth) {
+                Filter filter = new Filter();
+                filter.setFilter("ALL DAYS");
+                AllDaysFilters.allDays.add(filter);
+            } else {
+                Filter filter = new Filter();
+                filter.setFilter(day);
+                AllDaysFilters.allDays.add(filter);
+            }
+
             days.add(day);
             onlyProjections.put(day, projections);
             onlyProjections1.put(day, projections1);
@@ -155,9 +178,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         location.setOnClickListener(this);
         filter = (ImageView) findViewById(R.id.filter_icon);
         filter.setOnClickListener(this);
-        mImageView = (VideoView) findViewById(R.id.image);
+        mVideoView = (VideoView) findViewById(R.id.image);
         allDays = (Button) findViewById(R.id.all_days);
         allDays.setOnClickListener(this);
+        allCinemas = (Button) findViewById(R.id.all_cinemas);
+        allCinemas.setOnClickListener(this);
+        allGenres = (Button) findViewById(R.id.all_genres);
+        allGenres.setOnClickListener(this);
+        videoLayout = (RelativeLayout) findViewById(R.id.video_layout);
+        topLayout = (LinearLayout) findViewById(R.id.top_layout);
+        filterContainer = (RelativeLayout) findViewById(R.id.filter_container);
+        filterContainer.setOnClickListener(this);
 //        main.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -165,20 +196,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 //            }
 //        });
 
-        String videoUrl = "rtsp://r3---sn-4g57kuek.c.youtube.com/CiILENy73wIaGQk6-2j9f_Wz5RMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp";
+        String videoUrl = "rtsp://r7---sn-4g57kuel.c.youtube.com/CiILENy73wIaGQnnkJV25G5KShMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp";
         try {
-            mImageView.setVideoPath(videoUrl);
+            mVideoView.setVideoPath(videoUrl);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mImageView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.setVolume(0, 0);
             }
         });
         if (isOnline()) {
-            mImageView.start();
+            mVideoView.start();
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
         }
@@ -272,9 +303,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 } else {
                     LoginFragment loginFragment = new LoginFragment();
-                    FragmentTransaction loginTransaction = getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
                     loginTransaction.addToBackStack("Login Fragment");
-                    loginTransaction.add(R.id.fragment_container, loginFragment);
+                    loginTransaction.replace(R.id.fragment_container, loginFragment);
                     loginTransaction.commit();
                 }
 //                Intent intentMyProfile = new Intent(this, LoginActivity.class);
@@ -288,8 +319,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Toast.makeText(getBaseContext(), "Click", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.filter_icon:
+
                 SortFragment sortFragment = new SortFragment();
-                FragmentTransaction sortTransaction = getSupportFragmentManager().beginTransaction();
+                FragmentTransaction sortTransaction = getFragmentManager().beginTransaction();
                 sortTransaction.addToBackStack("Sort Fragment");
                 sortTransaction.add(R.id.fragment_container, sortFragment);
                 sortTransaction.commit();
@@ -299,11 +331,34 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 startActivity(intentLocation);
                 break;
             case R.id.all_days:
-                TabsFragment tabsFragment = new TabsFragment(this);
-                FragmentTransaction tabsTransaction = getSupportFragmentManager().beginTransaction();
-                tabsTransaction.addToBackStack("Tabs Fragment");
-                tabsTransaction.add(R.id.fragment_container, tabsFragment);
-                tabsTransaction.commit();
+                videoLayout.setVisibility(View.GONE);
+                topLayout.setVisibility(View.GONE);
+                filterContainer.setVisibility(View.VISIBLE);
+
+                AllDaysFragment allDaysFragment = new AllDaysFragment(allDays);
+                loadFragment(allDaysFragment, R.id.filter_container);
+                break;
+            case R.id.all_cinemas:
+                videoLayout.setVisibility(View.GONE);
+                topLayout.setVisibility(View.GONE);
+                filterContainer.setVisibility(View.VISIBLE);
+
+                AllCinemasFragment allCinemasFragment = new AllCinemasFragment(allCinemas);
+                loadFragment(allCinemasFragment, R.id.filter_container);
+                break;
+            case R.id.all_genres:
+                videoLayout.setVisibility(View.GONE);
+                topLayout.setVisibility(View.GONE);
+                filterContainer.setVisibility(View.VISIBLE);
+
+                AllGenresFragment allGenresFragment = new AllGenresFragment(allGenres);
+                loadFragment(allGenresFragment, R.id.filter_container);
+                break;
+            case R.id.filter_container:
+                videoLayout.setVisibility(View.VISIBLE);
+                topLayout.setVisibility(View.VISIBLE);
+                filterContainer.removeAllViews();
+                filterContainer.setVisibility(View.GONE);
                 break;
         }
     }
@@ -311,7 +366,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        mImageView.start();
+        mVideoView.start();
     }
 
     @Override
@@ -335,5 +390,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
+    }
+
+    public void loadFragment(Fragment fragment, int container) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.addToBackStack("");
+        transaction.replace(container, fragment);
+        transaction.commit();
     }
 }

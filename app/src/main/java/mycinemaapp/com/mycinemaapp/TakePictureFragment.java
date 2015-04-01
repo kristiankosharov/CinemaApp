@@ -114,9 +114,11 @@ public class TakePictureFragment extends Fragment implements View.OnClickListene
                     params.addRule(RelativeLayout.CENTER_HORIZONTAL);
                     params.setMargins(0, (int) (30 * density), 0, (int) (30 * density));
                     userAvatar.setLayoutParams(params);
-                    userAvatar.setImageURI(null);
+//                    userAvatar.setImageURI(null);
 
                     try {
+                        userAvatar.destroyDrawingCache();
+                        userAvatar.setImageResource(0);
                         userAvatar.setImageBitmap(decodeUri(contentUri));
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -138,7 +140,13 @@ public class TakePictureFragment extends Fragment implements View.OnClickListene
 //                sm.setMyProfileAvatarPath(null);
                 sm.setMyProfileAvatarPath(selectedImageUri.toString());
                 sm.setMyProfileAvatarCapturePath(null);
-                userAvatar.setImageURI(selectedImageUri);
+                try {
+                    userAvatar.destroyDrawingCache();
+                    userAvatar.setImageResource(0);
+                    userAvatar.setImageBitmap(decodeUri(selectedImageUri));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 getFragmentManager().popBackStack();
                 break;
         }

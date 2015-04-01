@@ -6,6 +6,15 @@ package Models;
 public class Filter {
 
     String filter;
+    boolean isSelect;
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean isSelect) {
+        this.isSelect = isSelect;
+    }
 
     public String getFilter() {
         return filter;

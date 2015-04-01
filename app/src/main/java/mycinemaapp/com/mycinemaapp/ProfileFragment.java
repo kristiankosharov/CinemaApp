@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,6 +22,7 @@ public class ProfileFragment extends Fragment {
     private ImageView profileImage;
     private TextView profileName, profileEmail;
     private SessionManager sm;
+    private RoundedImageView roundedImageView = new RoundedImageView();
 
     @Nullable
     @Override
@@ -34,11 +34,9 @@ public class ProfileFragment extends Fragment {
         profileEmail = (TextView) v.findViewById(R.id.user_email);
 
         if (sm.getMyProfileAvatarPath() != null) {
-            Toast.makeText(getActivity(), "Gallery:" + sm.getMyProfileAvatarPath(), Toast.LENGTH_LONG).show();
             loadAvatar(sm.getMyProfileAvatarPath());
         }
         if (sm.getMyProfileAvatarCapturePath() != null) {
-            Toast.makeText(getActivity(), "Capture:" + sm.getMyProfileAvatarCapturePath(), Toast.LENGTH_LONG).show();
             loadAvatar(sm.getMyProfileAvatarCapturePath());
         }
         if (sm.getFacebookLogin()) {
@@ -58,8 +56,8 @@ public class ProfileFragment extends Fragment {
 
         Picasso.with(getActivity())
                 .load(path)
-                .transform(new RoundedImageView())
                 .noPlaceholder()
+                .transform(roundedImageView)
                 .into(profileImage);
     }
 }

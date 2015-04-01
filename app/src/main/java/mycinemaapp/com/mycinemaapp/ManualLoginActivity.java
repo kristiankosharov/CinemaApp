@@ -3,17 +3,12 @@ package mycinemaapp.com.mycinemaapp;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -21,9 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.File;
 
 import Helpers.SessionManager;
 
@@ -119,40 +111,6 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                 break;
         }
 
-    }
-
-    public void takePhoto() {
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        File photo = new File(Environment.getExternalStorageDirectory(), "Pic.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                Uri.fromFile(photo));
-        imageUri = Uri.fromFile(photo);
-        startActivityForResult(intent, TAKE_PICTURE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case TAKE_PICTURE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedImage = imageUri;
-                    getContentResolver().notifyChange(selectedImage, null);
-                    ImageView imageView = (ImageView) findViewById(R.id.user_icon);
-                    ContentResolver cr = getContentResolver();
-                    Bitmap bitmap;
-                    try {
-                        bitmap = android.provider.MediaStore.Images.Media
-                                .getBitmap(cr, selectedImage);
-                        imageView.setImageBitmap(bitmap);
-                        Log.d("Image Directory", selectedImage.toString());
-                    } catch (Exception e) {
-                        Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT)
-                                .show();
-                        Log.e("Camera", e.toString());
-                    }
-                }
-        }
     }
 
     public boolean validateCreateElements(String namesString, String emailString, String passString) {
