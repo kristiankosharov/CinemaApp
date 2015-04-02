@@ -34,17 +34,16 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.HashSet;
 
 import Adapters.MovieAdapter;
 import Helpers.RequestManager;
 import Helpers.SessionManager;
+import Models.AllCinemasFilters;
 import Models.AllDaysFilters;
+import Models.AllGenresFilters;
 import Models.Filter;
 import Models.Movie;
 import Models.SaveTempMovieModel;
@@ -60,14 +59,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Button soon, onCinema, allDays, allCinemas, allGenres;
     private VideoView mVideoView;
     private RelativeLayout main;
-    private HashMap<String, HashMap<String, String[]>> allProjections = new HashMap<>();
-    private ArrayList<String> days = new ArrayList<>();
-    private ArrayList<String> nameOfDays = new ArrayList<>();
-    private ArrayList<String> nameOfPlaces = new ArrayList<>();
+
     private int countOfDays;
     private int dayOfMonth;
     private SessionManager sm;
-    private RelativeLayout videoLayout, filterContainer;
+    private RelativeLayout videoLayout, filterContainer, header;
     private LinearLayout topLayout;
 
     public MainActivity() {
@@ -86,6 +82,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
             allDays.setText("ALL DAYS");
             allGenres.setText("ALL GENRES");
             allCinemas.setText("ALL CINEMAS");
+            for (int i = 0; i < AllDaysFilters.allDays.size(); i++) {
+                if (AllDaysFilters.allDays.get(i).isSelect()) {
+                    AllDaysFilters.allDays.get(i).setSelect(false);
+                }
+            }
+            for (int i = 0; i < AllCinemasFilters.allCinemas.size(); i++) {
+                if (AllCinemasFilters.allCinemas.get(i).isSelect()) {
+                    AllCinemasFilters.allCinemas.get(i).setSelect(false);
+                }
+            }
+            for (int i = 0; i < AllGenresFilters.allGenres.size(); i++) {
+                if (AllGenresFilters.allGenres.get(i).isSelect()) {
+                    AllGenresFilters.allGenres.get(i).setSelect(false);
+                }
+            }
         }
 
         try {
@@ -102,64 +113,82 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } catch (NoSuchAlgorithmException e) {
         }
 
-
-        HashMap<String, String[]> onlyProjections = new HashMap<>();
-        HashMap<String, String[]> onlyProjections1 = new HashMap<>();
-        HashMap<String, String[]> onlyProjections2 = new HashMap<>();
-        HashMap<String, String[]> onlyProjections3 = new HashMap<>();
-        HashMap<String, String[]> onlyProjections4 = new HashMap<>();
-
-        String[] projections = {"14:00", "15:00", "20:00"};
-        String[] projections1 = {"16:00", "17:00", "22:00"};
-        String[] projections2 = {""};
-        String[] projections3 = {"13:30", "15:22", "11:11"};
-        String[] projections4 = {"16:30", "22:22", "24:24"};
-
-        allProjections.put("Mall Varna", onlyProjections);
-        allProjections.put("Grand", onlyProjections1);
-        allProjections.put("Kino", onlyProjections2);
-        allProjections.put("Kino2", onlyProjections3);
-        allProjections.put("Kino3", onlyProjections4);
-
-        nameOfPlaces.add("Mall Varna");
-        nameOfPlaces.add("Grand");
-        nameOfPlaces.add("Kino");
-        nameOfPlaces.add("Kino2");
-        nameOfPlaces.add("Kino3");
-
-        Calendar calendar = new GregorianCalendar();
-        countOfDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int year = calendar.get(Calendar.YEAR);
-        DateFormatSymbols symbols = new DateFormatSymbols(Locale.getDefault());
-
-        int allDay = dayOfMonth;
-        String day;
-        for (int i = dayOfMonth; i < countOfDays + 1; i++) {
-
-            day = allDay + "." + month + "." + year;
-            if (i == dayOfMonth) {
-                Filter filter = new Filter();
-                filter.setFilter("ALL DAYS");
-                AllDaysFilters.allDays.add(filter);
-            } else {
-                Filter filter = new Filter();
-                filter.setFilter(day);
-                AllDaysFilters.allDays.add(filter);
-            }
-
-            days.add(day);
-            onlyProjections.put(day, projections);
-            onlyProjections1.put(day, projections1);
-            onlyProjections2.put(day, projections2);
-            onlyProjections3.put(day, projections3);
-            onlyProjections4.put(day, projections4);
-            allDay++;
-            nameOfDays.add(symbols.getWeekdays()[2]);
-        }
-        countOfDays = countOfDays - dayOfMonth;
+//
+//        HashMap<String, String[]> onlyProjections = new HashMap<>();
+//        HashMap<String, String[]> onlyProjections1 = new HashMap<>();
+//        HashMap<String, String[]> onlyProjections2 = new HashMap<>();
+//        HashMap<String, String[]> onlyProjections3 = new HashMap<>();
+//        HashMap<String, String[]> onlyProjections4 = new HashMap<>();
+//
+//        String[] projections = {"14:00", "15:00", "20:00"};
+//        String[] projections1 = {"16:00", "17:00", "22:00"};
+//        String[] projections2 = {""};
+//        String[] projections3 = {"13:30", "15:22", "11:11"};
+//        String[] projections4 = {"16:30", "22:22", "24:24"};
+//
+//        allProjections.put("Mall Varna", onlyProjections);
+//        allProjections.put("Grand", onlyProjections1);
+//        allProjections.put("Kino", onlyProjections2);
+//        allProjections.put("Kino2", onlyProjections3);
+//        allProjections.put("Kino3", onlyProjections4);
+//
+//        Filter item = new Filter();
+//        item.setFilter("ALL CINEMAS");
+//
+//        Filter item1 = new Filter();
+//        item1.setFilter("Mall Varna");
+//
+//        Filter item2 = new Filter();
+//        item2.setFilter("Grand");
+//
+//        Filter item3 = new Filter();
+//        item3.setFilter("Kino");
+//        AllCinemasFilters.allCinemas.clear();
+//        AllCinemasFilters.allCinemas.add(item);
+//        AllCinemasFilters.allCinemas.add(item1);
+//        AllCinemasFilters.allCinemas.add(item2);
+//        AllCinemasFilters.allCinemas.add(item3);
+//
+//        nameOfPlaces.add("Mall Varna");
+//        nameOfPlaces.add("Grand");
+//        nameOfPlaces.add("Kino");
+//        nameOfPlaces.add("Kino2");
+//        nameOfPlaces.add("Kino3");
+//
+//        Calendar calendar = new GregorianCalendar();
+//        countOfDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+//        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+//        int month = calendar.get(Calendar.MONTH) + 1;
+//        int year = calendar.get(Calendar.YEAR);
+//        DateFormatSymbols symbols = new DateFormatSymbols(Locale.getDefault());
+//
+//        int allDay = dayOfMonth;
+//        String day;
+//        AllDaysFilters.allDays.clear();
+//        for (int i = dayOfMonth; i < countOfDays + 1; i++) {
+//
+//            day = allDay + "." + month + "." + year;
+//            if (i == dayOfMonth) {
+//                Filter filter = new Filter();
+//                filter.setFilter("ALL DAYS");
+//                AllDaysFilters.allDays.add(filter);
+//            } else {
+//                Filter filter = new Filter();
+//                filter.setFilter(day);
+//                AllDaysFilters.allDays.add(filter);
+//            }
+//
+//            days.add(day);
+//            onlyProjections.put(day, projections);
+//            onlyProjections1.put(day, projections1);
+//            onlyProjections2.put(day, projections2);
+//            onlyProjections3.put(day, projections3);
+//            onlyProjections4.put(day, projections4);
+//            allDay++;
+//            nameOfDays.add(symbols.getWeekdays()[2]);
+//        }
+//        countOfDays = countOfDays - dayOfMonth;
 
         movieRequest();
     }
@@ -185,10 +214,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         allCinemas.setOnClickListener(this);
         allGenres = (Button) findViewById(R.id.all_genres);
         allGenres.setOnClickListener(this);
+
         videoLayout = (RelativeLayout) findViewById(R.id.video_layout);
         topLayout = (LinearLayout) findViewById(R.id.top_layout);
         filterContainer = (RelativeLayout) findViewById(R.id.filter_container);
         filterContainer.setOnClickListener(this);
+        header = (RelativeLayout) findViewById(R.id.header);
 //        main.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -217,16 +248,54 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/cpimtsWJvm?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/clIRAuNmPS?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        /*
+                        MESS!!!!!!!!!!!!!!
+                        ONE OBJECT OF RESPONSE
+                        [
+                          {
+                            title: 'American Sniper',
+                            image_url: 'http://notmytribe.com/wp-content/uploads/2015/03/AMERICAN-SNIPER-POSTER.jpg',
+                            rating: '1.5',
+                            new_for_week:'',
+                            user_rating:'',
+                            movie_genre:['Action'],
+                            movie_directors:['Klint Istuud'],
+                            movie_actors:['Bdradli Kypur','Siena Milur','Dyk Graims'],
+                            movie_duration:'135',
+                            imdb_url:'http://www.imdb.com/title/tt2179136/?ref_=nv_sr_1',
+                            imdb_rating:'4.5',
+                            movie_description:'Navy SEAL sniper Chris Kyle\'s pinpoint accuracy saves countless lives on
+                            the battlefield and turns him into a legend. Back home to his wife and kids after four tours
+                            of duty, however, Chris finds that it is the war he can\'t leave behind.',
+                            trailer_url:'rtsp://r3---sn-4g57kues.c.youtube.com/CiILENy73wIaGQkL1rLWuzfZ9xMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp',
+                            cinemas:['Mall Varna','Grand Mall'],
+                            days:[
+                              ['01.04','Monday'],
+                              ['02.04','Thuesday'],['03.04','Wednesday'],['04.04','Thursday'],['05.04','Friday'],['06.04','Saturday'],['07.04','Sunday'],
+                              ['08.04','Monday'],['09.04','Thuesday'],['10.04','Wednesday'],['11.04','Thursday'],['12.04','Friday'],['13.04','Saturday'],
+                              ['14.04','Sunday'],['15.04','Monday'],['16.04','Thuesday'],['17.04','Wednesday'],['18.04','Thursday'],['19.04','Friday'],
+                              ['20.04','Saturday'],['21.04','Sunday'],['22.04','Monday'],['23.04','Thuesday'],['24.04','Wednesday'],['25.04','Thursday'],
+                              ['26.04','Friday'],['27.04','Saturday'],['28.04','Sunday'],['29.04','Monday'],['30.04','Thuesday'],['31.04','Wednesday']],
+                            hours:['13:00','12:02','21:11','22:56']
+                          }
+                         */
 
                         try {
                             JSONArray jsonArray = new JSONArray(response);
+                            ArrayList<String> days = new ArrayList<>();
+                            ArrayList<String> nameOfDays = new ArrayList<>();
+                            HashSet<String> nameOfPlaces = new HashSet<>();
+                            ArrayList<String> nameOfPlacesArray = new ArrayList<>();
+                            HashMap<String, String[]> onlyProjections;
+                            String[] projections;
+                            HashMap<String, HashMap<String, String[]>> allProjections;
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject obj = jsonArray.getJSONObject(i);
@@ -234,6 +303,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 ArrayList<String> genre = new ArrayList<>();
                                 ArrayList<String> directors = new ArrayList<>();
                                 ArrayList<String> actors = new ArrayList<>();
+
 
                                 Movie movie = new Movie();
                                 movie.setImageUrl(obj.getString("image_url"));
@@ -259,18 +329,62 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 movie.setImdbUrl(obj.getString("imdb_url"));
                                 movie.setDuration(obj.getString("movie_duration"));
                                 movie.setFullDescription(obj.getString("movie_description"));
-                                movie.setAllProjections(allProjections);
-                                movie.setDate(days);
-                                movie.setNameOfPlace(nameOfPlaces);
-                                movie.setNameDayOfMonth(nameOfDays);
                                 movie.setTimeOfProjection(new String[]{});
                                 movie.setNumberOfDays(countOfDays);
                                 movie.setStartDay(dayOfMonth);
                                 movie.setMovieTrailerUrl(obj.getString("trailer_url"));
                                 movie.setImdbRating(obj.getString("imdb_rating"));
+
+                                projections = new String[obj.getJSONArray("hours").length()];
+                                for (int m = 0; m < obj.getJSONArray("hours").length(); m++) {
+                                    projections[m] = obj.getJSONArray("hours").getString(m);
+                                }
+                                String temp;
+                                days = new ArrayList<>();
+                                onlyProjections = new HashMap<>();
+                                for (int z = 0; z < obj.getJSONArray("days").length(); z++) {
+                                    for (int y = 0; y < obj.getJSONArray("days").getJSONArray(z).length(); y++) {
+                                        if (y == 0) {
+                                            temp = obj.getJSONArray("days").getJSONArray(z).getString(y);
+                                            days.add(temp);
+                                            onlyProjections.put(temp, projections);
+                                        } else {
+                                            nameOfDays.add(obj.getJSONArray("days").getJSONArray(z).getString(y));
+                                        }
+                                    }
+                                }
+                                String tempCinema;
+                                nameOfPlacesArray = new ArrayList<>();
+                                for (int l = 0; l < obj.getJSONArray("cinemas").length(); l++) {
+                                    tempCinema = obj.getJSONArray("cinemas").getString(l);
+                                    nameOfPlacesArray.add(tempCinema);
+                                    nameOfPlaces.add(tempCinema);
+                                }
+
+                                allProjections = new HashMap<>();
+                                for (String s : nameOfPlaces) {
+                                    allProjections.put(s, onlyProjections);
+                                }
+
+                                movie.setDate(days);
+                                movie.setNameOfPlace(nameOfPlacesArray);
+                                movie.setNameDayOfMonth(nameOfDays);
+                                movie.setAllProjections(allProjections);
+
                                 list.add(movie);
                             }
 
+                            for (int i = 0; i < days.size(); i++) {
+                                Filter filter = new Filter();
+                                filter.setFilter(days.get(i));
+                                AllDaysFilters.allDays.add(filter);
+                            }
+
+                            for (String s : nameOfPlaces) {
+                                Filter filter = new Filter();
+                                filter.setFilter(s);
+                                AllCinemasFilters.allCinemas.add(filter);
+                            }
                             movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false, false, false);
                             movieAdapter.notifyDataSetChanged();
                             SaveTempMovieModel.setMovies(list);
@@ -282,13 +396,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                         }
                     }
-                }, new Response.ErrorListener() {
+                }
+
+                , new Response.ErrorListener()
+
+        {
             @Override
             public void onErrorResponse(VolleyError error) {
             }
-        });
+        }
+
+        );
         // Add the request to the RequestQueue.
-        RequestManager.getRequestQueue().add(stringRequest);
+        RequestManager.getRequestQueue().
+
+                add(stringRequest);
     }
 
     @Override
@@ -313,10 +435,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //                overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
                 break;
             case R.id.soon:
-                Toast.makeText(getBaseContext(), "Click", Toast.LENGTH_SHORT).show();
+                videoLayout.setVisibility(View.GONE);
+                header.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.on_cinema:
-                Toast.makeText(getBaseContext(), "Click", Toast.LENGTH_SHORT).show();
+                videoLayout.setVisibility(View.VISIBLE);
+                header.setVisibility(View.VISIBLE);
+                Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.filter_icon:
 

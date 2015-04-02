@@ -11,11 +11,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import Adapters.FilterAdapter;
 import Models.AllCinemasFilters;
-import Models.Filter;
 
 /**
  * Created by kristian on 15-3-31.
@@ -47,20 +44,20 @@ public class AllCinemasFragment extends Fragment {
 
 
         listView = (ListView) view.findViewById(R.id.list_view);
-        ArrayList<Filter> list = new ArrayList<>();
-
-        for (int i = 0; i < 100; i++) {
-            if (i == 0) {
-                Filter item = new Filter();
-                item.setFilter("ALL CINEMAS");
-                list.add(item);
-            } else {
-                Filter item = new Filter();
-                item.setFilter("FILTER" + i);
-                list.add(item);
-            }
-        }
-        AllCinemasFilters.setAllCinemas(list);
+//        ArrayList<Filter> list = new ArrayList<>();
+//
+//        for (int i = 0; i < 100; i++) {
+//            if (i == 0) {
+//                Filter item = new Filter();
+//                item.setFilter("ALL CINEMAS");
+//                list.add(item);
+//            } else {
+//                Filter item = new Filter();
+//                item.setFilter("FILTER" + i);
+//                list.add(item);
+//            }
+//        }
+//        AllCinemasFilters.setAllCinemas(list);
         adapter = new FilterAdapter(getActivity(), AllCinemasFilters.allCinemas, button, "all cinemas");
         listView.setAdapter(adapter);
 

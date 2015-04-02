@@ -43,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/flexible_space_image_height"
                 android:layout_below="@+id/top_layout"
+                android:layout_marginBottom="-55dp"
                 android:layout_marginTop="-35dp"
                 android:background="@android:color/black">
                 <!--
@@ -51,7 +52,7 @@
                 <VideoView
                     android:id="@+id/image"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"

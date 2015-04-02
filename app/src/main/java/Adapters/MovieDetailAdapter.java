@@ -237,7 +237,8 @@ public class MovieDetailAdapter extends PagerAdapter {
         ArrayList<String> nameOfDays = item.getNameDayOfMonth();
         ArrayList<String> date = item.getDate();
         ArrayList<String> places = item.getNameOfPlace();
-        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
+
+//        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
 
         TextView dayView;
         TextView dateView;
@@ -254,20 +255,20 @@ public class MovieDetailAdapter extends PagerAdapter {
         textViewParam.weight = 1;
         int halfViewWidth = viewWidth / 2;
 
-        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, item.getNumberOfDays(), viewWidth, viewWidth, containerForProjects);
+        final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, date.size(), viewWidth, viewWidth, containerForProjects);
 
-        scrollView.setDayAndPlace(nameOfPlace, date, item.getAllProjections());
+        scrollView.setDayAndPlace(places, date, item.getAllProjections());
         scrollView.setHorizontalScrollBarEnabled(false);
         scrollView.fromScroll(true, false, false);
         scrollView.createProjectionScroll(places.get(0), date.get(0), fromAdapter);
 
-        for (int i = -1; i < item.getNumberOfDays() + 2; i++) {
+        for (int i = -1; i < date.size() + 1; i++) {
 
             dayView = new TextView(context);
             dateView = new TextView(context);
             layout = new LinearLayout(context);
 
-            if (i == -1 || i == item.getNumberOfDays() + 1) {
+            if (i == -1 || i == date.size()) {
                 layout.setLayoutParams(layoutParams);
             } else {
                 layout.setLayoutParams(layoutParams);

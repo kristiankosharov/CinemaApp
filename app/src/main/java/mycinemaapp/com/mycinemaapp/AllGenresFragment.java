@@ -1,9 +1,9 @@
 package mycinemaapp.com.mycinemaapp;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +58,7 @@ public class AllGenresFragment extends Fragment {
                 list.add(item);
             }
         }
+        AllGenresFilters.allGenres.clear();
         AllGenresFilters.setAllGenres(list);
         adapter = new FilterAdapter(getActivity(), AllGenresFilters.allGenres, button, "all genres");
         listView.setAdapter(adapter);

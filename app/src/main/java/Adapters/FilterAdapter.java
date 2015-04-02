@@ -77,18 +77,18 @@ public class FilterAdapter extends ArrayAdapter<Filter> {
                 for (int i = 0; i < filterArrayList.size(); i++) {
                     if (filterArrayList.get(i).isSelect()) {
                         filterArrayList.get(i).setSelect(false);
-                        switch (from) {
-                            case "all days":
-                                AllDaysFilters.allDays.get(i).setSelect(true);
-                                break;
-                            case "all cinemas":
-                                AllCinemasFilters.allCinemas.get(i).setSelect(true);
-                                break;
-                            case "all genres":
-                                AllGenresFilters.allGenres.get(i).setSelect(true);
-                                break;
-                        }
                     }
+                }
+                switch (from) {
+                    case "all days":
+                        AllDaysFilters.allDays.get(position).setSelect(true);
+                        break;
+                    case "all cinemas":
+                        AllCinemasFilters.allCinemas.get(position).setSelect(true);
+                        break;
+                    case "all genres":
+                        AllGenresFilters.allGenres.get(position).setSelect(true);
+                        break;
                 }
                 item.setSelect(true);
                 button.setText(item.getFilter());

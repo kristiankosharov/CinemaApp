@@ -2,6 +2,7 @@ package Models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by kristian on 15-2-25.
@@ -93,8 +94,8 @@ public class Movie {
         return nameOfPlace;
     }
 
-    public void setNameOfPlace(ArrayList<String> nameOfPlace) {
-        this.nameOfPlace = nameOfPlace;
+    public void setNameOfPlace(ArrayList<String> places) {
+            nameOfPlace = places;
     }
 
 
