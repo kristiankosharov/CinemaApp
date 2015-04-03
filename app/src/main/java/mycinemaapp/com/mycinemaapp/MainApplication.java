@@ -3,8 +3,8 @@ package mycinemaapp.com.mycinemaapp;
 import android.app.Application;
 import android.graphics.Bitmap;
 
-import Helpers.ImageCacheManager;
-import Helpers.RequestManager;
+import helpers.ImageCacheManager;
+import helpers.RequestManager;
 
 /**
  * Example application for adding an L1 image cache to Volley. 

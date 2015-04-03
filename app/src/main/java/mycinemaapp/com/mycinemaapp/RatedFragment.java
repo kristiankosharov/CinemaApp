@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import Adapters.MovieAdapter;
-import Models.RatedMovies;
+import adapters.MovieAdapter;
+import models.RatedMovies;
 import origamilabs.library.views.StaggeredGridView;
 
 /**

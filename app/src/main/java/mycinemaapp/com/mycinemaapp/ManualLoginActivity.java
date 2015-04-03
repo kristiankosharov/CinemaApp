@@ -16,8 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import Helpers.SessionManager;
+import java.util.List;
+
+import database.User;
+import database.UsersDataSource;
+import helpers.SessionManager;
 
 /**
  * Created by kristian on 15-3-25.
@@ -32,6 +37,8 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
     private TextView signIn, createAccount, terms;
     private SessionManager sm;
     private boolean isOk = false;
+
+    private UsersDataSource datasource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,8 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
         back.setOnClickListener(this);
         logIn.setOnClickListener(listenerFromCreateAcc());
 
+        datasource = new UsersDataSource(this);
+        datasource.open();
         sm.setUserNames(names.getText().toString());
 //        float density = getResources().getDisplayMetrics().density;
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (120 * density), (int) (120 * density));
@@ -192,20 +201,35 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                 String emailString = email.getText().toString();
                 String passString = password.getText().toString();
 
+                List<User> userList = datasource.getAllComments();
+                boolean isDuplicate = false;
                 if (validateCreateElements(namesString, emailString, passString)) {
                     sm.setUserNames(namesString);
                     sm.setEmail(emailString);
                     sm.setUserPassword(passString);
+                    for (int i = 0; i < userList.size(); i++) {
+                        if (userList.get(i).getUserEmail().equals(emailString)) {
+                            isDuplicate = true;
+
+                        } else {
+                            isDuplicate = false;
+                        }
+                    }
+                    datasource.createUsers(namesString, emailString, passString);
                     sm.setRemember(true);
                     isOk = true;
                 }
-                if (sm.getMyProfileAvatarPath() == null && sm.getMyProfileAvatarCapturePath() == null) {
+                if (sm.getMyProfileAvatarPath() == null && sm.getMyProfileAvatarCapturePath() == null && isOk && !isDuplicate) {
                     withoutImage();
                 }
-                if (isOk) {
+                if (isDuplicate) {
+                    Toast.makeText(ManualLoginActivity.this, "This e-mail is hired!", Toast.LENGTH_LONG).show();
+                    isOk = false;
+                } else if (isOk) {
                     Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
+
             }
         };
         return listener;
@@ -221,8 +245,22 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                     sm.setRemember(true);
                     sm.setEmail(emailString);
                     sm.setUserPassword(pass);
-                    Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+
+                    List<User> values = datasource.getAllComments();
+                    boolean hasUser = true;
+                    for (int i = 0; i < values.size(); i++) {
+                        if (values.get(i).getUserEmail().equals(emailString) && values.get(i).getPassword().equals(pass)) {
+                            sm.setUserNames(values.get(i).getUserName());
+                            hasUser = true;
+                            Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            hasUser = false;
+                        }
+                    }
+                    if (!hasUser) {
+                        Toast.makeText(ManualLoginActivity.this, "Incorrect user e-mail or password!", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         };

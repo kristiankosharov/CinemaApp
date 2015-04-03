@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import Adapters.FilterAdapter;
-import Models.AllCinemasFilters;
+import adapters.FilterAdapter;
+import models.AllCinemasFilters;
 
 /**
  * Created by kristian on 15-3-31.

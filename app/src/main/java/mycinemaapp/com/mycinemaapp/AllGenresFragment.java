@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import Adapters.FilterAdapter;
-import Models.AllGenresFilters;
-import Models.Filter;
+import adapters.FilterAdapter;
+import models.AllGenresFilters;
+import models.Filter;
 
 /**
  * Created by kristian on 15-3-31.

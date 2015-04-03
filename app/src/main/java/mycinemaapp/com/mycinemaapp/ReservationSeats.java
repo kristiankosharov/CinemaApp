@@ -10,8 +10,8 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import Helpers.SeatView;
-import Models.Seat;
+import helpers.SeatView;
+import models.Seat;
 
 /**
  * Created by kristian on 15-3-16.

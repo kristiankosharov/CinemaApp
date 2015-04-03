@@ -12,12 +12,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import Helpers.CustomEditText;
-import Helpers.SessionManager;
-import Models.AddMovies;
-import Models.Movie;
-import Models.RatedMovies;
-import Models.SaveTempMovieModel;
+import helpers.CustomEditText;
+import helpers.SessionManager;
+import models.AddMovies;
+import models.Movie;
+import models.RatedMovies;
+import models.SaveTempMovieModel;
 
 /**
  * Created by kristian on 15-3-16.

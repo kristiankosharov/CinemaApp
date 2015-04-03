@@ -38,15 +38,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import Adapters.MovieAdapter;
-import Helpers.RequestManager;
-import Helpers.SessionManager;
-import Models.AllCinemasFilters;
-import Models.AllDaysFilters;
-import Models.AllGenresFilters;
-import Models.Filter;
-import Models.Movie;
-import Models.SaveTempMovieModel;
+import adapters.MovieAdapter;
+import helpers.RequestManager;
+import helpers.SessionManager;
+import models.AllCinemasFilters;
+import models.AllDaysFilters;
+import models.AllGenresFilters;
+import models.Filter;
+import models.Movie;
+import models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
 
 public class MainActivity extends Activity implements View.OnClickListener {

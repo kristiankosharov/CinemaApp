@@ -22,7 +22,7 @@ import com.facebook.model.GraphUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import Helpers.SessionManager;
+import helpers.SessionManager;
 
 /**
  * Created by kristian on 15-3-25.

@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import Helpers.SessionManager;
+import helpers.SessionManager;
 
 /**
  * Created by kristian on 15-3-26.

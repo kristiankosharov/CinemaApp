@@ -11,10 +11,10 @@ import android.widget.ImageView;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import Adapters.MovieDetailAdapter;
-import Models.AddMovies;
-import Models.RatedMovies;
-import Models.SaveTempMovieModel;
+import adapters.MovieDetailAdapter;
+import models.AddMovies;
+import models.RatedMovies;
+import models.SaveTempMovieModel;
 
 /**
  * Created by kristian on 15-3-4.

@@ -22,9 +22,9 @@ import com.facebook.Session;
 import java.util.ArrayList;
 import java.util.List;
 
-import Adapters.TabsPagerAdapter;
-import Helpers.SessionManager;
-import Helpers.SlidingTabLayout;
+import adapters.TabsPagerAdapter;
+import helpers.SessionManager;
+import helpers.SlidingTabLayout;
 
 /**
  * Created by kristian on 15-2-26.

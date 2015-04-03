@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import Adapters.FilterAdapter;
-import Models.AllDaysFilters;
+import adapters.FilterAdapter;
+import models.AllDaysFilters;
 
 /**
  * Created by kristian on 15-3-31.

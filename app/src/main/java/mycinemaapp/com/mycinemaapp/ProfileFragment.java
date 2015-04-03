@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import Helpers.RoundedImageView;
-import Helpers.SessionManager;
+import helpers.RoundedImageView;
+import helpers.SessionManager;
 
 /**
  * Created by kristian on 15-2-27.
