@@ -177,7 +177,7 @@ public class MovieDetailAdapter extends PagerAdapter {
                 intent.putExtra("ISRATED", isRated);
                 intent.putExtra("ISLIST", isList);
                 intent.putExtra("POSITION", position);
-                context.startActivity(intent);
+                context.startActivityForResult(intent, 2);
             }
         });
 

@@ -18,7 +18,7 @@ public class UsersDataSource {
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
     private String[] allColumns = {MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.COLUMN_USER_NAME, MySQLiteHelper.COLUMN_USER_EMAIL, MySQLiteHelper.COLUMN_USER_PASSWORD};
+            MySQLiteHelper.COLUMN_USER_NAME, MySQLiteHelper.COLUMN_USER_EMAIL, MySQLiteHelper.COLUMN_USER_PASSWORD, MySQLiteHelper.COLUMN_USER_IMAGE_PATH};
     private Context con;
 
     public UsersDataSource(Context context) {
@@ -34,11 +34,12 @@ public class UsersDataSource {
         dbHelper.close();
     }
 
-    public User createUsers(String userName, String userEmail, String pass) {
+    public User createUsers(String userName, String userEmail, String pass, String imagePath) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_USER_NAME, userName);
         values.put(MySQLiteHelper.COLUMN_USER_EMAIL, userEmail);
         values.put(MySQLiteHelper.COLUMN_USER_PASSWORD, pass);
+        values.put(MySQLiteHelper.COLUMN_USER_IMAGE_PATH, imagePath);
         long insertId = database.insert(MySQLiteHelper.TABLE_USERS, null,
                 values);
         Cursor cursor = database.query(MySQLiteHelper.TABLE_USERS,
@@ -80,6 +81,18 @@ public class UsersDataSource {
         user.setUserName(cursor.getString(1));
         user.setUserEmail(cursor.getString(2));
         user.setPassword(cursor.getString(3));
+        user.setImagePath(cursor.getString(4));
         return user;
     }
+
+    /**
+     * Remove all users and groups from database.
+     */
+    public void removeAll() {
+        // db.delete(String tableName, String whereClause, String[] whereArgs);
+        // If whereClause is null, it will delete all rows.
+//        SQLiteDatabase db = helper.getWritableDatabase(); // helper is object extends SQLiteOpenHelper
+        database.delete(MySQLiteHelper.TABLE_USERS, null, null);
+    }
+
 }

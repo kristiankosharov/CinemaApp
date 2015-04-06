@@ -8,6 +8,15 @@ public class User {
     private String userName;
     private String password;
     private String userEmail;
+    private String imagePath;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     public String getUserEmail() {
         return userEmail;
@@ -44,6 +53,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User:" + userName + "Email:" + userEmail + ",pass:" + password;
+        return "User:" + userName + "Email:" + userEmail + ",pass:" + password + ",image path:" + imagePath;
     }
 }

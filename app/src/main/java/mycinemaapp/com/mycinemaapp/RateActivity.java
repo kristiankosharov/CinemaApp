@@ -159,6 +159,7 @@ public class RateActivity extends Activity implements View.OnClickListener {
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putExtra("POSITION", position);
+        setResult(2, intent);
         super.onBackPressed();
     }
 }

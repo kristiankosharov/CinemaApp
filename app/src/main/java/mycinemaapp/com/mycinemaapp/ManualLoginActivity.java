@@ -215,7 +215,22 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                             isDuplicate = false;
                         }
                     }
-                    datasource.createUsers(namesString, emailString, passString);
+                    String imagePath;
+
+//                    Toast.makeText(ManualLoginActivity.this, "SNIMANA:" + sm.getMyProfileAvatarCapturePath() + "IZBRANA" + sm.getMyProfileAvatarPath(), Toast.LENGTH_LONG).show();
+
+                    if (sm.getMyProfileAvatarPath() != null) {
+                        imagePath = sm.getMyProfileAvatarPath();
+                    } else {
+                        imagePath = "";
+                    }
+                    if (sm.getMyProfileAvatarCapturePath() != null) {
+                        imagePath = sm.getMyProfileAvatarCapturePath();
+                    } else if (imagePath.equals("")) {
+                        imagePath = "";
+                    }
+                    Toast.makeText(ManualLoginActivity.this, imagePath, Toast.LENGTH_LONG).show();
+                    datasource.createUsers(namesString, emailString, passString, imagePath);
                     sm.setRemember(true);
                     isOk = true;
                 }
@@ -242,9 +257,6 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                 String emailString = email.getText().toString();
                 String pass = password.getText().toString();
                 if (validateLoginElements(emailString, pass)) {
-                    sm.setRemember(true);
-                    sm.setEmail(emailString);
-                    sm.setUserPassword(pass);
 
                     List<User> values = datasource.getAllComments();
                     boolean hasUser = true;
@@ -252,8 +264,12 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
                         if (values.get(i).getUserEmail().equals(emailString) && values.get(i).getPassword().equals(pass)) {
                             sm.setUserNames(values.get(i).getUserName());
                             hasUser = true;
+                            sm.setRemember(true);
+                            sm.setEmail(emailString);
+                            sm.setUserPassword(pass);
                             Intent intent = new Intent(ManualLoginActivity.this, MainActivity.class);
                             startActivity(intent);
+                            return;
                         } else {
                             hasUser = false;
                         }
@@ -293,5 +309,11 @@ public class ManualLoginActivity extends Activity implements View.OnClickListene
             }
         };
         return listener;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        datasource.close();
     }
 }

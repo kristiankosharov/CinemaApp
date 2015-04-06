@@ -58,7 +58,7 @@ public class AllGenresFragment extends Fragment {
                 list.add(item);
             }
         }
-        AllGenresFilters.allGenres.clear();
+//        AllGenresFilters.allGenres.clear();
         AllGenresFilters.setAllGenres(list);
         adapter = new FilterAdapter(getActivity(), AllGenresFilters.allGenres, button, "all genres");
         listView.setAdapter(adapter);

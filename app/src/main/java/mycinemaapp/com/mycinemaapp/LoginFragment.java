@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -22,6 +23,8 @@ import com.facebook.model.GraphUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import database.User;
+import database.UsersDataSource;
 import helpers.SessionManager;
 
 /**
@@ -37,6 +40,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "MainFragment";
     private RelativeLayout master;
     private static final int REQUEST_CODE = 1;
+    private UsersDataSource datasource;
 
 //    LoginFragment(Activity context) {
 //        mContext = context;
@@ -48,6 +52,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
 
         sm = new SessionManager(getActivity());
+        datasource = new UsersDataSource(getActivity());
+        datasource.open();
 
         facebook = (ImageButton) view.findViewById(R.id.facebook);
         manual = (ImageButton) view.findViewById(R.id.email);
@@ -132,6 +138,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 List<String> permissions = new ArrayList<String>();
                 permissions.add("email");
                 permissions.add("public_profile");
+                final List<User> values = datasource.getAllComments();
+
 
                 openActiveSession(getActivity(), true, new Session.StatusCallback() {
                     @Override
@@ -143,10 +151,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void onCompleted(GraphUser user, Response response) {
                                     if (user != null) {
+
+                                        if (values.size() > 0) {
+                                            for (int i = 0; i < values.size(); i++) {
+                                                if (values.get(i).getUserEmail().equals(user.getProperty("email").toString())) {
+                                                }
+                                            }
+                                        } else {
+                                            Toast.makeText(getActivity(), "ELSE", Toast.LENGTH_LONG).show();
+                                            datasource.createUsers(user.getName(), user.getProperty("email").toString(), "", "https://graph.facebook.com/" + user.getId() + "/picture?type=large");
+                                        }
                                         sm.setRemember(true);
                                         sm.setFacebookLogin(true);
-                                        sm.setFacebookUserId(user.getId());
-                                        sm.setUserNames(user.getName());
+//                                        sm.setFacebookUserId(user.getId());
+//                                        sm.setUserNames(user.getName());
                                         sm.setEmail(user.getProperty("email").toString());
                                         getActivity().getFragmentManager().popBackStack();
                                     }
@@ -194,5 +212,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 getFragmentManager().popBackStack();
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        datasource.close();
     }
 }

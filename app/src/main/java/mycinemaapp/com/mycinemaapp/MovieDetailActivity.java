@@ -99,6 +99,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         if (adapter.getCount() == 0) {
             onBackPressed();
         }
+
         mViewPager.setPageMargin(20);
         mViewPager.setBackgroundColor(this.getResources().getColor(R.color.gray_background_gridview));
         mViewPager.setAdapter(adapter);
@@ -110,6 +111,10 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_CODE) {
+                position = data.getIntExtra("POSITION", 0);
+            }
+        } else if(requestCode == 2){
+            if(resultCode == 2){
                 position = data.getIntExtra("POSITION", 0);
             }
         }

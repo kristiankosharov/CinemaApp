@@ -60,6 +60,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private VideoView mVideoView;
     private RelativeLayout main;
 
+    private boolean isInFragment = false;
     private int countOfDays;
     private int dayOfMonth;
     private SessionManager sm;
@@ -461,6 +462,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 topLayout.setVisibility(View.GONE);
                 filterContainer.setVisibility(View.VISIBLE);
 
+
+                isInFragment = true;
                 AllDaysFragment allDaysFragment = new AllDaysFragment(allDays);
                 loadFragment(allDaysFragment, R.id.filter_container);
                 break;
@@ -469,6 +472,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 topLayout.setVisibility(View.GONE);
                 filterContainer.setVisibility(View.VISIBLE);
 
+                isInFragment = true;
                 AllCinemasFragment allCinemasFragment = new AllCinemasFragment(allCinemas);
                 loadFragment(allCinemasFragment, R.id.filter_container);
                 break;
@@ -477,6 +481,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 topLayout.setVisibility(View.GONE);
                 filterContainer.setVisibility(View.VISIBLE);
 
+                isInFragment = true;
                 AllGenresFragment allGenresFragment = new AllGenresFragment(allGenres);
                 loadFragment(allGenresFragment, R.id.filter_container);
                 break;
@@ -512,10 +517,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent startMain = new Intent(Intent.ACTION_MAIN);
-        startMain.addCategory(Intent.CATEGORY_HOME);
-        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(startMain);
+        if(isInFragment){
+
+            getFragmentManager().popBackStack();
+            videoLayout.setVisibility(View.VISIBLE);
+            topLayout.setVisibility(View.VISIBLE);
+            filterContainer.removeAllViews();
+            filterContainer.setVisibility(View.GONE);
+            isInFragment = false;
+        } else {
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startMain);
+        }
     }
 
     public void loadFragment(Fragment fragment, int container) {
