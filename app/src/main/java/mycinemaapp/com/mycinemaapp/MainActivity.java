@@ -374,13 +374,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                                 list.add(movie);
                             }
-
+                            AllGenresFilters.allGenres.clear();
+                            AllDaysFilters.allDays.clear();
                             for (int i = 0; i < days.size(); i++) {
                                 Filter filter = new Filter();
                                 filter.setFilter(days.get(i));
                                 AllDaysFilters.allDays.add(filter);
                             }
-
+                            AllCinemasFilters.allCinemas.clear();
                             for (String s : nameOfPlaces) {
                                 Filter filter = new Filter();
                                 filter.setFilter(s);
@@ -517,7 +518,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(isInFragment){
+        if (isInFragment) {
 
             getFragmentManager().popBackStack();
             videoLayout.setVisibility(View.VISIBLE);
