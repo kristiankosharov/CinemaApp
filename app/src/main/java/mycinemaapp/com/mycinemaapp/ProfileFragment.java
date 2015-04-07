@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -46,9 +45,7 @@ public class ProfileFragment extends Fragment {
 
         for (int i = 0; i < values.size(); i++) {
             if (values.get(i).getUserEmail().equals(sm.getEmail())) {
-                Toast.makeText(getActivity(), values.get(i).getImagePath(), Toast.LENGTH_LONG).show();
                 if (values.get(i).getImagePath() != null && !values.get(i).getImagePath().equals("")) {
-
                     loadAvatar(values.get(i).getImagePath());
                 } else {
                     profileImage.setImageResource(R.drawable.add_picture);

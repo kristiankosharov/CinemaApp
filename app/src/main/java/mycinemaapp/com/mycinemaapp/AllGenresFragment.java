@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import adapters.FilterAdapter;
 import models.AllGenresFilters;
-import models.Filter;
+import models.Filters;
 
 /**
  * Created by kristian on 15-3-31.
@@ -45,16 +45,16 @@ public class AllGenresFragment extends Fragment {
             }
         });
         listView = (ListView) view.findViewById(R.id.list_view);
-        ArrayList<Filter> list = new ArrayList<>();
+        ArrayList<Filters> list = new ArrayList<>();
 
         for (int i = 0; i < 100; i++) {
             if (i == 0) {
-                Filter item = new Filter();
-                item.setFilter("ALL GENRES");
+                Filters item = new Filters();
+                item.setGenreFilter("ALL GENRES");
                 list.add(item);
             } else {
-                Filter item = new Filter();
-                item.setFilter("FILTER" + i);
+                Filters item = new Filters();
+                item.setGenreFilter("FILTER" + i);
                 list.add(item);
             }
         }

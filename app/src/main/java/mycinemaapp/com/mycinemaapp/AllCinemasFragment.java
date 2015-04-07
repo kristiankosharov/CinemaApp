@@ -11,8 +11,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import adapters.FilterAdapter;
-import models.AllCinemasFilters;
+import database.FiltersDataSource;
+import models.Filters;
 
 /**
  * Created by kristian on 15-3-31.
@@ -23,6 +26,7 @@ public class AllCinemasFragment extends Fragment {
     private FilterAdapter adapter;
     private Button button;
     private TextView clear;
+    private FiltersDataSource filtersDataSource;
 
     AllCinemasFragment(Button button) {
         this.button = button;
@@ -32,6 +36,12 @@ public class AllCinemasFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_cinemas_fragment, container, false);
+
+        filtersDataSource = new FiltersDataSource(getActivity());
+        filtersDataSource.open();
+
+        ArrayList<Filters> list = filtersDataSource.getAllFilters();
+
         clear = (TextView) view.findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +68,7 @@ public class AllCinemasFragment extends Fragment {
 //            }
 //        }
 //        AllCinemasFilters.setAllCinemas(list);
-        adapter = new FilterAdapter(getActivity(), AllCinemasFilters.allCinemas, button, "all cinemas");
+        adapter = new FilterAdapter(getActivity(), list, button, "all cinemas");
         listView.setAdapter(adapter);
 
 

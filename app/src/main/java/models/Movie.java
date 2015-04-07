@@ -9,6 +9,7 @@ import java.util.HashMap;
 public class Movie {
 
 
+    long id;
     int position;
 
     String newForWeek;
@@ -46,6 +47,14 @@ public class Movie {
     HashMap<String, HashMap<String, String[]>> allProjections;
 
     private boolean isAdd;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getImdbRating() {
         return imdbRating;
@@ -94,7 +103,7 @@ public class Movie {
     }
 
     public void setNameOfPlace(ArrayList<String> places) {
-            nameOfPlace = places;
+        nameOfPlace = places;
     }
 
 
@@ -256,5 +265,10 @@ public class Movie {
 
     public void setMovieProgress(float movieProgress) {
         this.movieProgress = movieProgress;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie: " + movieTitle + ",Progress: " + movieProgress;
     }
 }

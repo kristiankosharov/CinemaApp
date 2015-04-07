@@ -62,7 +62,9 @@
         <activity
             android:name=".LoginFragment"
             android:screenOrientation="portrait" />
-        <activity android:name=".TestDatabase"></activity>
+        <activity android:name=".TestDatabaseUsers"></activity>
+        <activity android:name=".TestDatabaseMovies"></activity>
+        <activity android:name=".TestDatabaseFilters"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

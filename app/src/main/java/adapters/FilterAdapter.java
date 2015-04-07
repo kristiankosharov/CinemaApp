@@ -13,33 +13,33 @@ import java.util.ArrayList;
 import models.AllCinemasFilters;
 import models.AllDaysFilters;
 import models.AllGenresFilters;
-import models.Filter;
+import models.Filters;
 import mycinemaapp.com.mycinemaapp.R;
 
 /**
  * Created by kristian on 15-3-31.
  */
-public class FilterAdapter extends ArrayAdapter<Filter> {
+public class FilterAdapter extends ArrayAdapter<Filters> {
     private Activity context;
-    private ArrayList<Filter> filterArrayList;
+    private ArrayList<Filters> filtersArrayList;
     private Button button;
     private String from;
 
     public FilterAdapter(Activity mContext,
-                         ArrayList<Filter> filterArrayList, Button button, String from) {
-        super(mContext, R.layout.filter_item_layout, filterArrayList);
+                         ArrayList<Filters> filtersArrayList, Button button, String from) {
+        super(mContext, R.layout.filter_item_layout, filtersArrayList);
         this.context = mContext;
-        this.filterArrayList = filterArrayList;
+        this.filtersArrayList = filtersArrayList;
         this.button = button;
         this.from = from;
     }
 
     public int getCount() {
-        return filterArrayList.size();
+        return filtersArrayList.size();
     }
 
-    public Filter getItem(int position) {
-        return filterArrayList.get(position);
+    public Filters getItem(int position) {
+        return filtersArrayList.get(position);
     }
 
     static class ViewHolder {
@@ -62,21 +62,30 @@ public class FilterAdapter extends ArrayAdapter<Filter> {
 
         final ViewHolder holder = (ViewHolder) rowView.getTag();
 
-        final Filter item = filterArrayList.get(position);
+        final Filters item = filtersArrayList.get(position);
 
 
         holder.filterItem.setBackgroundColor(context.getResources().getColor(android.R.color.white));
         if (item.isSelect()) {
             holder.filterItem.setBackgroundColor(context.getResources().getColor(R.color.seat_selected));
         }
-
-        holder.filterItem.setText(item.getFilter());
+        switch (from) {
+            case "all days":
+                holder.filterItem.setText(item.getDayFilter());
+                break;
+            case "all cinemas":
+                holder.filterItem.setText(item.getCinemaFilter());
+                break;
+            case "all genres":
+                holder.filterItem.setText(item.getGenreFilter());
+                break;
+        }
         holder.filterItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < filterArrayList.size(); i++) {
-                    if (filterArrayList.get(i).isSelect()) {
-                        filterArrayList.get(i).setSelect(false);
+                for (int i = 0; i < filtersArrayList.size(); i++) {
+                    if (filtersArrayList.get(i).isSelect()) {
+                        filtersArrayList.get(i).setSelect(false);
                     }
                 }
                 switch (from) {
@@ -91,7 +100,7 @@ public class FilterAdapter extends ArrayAdapter<Filter> {
                         break;
                 }
                 item.setSelect(true);
-                button.setText(item.getFilter());
+                button.setText(item.getDayFilter());
                 notifyDataSetChanged();
             }
         });

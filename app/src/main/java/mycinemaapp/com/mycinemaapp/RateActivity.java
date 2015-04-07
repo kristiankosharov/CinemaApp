@@ -81,19 +81,13 @@ public class RateActivity extends Activity implements View.OnClickListener {
             } else {
                 imdbRating.setText(movies.get(position).getImdbRating());
             }
-        }
 
+        }
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 yourRating.setText(ratingBar.getRating() + "");
-                if (isRated) {
-                    ratedMovie.get(position).setUserRating(ratingBar.getRating());
-                } else if (isList) {
-                    addMovie.get(position).setUserRating(ratingBar.getRating());
-                } else {
-                    movies.get(position).setUserRating(ratingBar.getRating());
-                }
+
             }
         });
 
@@ -120,7 +114,7 @@ public class RateActivity extends Activity implements View.OnClickListener {
 
                     // Rate from List in MyProfile
                     if (isList) {
-
+                        addMovie.get(position).setUserRating(ratingBar.getRating());
                         ratedMovie.add(addMovie.get(position));
                         addMovie.remove(position);
 
@@ -136,15 +130,19 @@ public class RateActivity extends Activity implements View.OnClickListener {
                     } else if (movies.get(position).isAdd()) {
                         // First add item and then rate
                         movies.get(position).setAdd(false);
+                        movies.get(position).setUserRating(ratingBar.getRating());
                         for (int i = 0; i < addMovie.size(); i++) {
                             if (movies.get(position).getMovieTitle().equals(addMovie.get(i).getMovieTitle())) {
                                 ratedMovie.add(addMovie.get(i));
+//                                ratedMovie.get(position).setUserRating(ratingBar.getRating());
                                 addMovie.remove(i);
                             }
                         }
+
                     } else {
                         // Rate without add
                         ratedMovie.add(SaveTempMovieModel.getItem(position));
+                        movies.get(position).setUserRating(ratingBar.getRating());
                     }
 //                    Toast.makeText(this, position + "", Toast.LENGTH_LONG).show();
                     onBackPressed();

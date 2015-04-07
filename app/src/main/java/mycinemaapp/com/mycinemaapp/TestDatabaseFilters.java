@@ -8,35 +8,38 @@ import android.widget.Button;
 
 import java.util.List;
 
-import database.User;
-import database.UsersDataSource;
+import database.FiltersDataSource;
+import models.Filters;
 
 /**
- * Created by kristian on 15-4-3.
+ * Created by kristian on 15-4-7.
  */
-public class TestDatabase extends ListActivity {
-    private UsersDataSource datasource;
-    ArrayAdapter<User> adapter;
+public class TestDatabaseFilters extends ListActivity {
+    private FiltersDataSource filtersDataSource;
+    ArrayAdapter<Filters> adapter;
+    List<Filters> values;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_database);
-        datasource = new UsersDataSource(this);
-        datasource.open();
+        filtersDataSource = new FiltersDataSource(this);
+        filtersDataSource.open();
         Button clear = (Button) findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datasource.removeAll();
-                adapter.notifyDataSetChanged();
+                filtersDataSource.removeAll();
+                adapter = new ArrayAdapter<Filters>(TestDatabaseFilters.this,
+                        android.R.layout.simple_list_item_1, values);
+                setListAdapter(adapter);
             }
         });
-        List<User> values = datasource.getAllComments();
+        values = filtersDataSource.getAllFilters();
 
         // use the SimpleCursorAdapter to show the
         // elements in a ListView
-        adapter = new ArrayAdapter<User>(this,
+        adapter = new ArrayAdapter<Filters>(this,
                 android.R.layout.simple_list_item_1, values);
         setListAdapter(adapter);
     }

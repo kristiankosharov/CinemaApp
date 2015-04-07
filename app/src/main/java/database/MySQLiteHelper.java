@@ -11,7 +11,7 @@ import android.util.Log;
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
     // Datebase Version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 9;
 
     // Datebase Name
     private static final String DATABASE_NAME = "mycinemaapp.db";
@@ -24,6 +24,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_USER_PASSWORD = "password";
     public static final String COLUMN_USER_IMAGE_PATH = "path";
 
+
+    // Table Movies
+    public static final String TABLE_MOVIES = "movies";
+    public static final String COLUMN_MOVIE_TITLE = "title";
+    public static final String COLUMN_MOVIE_PROGRESS = "progress";
+
+    // Table Filters
+    public static final String TABLE_FILTERS = "filters";
+    public static final String COLUMN_DAYS_FILTER = "daysfilter";
+    public static final String COLUMN_CINEMAS_FILTER = "cinemasfilter";
+    public static final String COLUMN_GENRES_FILTER = "genresfilter";
+
     // Database creation sql statement
     private static final String CREATE_TABLE_USERS =
             "CREATE TABLE " + TABLE_USERS + " ("
@@ -33,6 +45,23 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     + COLUMN_USER_EMAIL + " TEXT NOT NULL, "
                     + COLUMN_USER_IMAGE_PATH + " TEXT NOT NULL);";
 
+
+    // Database creation sql statement
+    private static final String CREATE_TABLE_MOVIES =
+            "CREATE TABLE " + TABLE_MOVIES + " ("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_MOVIE_TITLE + " TEXT NOT NULL, "
+                    + COLUMN_MOVIE_PROGRESS + " TEXT NOT NULL);";
+
+    // Database creation sql statement
+    private static final String CREATE_TABLE_FILTERS =
+            "CREATE TABLE " + TABLE_FILTERS + " ("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_DAYS_FILTER + " TEXT, "
+                    + COLUMN_CINEMAS_FILTER + " TEXT, "
+                    + COLUMN_GENRES_FILTER + " TEXT);";
+
+
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -40,6 +69,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_USERS);
+        db.execSQL(CREATE_TABLE_MOVIES);
+        db.execSQL(CREATE_TABLE_FILTERS);
     }
 
     @Override
@@ -48,6 +79,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTERS);
         onCreate(db);
     }
 }

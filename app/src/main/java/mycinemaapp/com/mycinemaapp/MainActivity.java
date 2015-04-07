@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -37,14 +38,16 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import adapters.MovieAdapter;
+import database.FiltersDataSource;
+import database.MovieDataSource;
 import helpers.RequestManager;
 import helpers.SessionManager;
 import models.AllCinemasFilters;
 import models.AllDaysFilters;
 import models.AllGenresFilters;
-import models.Filter;
 import models.Movie;
 import models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
@@ -66,6 +69,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private SessionManager sm;
     private RelativeLayout videoLayout, filterContainer, header;
     private LinearLayout topLayout;
+    private ProgressBar progressBar;
+    StaggeredGridView gridView;
+
+    private MovieDataSource movieDataSource;
+    private FiltersDataSource filtersDataSource;
 
     public MainActivity() {
     }
@@ -76,7 +84,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         setContentView(R.layout.activity_main);
         initialize(savedInstanceState);
-        sm = new SessionManager(this);
 
         String clear = getIntent().getStringExtra("CLEAR");
         if (clear != null && clear.equals("clear")) {
@@ -190,11 +197,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //            nameOfDays.add(symbols.getWeekdays()[2]);
 //        }
 //        countOfDays = countOfDays - dayOfMonth;
-
         movieRequest();
     }
 
     public void initialize(Bundle savedInstanceState) {
+        sm = new SessionManager(this);
+        movieDataSource = new MovieDataSource(this);
+        filtersDataSource = new FiltersDataSource(this);
+        filtersDataSource.open();
+        movieDataSource.open();
+
         soon = (Button) findViewById(R.id.soon);
         soon.setOnClickListener(this);
 
@@ -221,12 +233,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         filterContainer = (RelativeLayout) findViewById(R.id.filter_container);
         filterContainer.setOnClickListener(this);
         header = (RelativeLayout) findViewById(R.id.header);
-//        main.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                scrollView.set
-//            }
-//        });
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        gridView = (StaggeredGridView) findViewById(R.id.scroll);
 
         String videoUrl = "rtsp://r7---sn-4g57kuel.c.youtube.com/CiILENy73wIaGQnnkJV25G5KShMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp";
         try {
@@ -244,12 +252,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
             mVideoView.start();
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, sm.getDatabaseVersion(), Toast.LENGTH_LONG).show();
+            if (sm.getDatabaseVersion() != "0") {
+                list = movieDataSource.getAllMovie();
+                movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false, false, false);
+                movieAdapter.notifyDataSetChanged();
+                gridView.setAdapter(movieAdapter);
+                progressBar.setVisibility(View.GONE);
+            }
         }
     }
 
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/clIRAuNmPS?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/bQGAxfVFea?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -289,7 +305,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
                          */
 
                         try {
-                            JSONArray jsonArray = new JSONArray(response);
+                            JSONObject object = new JSONObject(response);
+                            JSONArray jsonArray = object.getJSONArray("movies");
+                            int databaseVersionServer = Integer.parseInt(object.getString("database_version"));
+
+//                            if (databaseVersionServer > Integer.parseInt(sm.getDatabaseVersion())) {
+                            movieDataSource.removeAll();
+                            sm.setDatabaseVersion(databaseVersionServer + "");
+//                            }
                             ArrayList<String> days = new ArrayList<>();
                             ArrayList<String> nameOfDays = new ArrayList<>();
                             HashSet<String> nameOfPlaces = new HashSet<>();
@@ -311,6 +334,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 movie.setMovieProgress(Float.parseFloat(obj.getString("rating")));
                                 movie.setMovieTitle(obj.getString("title"));
                                 movie.setNewForWeek(obj.getString("new_for_week"));
+
+                                movieDataSource.createMovie(obj.getString("title"), obj.getString("rating"));
 
                                 for (int j = 0; j < obj.getJSONArray("movie_directors").length(); j++) {
                                     directors.add(obj.getJSONArray("movie_directors").getString(j));
@@ -374,45 +399,57 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                                 list.add(movie);
                             }
-                            AllGenresFilters.allGenres.clear();
-                            AllDaysFilters.allDays.clear();
-                            for (int i = 0; i < days.size(); i++) {
-                                Filter filter = new Filter();
-                                filter.setFilter(days.get(i));
-                                AllDaysFilters.allDays.add(filter);
+
+//                            AllGenresFilters.allGenres.clear();
+//                            AllDaysFilters.allDays.clear();
+                            filtersDataSource.removeAll();
+                            Iterator it1 = days.iterator();
+                            Iterator it2 = nameOfPlaces.iterator();
+
+                            while (it1.hasNext() || it2.hasNext()) {
+                                if (it1.hasNext()) {
+                                    if (it2.hasNext()) {
+//                                        Toast.makeText(MainActivity.this, "FIRST" + it1.next().toString() + ",SECOND" + it2.next().toString(), Toast.LENGTH_SHORT).show();
+                                        filtersDataSource.createFilter(it1.next().toString(), it2.next().toString(), "");
+                                    } else {
+//                                        Toast.makeText(MainActivity.this, "FIRST" + it1.next().toString(), Toast.LENGTH_SHORT).show();
+                                        filtersDataSource.createFilter(it1.next().toString(), "", "");
+                                    }
+                                }
                             }
-                            AllCinemasFilters.allCinemas.clear();
-                            for (String s : nameOfPlaces) {
-                                Filter filter = new Filter();
-                                filter.setFilter(s);
-                                AllCinemasFilters.allCinemas.add(filter);
-                            }
+
+//                            for (int i = 0; i < days.size(); i++) {
+//                                Filter filter = new Filter();
+//                                filter.setFilter(days.get(i));
+//                                AllDaysFilters.allDays.add(filter);
+//                            }
+//                            AllCinemasFilters.allCinemas.clear();
+//                            for (String s : nameOfPlaces) {
+//                                Filter filter = new Filter();
+//                                filter.setFilter(s);
+//                                AllCinemasFilters.allCinemas.add(filter);
+//                            }
+
+                            SaveTempMovieModel.setMovies(list);
                             movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false, false, false);
                             movieAdapter.notifyDataSetChanged();
-                            SaveTempMovieModel.setMovies(list);
-                            StaggeredGridView gridView = (StaggeredGridView) findViewById(R.id.scroll);
-//                            gridView.setExpanded(true);
-
                             gridView.setAdapter(movieAdapter);
+                            progressBar.setVisibility(View.GONE);
                         } catch (Exception e) {
-
+                            Toast.makeText(MainActivity.this, "Some problem!", Toast.LENGTH_LONG).show();
                         }
                     }
-                }
-
-                , new Response.ErrorListener()
-
-        {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Please re-connect your connection!", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
             }
         }
 
         );
         // Add the request to the RequestQueue.
-        RequestManager.getRequestQueue().
-
-                add(stringRequest);
+        RequestManager.getRequestQueue().add(stringRequest);
     }
 
     @Override
@@ -539,5 +576,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         transaction.addToBackStack("");
         transaction.replace(container, fragment);
         transaction.commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        movieDataSource.close();
+        filtersDataSource.close();
     }
 }
