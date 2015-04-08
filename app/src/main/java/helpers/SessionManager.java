@@ -14,7 +14,6 @@ public class SessionManager {
     private static final String MYPROFILE_AVATAR_PATH_GALLERY = "user.myprofile.avatar.path";
     private static final String MYPROFILE_AVATAR_CAPTURE_PATH = "user.myprofile.capture.path";
     private static final String FACEBOOK_USER_ID = "facebook.user.id";
-    private static final String DATABASE_VERSION = "database.version";
 
     private SharedPreferences sp;
 
@@ -103,15 +102,6 @@ public class SessionManager {
 
     public void setFacebookUserId(String userId) {
         sp.edit().putString(FACEBOOK_USER_ID, userId).commit();
-    }
-
-    // GET SET Database version
-    public String getDatabaseVersion() {
-        return sp.getString(DATABASE_VERSION, "0");
-    }
-
-    public void setDatabaseVersion(String databaseVersion) {
-        sp.edit().putString(DATABASE_VERSION, databaseVersion).commit();
     }
 
     // Clear all values from SharedPreferences

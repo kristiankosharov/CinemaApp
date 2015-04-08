@@ -10,10 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import models.AllCinemasFilters;
-import models.AllDaysFilters;
-import models.AllGenresFilters;
 import models.Filters;
+import mycinemaapp.com.mycinemaapp.MainActivity;
 import mycinemaapp.com.mycinemaapp.R;
 
 /**
@@ -64,11 +62,12 @@ public class FilterAdapter extends ArrayAdapter<Filters> {
 
         final Filters item = filtersArrayList.get(position);
 
-
         holder.filterItem.setBackgroundColor(context.getResources().getColor(android.R.color.white));
-        if (item.isSelect()) {
+        if (item.isCinemaSelected() || item.isDaySelected() || item.isGenreSelected()) {
+//            Toast.makeText(context, "SET BACKGROUND", Toast.LENGTH_SHORT).show();
             holder.filterItem.setBackgroundColor(context.getResources().getColor(R.color.seat_selected));
         }
+
         switch (from) {
             case "all days":
                 holder.filterItem.setText(item.getDayFilter());
@@ -83,25 +82,24 @@ public class FilterAdapter extends ArrayAdapter<Filters> {
         holder.filterItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < filtersArrayList.size(); i++) {
-                    if (filtersArrayList.get(i).isSelect()) {
-                        filtersArrayList.get(i).setSelect(false);
-                    }
-                }
+                ((MainActivity) context).clearListOfSelected(filtersArrayList);
                 switch (from) {
                     case "all days":
-                        AllDaysFilters.allDays.get(position).setSelect(true);
+                        item.setDaySelected(true);
+                        button.setText(item.getDayFilter());
+//                        AllDaysFilters.allDays.get(position).setSelect(true);
                         break;
                     case "all cinemas":
-                        AllCinemasFilters.allCinemas.get(position).setSelect(true);
+                        item.setCinemaSelected(true);
+                        button.setText(item.getCinemaFilter());
                         break;
                     case "all genres":
-                        AllGenresFilters.allGenres.get(position).setSelect(true);
+                        item.setGenreSelected(true);
+                        button.setText(item.getGenreFilter());
                         break;
                 }
-                item.setSelect(true);
-                button.setText(item.getDayFilter());
                 notifyDataSetChanged();
+
             }
         });
         return rowView;

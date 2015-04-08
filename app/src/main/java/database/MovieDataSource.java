@@ -18,7 +18,9 @@ public class MovieDataSource {
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
     private String[] allColumns = {MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.COLUMN_MOVIE_TITLE, MySQLiteHelper.COLUMN_MOVIE_PROGRESS};
+            MySQLiteHelper.COLUMN_MOVIE_TITLE, MySQLiteHelper.COLUMN_MOVIE_PROGRESS,
+            MySQLiteHelper.COLUMN_MOVIE_DAYS, MySQLiteHelper.COLUMN_MOVIE_CINEMAS,
+            MySQLiteHelper.COLUMN_MOVIE_GENRES};
     private Context con;
 
     public MovieDataSource(Context context) {
@@ -34,10 +36,13 @@ public class MovieDataSource {
         dbHelper.close();
     }
 
-    public Movie createMovie(String movieTitle, String movieProgress) {
+    public Movie createMovie(String movieTitle, String movieProgress, String movieDay, String movieCinema, String movieGenres) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_MOVIE_TITLE, movieTitle);
         values.put(MySQLiteHelper.COLUMN_MOVIE_PROGRESS, movieProgress);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_DAYS, movieDay);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_CINEMAS, movieCinema);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_GENRES, movieGenres);
         long insertId = database.insert(MySQLiteHelper.TABLE_MOVIES, null,
                 values);
         Cursor cursor = database.query(MySQLiteHelper.TABLE_MOVIES,
@@ -78,6 +83,9 @@ public class MovieDataSource {
         movie.setId(cursor.getLong(0));
         movie.setMovieTitle(cursor.getString(1));
         movie.setMovieProgress(Float.parseFloat(cursor.getString(2)));
+        movie.setDate(cursor.getString(3));
+        movie.setNameOfPlace(cursor.getString(4));
+        movie.setMovieGenre(cursor.getString(5));
         return movie;
     }
 
@@ -90,4 +98,6 @@ public class MovieDataSource {
 //        SQLiteDatabase db = helper.getWritableDatabase(); // helper is object extends SQLiteOpenHelper
         database.delete(MySQLiteHelper.TABLE_MOVIES, null, null);
     }
+
+//    public void sort(String day, String )
 }

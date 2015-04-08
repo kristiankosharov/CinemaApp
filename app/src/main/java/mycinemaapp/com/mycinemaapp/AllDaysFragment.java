@@ -11,8 +11,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import adapters.FilterAdapter;
-import models.AllDaysFilters;
+import database.AllDaysDataSource;
+import models.Filters;
 
 /**
  * Created by kristian on 15-3-31.
@@ -23,6 +26,8 @@ public class AllDaysFragment extends Fragment implements View.OnClickListener {
     private ListView listView;
     private Button button;
     private TextView clear;
+    private AllDaysDataSource allDaysDataSource;
+    private static final int NUMBER_OF_COLUMN = 0;
 
     AllDaysFragment(Button button) {
         this.button = button;
@@ -32,18 +37,21 @@ public class AllDaysFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_days_fragment, container, false);
+        allDaysDataSource = new AllDaysDataSource(getActivity());
+        allDaysDataSource.open();
+
         clear = (TextView) view.findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.putExtra("CLEAR","clear");
+                intent.putExtra("CLEAR", "clear");
                 startActivity(intent);
             }
         });
         listView = (ListView) view.findViewById(R.id.list_view);
-//        ArrayList<Filter> list = new ArrayList<>();
-//
+        ArrayList<Filters> list = allDaysDataSource.getAllFilters();
+//        Toast.makeText(getActivity(), list.toString(), Toast.LENGTH_LONG).show();
 //        for (int i = 0; i < 100; i++) {
 //            if (i == 0) {
 //                Filter item = new Filter();
@@ -56,7 +64,7 @@ public class AllDaysFragment extends Fragment implements View.OnClickListener {
 //            }
 //        }
 //        AllDaysFilters.setAllDays(list);
-        adapter = new FilterAdapter(getActivity(), AllDaysFilters.allDays, button, "all days");
+        adapter = new FilterAdapter(getActivity(), list, button, "all days");
         listView.setAdapter(adapter);
 
         return view;

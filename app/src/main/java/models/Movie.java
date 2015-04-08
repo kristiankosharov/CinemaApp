@@ -22,7 +22,7 @@ public class Movie {
     String duration;
     String imageUrl;
     String movieTitle;
-    ArrayList<String> movieGenre;
+    ArrayList<String> movieGenre = new ArrayList<>();
     ArrayList<String> movieDirectors;
     ArrayList<String> movieActors;
 
@@ -38,11 +38,11 @@ public class Movie {
 
     int numberOfDays;
     int startDay;
-    ArrayList<String> date;
+    ArrayList<String> date = new ArrayList<>();
     ArrayList<String> nameDayOfMonth;
     String[] timeOfProjection;
 
-    ArrayList<String> nameOfPlace;
+    ArrayList<String> nameOfPlace = new ArrayList<>();
 
     HashMap<String, HashMap<String, String[]>> allProjections;
 
@@ -102,8 +102,8 @@ public class Movie {
         return nameOfPlace;
     }
 
-    public void setNameOfPlace(ArrayList<String> places) {
-        nameOfPlace = places;
+    public void setNameOfPlace(String places) {
+        nameOfPlace.add(places);
     }
 
 
@@ -145,8 +145,8 @@ public class Movie {
         return date;
     }
 
-    public void setDate(ArrayList<String> date) {
-        this.date = date;
+    public void setDate(String dateParam) {
+        date.add(dateParam);
     }
 
     public int getNumberOfDays() {
@@ -211,8 +211,8 @@ public class Movie {
         return movieGenre;
     }
 
-    public void setMovieGenre(ArrayList<String> movieGenre) {
-        this.movieGenre = movieGenre;
+    public void setMovieGenre(String movieGenreString) {
+        movieGenre.add(movieGenreString);
     }
 
     public int getCountGenre() {
@@ -269,6 +269,6 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie: " + movieTitle + ",Progress: " + movieProgress;
+        return "Movie: " + movieTitle + ",Progress: " + movieProgress + ",days" + date.toString() + ",cinemas" + nameOfPlace.toString() + ",genres" + movieGenre.toString();
     }
 }

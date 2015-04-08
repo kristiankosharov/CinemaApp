@@ -26,6 +26,7 @@ public class AllGenresFragment extends Fragment {
     private FilterAdapter adapter;
     private Button button;
     private TextView clear;
+    private static final int NUMBER_OF_COLUMN = 2;
 
     AllGenresFragment(Button button) {
         this.button = button;

@@ -8,7 +8,33 @@ public class Filters {
     String dayFilter;
     String cinemaFilter;
     String genreFilter;
-    boolean isSelect;
+    boolean isDaySelected;
+    boolean isCinemaSelected;
+    boolean isGenreSelected;
+
+    public boolean isGenreSelected() {
+        return isGenreSelected;
+    }
+
+    public void setGenreSelected(boolean isGenreSelected) {
+        this.isGenreSelected = isGenreSelected;
+    }
+
+    public boolean isCinemaSelected() {
+        return isCinemaSelected;
+    }
+
+    public void setCinemaSelected(boolean isCinemaSelected) {
+        this.isCinemaSelected = isCinemaSelected;
+    }
+
+    public boolean isDaySelected() {
+        return isDaySelected;
+    }
+
+    public void setDaySelected(boolean isDaySelected) {
+        this.isDaySelected = isDaySelected;
+    }
 
     public String getCinemaFilter() {
         return cinemaFilter;
@@ -34,14 +60,6 @@ public class Filters {
         this.dayFilter = dayFilter;
     }
 
-
-    public boolean isSelect() {
-        return isSelect;
-    }
-
-    public void setSelect(boolean isSelect) {
-        this.isSelect = isSelect;
-    }
 
     @Override
     public String toString() {

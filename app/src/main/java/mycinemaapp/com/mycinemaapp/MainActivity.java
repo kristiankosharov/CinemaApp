@@ -36,25 +36,27 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import adapters.MovieAdapter;
-import database.FiltersDataSource;
+import database.AllCinemasDataSource;
+import database.AllDaysDataSource;
+import database.AllGenresDataSource;
 import database.MovieDataSource;
 import helpers.RequestManager;
 import helpers.SessionManager;
-import models.AllCinemasFilters;
-import models.AllDaysFilters;
-import models.AllGenresFilters;
+import models.Filters;
 import models.Movie;
 import models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    private ArrayList<Movie> list = new ArrayList<>();
+    private ArrayList<Movie> movieList = new ArrayList<>();
+    private ArrayList<Filters> filtersList = new ArrayList<>();
     private MovieAdapter movieAdapter;
 
     private ImageView myProfile, location, filter;
@@ -73,7 +75,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     StaggeredGridView gridView;
 
     private MovieDataSource movieDataSource;
-    private FiltersDataSource filtersDataSource;
+    private AllDaysDataSource allDaysDataSource;
+    private AllCinemasDataSource allCinemasDataSource;
+    private AllGenresDataSource allGenresDataSource;
 
     public MainActivity() {
     }
@@ -84,27 +88,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         setContentView(R.layout.activity_main);
         initialize(savedInstanceState);
+        filtersList = allDaysDataSource.getAllFilters();
 
         String clear = getIntent().getStringExtra("CLEAR");
         if (clear != null && clear.equals("clear")) {
             allDays.setText("ALL DAYS");
             allGenres.setText("ALL GENRES");
             allCinemas.setText("ALL CINEMAS");
-            for (int i = 0; i < AllDaysFilters.allDays.size(); i++) {
-                if (AllDaysFilters.allDays.get(i).isSelect()) {
-                    AllDaysFilters.allDays.get(i).setSelect(false);
-                }
-            }
-            for (int i = 0; i < AllCinemasFilters.allCinemas.size(); i++) {
-                if (AllCinemasFilters.allCinemas.get(i).isSelect()) {
-                    AllCinemasFilters.allCinemas.get(i).setSelect(false);
-                }
-            }
-            for (int i = 0; i < AllGenresFilters.allGenres.size(); i++) {
-                if (AllGenresFilters.allGenres.get(i).isSelect()) {
-                    AllGenresFilters.allGenres.get(i).setSelect(false);
-                }
-            }
+            clearListOfSelected(filtersList);
         }
 
         try {
@@ -203,8 +194,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void initialize(Bundle savedInstanceState) {
         sm = new SessionManager(this);
         movieDataSource = new MovieDataSource(this);
-        filtersDataSource = new FiltersDataSource(this);
-        filtersDataSource.open();
+        allDaysDataSource = new AllDaysDataSource(this);
+        allCinemasDataSource = new AllCinemasDataSource(this);
+        allGenresDataSource = new AllGenresDataSource(this);
+        allCinemasDataSource.open();
+        allGenresDataSource.open();
+        allDaysDataSource.open();
         movieDataSource.open();
 
         soon = (Button) findViewById(R.id.soon);
@@ -252,14 +247,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             mVideoView.start();
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, sm.getDatabaseVersion(), Toast.LENGTH_LONG).show();
-            if (sm.getDatabaseVersion() != "0") {
-                list = movieDataSource.getAllMovie();
-                movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false, false, false);
-                movieAdapter.notifyDataSetChanged();
-                gridView.setAdapter(movieAdapter);
-                progressBar.setVisibility(View.GONE);
-            }
+            movieList = movieDataSource.getAllMovie();
+            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, movieList, false, false, false);
+            movieAdapter.notifyDataSetChanged();
+            gridView.setAdapter(movieAdapter);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -307,19 +299,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         try {
                             JSONObject object = new JSONObject(response);
                             JSONArray jsonArray = object.getJSONArray("movies");
-                            int databaseVersionServer = Integer.parseInt(object.getString("database_version"));
 
-//                            if (databaseVersionServer > Integer.parseInt(sm.getDatabaseVersion())) {
                             movieDataSource.removeAll();
-                            sm.setDatabaseVersion(databaseVersionServer + "");
-//                            }
+                            allDaysDataSource.removeAll();
+                            allCinemasDataSource.removeAll();
+                            allGenresDataSource.removeAll();
+
                             ArrayList<String> days = new ArrayList<>();
                             ArrayList<String> nameOfDays = new ArrayList<>();
                             HashSet<String> nameOfPlaces = new HashSet<>();
-                            ArrayList<String> nameOfPlacesArray = new ArrayList<>();
+//                            ArrayList<String> nameOfPlacesArray = new ArrayList<>();
                             HashMap<String, String[]> onlyProjections;
                             String[] projections;
                             HashMap<String, HashMap<String, String[]>> allProjections;
+                            Iterator it1, it2, it3;
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject obj = jsonArray.getJSONObject(i);
@@ -335,16 +328,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 movie.setMovieTitle(obj.getString("title"));
                                 movie.setNewForWeek(obj.getString("new_for_week"));
 
-                                movieDataSource.createMovie(obj.getString("title"), obj.getString("rating"));
-
                                 for (int j = 0; j < obj.getJSONArray("movie_directors").length(); j++) {
                                     directors.add(obj.getJSONArray("movie_directors").getString(j));
                                 }
                                 movie.setMovieDirectors(directors);
                                 for (int k = 0; k < obj.getJSONArray("movie_genre").length(); k++) {
                                     genre.add(obj.getJSONArray("movie_genre").getString(k));
+                                    movie.setMovieGenre(obj.getJSONArray("movie_genre").getString(k));
                                 }
-                                movie.setMovieGenre(genre);
+
                                 for (int l = 0; l < obj.getJSONArray("movie_actors").length(); l++) {
                                     actors.add(obj.getJSONArray("movie_actors").getString(l));
                                 }
@@ -373,6 +365,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                         if (y == 0) {
                                             temp = obj.getJSONArray("days").getJSONArray(z).getString(y);
                                             days.add(temp);
+                                            movie.setDate(temp);
                                             onlyProjections.put(temp, projections);
                                         } else {
                                             nameOfDays.add(obj.getJSONArray("days").getJSONArray(z).getString(y));
@@ -380,10 +373,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     }
                                 }
                                 String tempCinema;
-                                nameOfPlacesArray = new ArrayList<>();
+//                                nameOfPlacesArray = new ArrayList<>();
                                 for (int l = 0; l < obj.getJSONArray("cinemas").length(); l++) {
                                     tempCinema = obj.getJSONArray("cinemas").getString(l);
-                                    nameOfPlacesArray.add(tempCinema);
+                                    movie.setNameOfPlace(tempCinema);
+//                                    nameOfPlacesArray.add(tempCinema);
                                     nameOfPlaces.add(tempCinema);
                                 }
 
@@ -392,30 +386,77 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     allProjections.put(s, onlyProjections);
                                 }
 
-                                movie.setDate(days);
-                                movie.setNameOfPlace(nameOfPlacesArray);
                                 movie.setNameDayOfMonth(nameOfDays);
                                 movie.setAllProjections(allProjections);
 
-                                list.add(movie);
+                                it1 = days.iterator();
+                                it2 = nameOfPlaces.iterator();
+                                it3 = genre.iterator();
+
+                                ArrayList<Integer> arr = new ArrayList<>();
+                                arr.add(movie.getDate().size());
+                                arr.add(movie.getNameOfPlace().size());
+                                arr.add(movie.getMovieGenre().size());
+                                Collections.sort(arr);
+
+                                String day = "";
+                                String cinema = "";
+                                String genreString = "";
+
+                                for (int q = 0; i < arr.get(0); q++) {
+
+
+                                    if (days.get(i) != null || days.get(i) != "") {
+                                        day = days.get(i);
+                                    }
+                                    Toast.makeText(MainActivity.this, it2.next().toString(), Toast.LENGTH_SHORT).show();
+                                    if (it2.next().toString() != null || it2.next().toString() != "") {
+                                        cinema = it2.toString();
+                                    }
+                                    if (genre.get(i) != null || genre.get(i) != "") {
+                                        genreString = genre.get(i);
+                                    }
+                                    Toast.makeText(MainActivity.this, "CLICK" + arr.get(0), Toast.LENGTH_SHORT).show();
+//                                    movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
+//                                            , day, cinema, genreString);
+                                }
+
+//                                while (it1.hasNext() || it2.hasNext() || it3.hasNext()) {
+//                                    if (it1.hasNext()) {
+//                                        if (it2.hasNext()) {
+//                                            if (it3.hasNext()) {
+//                                                movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
+//                                                        , it1.next().toString(), it2.next().toString(), it3.next().toString());
+//                                    Toast.makeText(MainActivity.this, "KO STAVA", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                            else {
+//                                                movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
+//                                                        , it1.next().toString(), it2.next().toString(), "");
+//                                            }
+//                                        }
+//                                        else {
+//                                            movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
+//                                                    , it1.next().toString(), "", "");
+//                                        }
+//                                    }
+//                                    else {
+//                                        movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
+//                                                , "", "", "");
+//                                    }
+//                                }
+                                movieList.add(movie);
                             }
+
 
 //                            AllGenresFilters.allGenres.clear();
 //                            AllDaysFilters.allDays.clear();
-                            filtersDataSource.removeAll();
-                            Iterator it1 = days.iterator();
-                            Iterator it2 = nameOfPlaces.iterator();
+                            allDaysDataSource.removeAll();
 
-                            while (it1.hasNext() || it2.hasNext()) {
-                                if (it1.hasNext()) {
-                                    if (it2.hasNext()) {
-//                                        Toast.makeText(MainActivity.this, "FIRST" + it1.next().toString() + ",SECOND" + it2.next().toString(), Toast.LENGTH_SHORT).show();
-                                        filtersDataSource.createFilter(it1.next().toString(), it2.next().toString(), "");
-                                    } else {
-//                                        Toast.makeText(MainActivity.this, "FIRST" + it1.next().toString(), Toast.LENGTH_SHORT).show();
-                                        filtersDataSource.createFilter(it1.next().toString(), "", "");
-                                    }
-                                }
+                            for (String s : days) {
+                                allDaysDataSource.createFilter(s);
+                            }
+                            for (String s : nameOfPlaces) {
+                                allCinemasDataSource.createFilter(s);
                             }
 
 //                            for (int i = 0; i < days.size(); i++) {
@@ -430,8 +471,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //                                AllCinemasFilters.allCinemas.add(filter);
 //                            }
 
-                            SaveTempMovieModel.setMovies(list);
-                            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, list, false, false, false);
+                            SaveTempMovieModel.setMovies(movieList);
+                            movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, movieList, false, false, false);
                             movieAdapter.notifyDataSetChanged();
                             gridView.setAdapter(movieAdapter);
                             progressBar.setVisibility(View.GONE);
@@ -582,6 +623,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         movieDataSource.close();
-        filtersDataSource.close();
+        allDaysDataSource.close();
+    }
+
+    public void clearListOfSelected(ArrayList<Filters> filterses) {
+        for (int i = 0; i < filterses.size(); i++) {
+            if (filterses.get(i).isDaySelected()) {
+                filterses.get(i).setDaySelected(false);
+            }
+            if (filterses.get(i).isCinemaSelected()) {
+                filterses.get(i).setCinemaSelected(false);
+            }
+            if (filterses.get(i).isGenreSelected()) {
+                filterses.get(i).setGenreSelected(false);
+            }
+        }
     }
 }

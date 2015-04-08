@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import adapters.FilterAdapter;
-import database.FiltersDataSource;
+import database.AllCinemasDataSource;
 import models.Filters;
 
 /**
@@ -26,7 +26,8 @@ public class AllCinemasFragment extends Fragment {
     private FilterAdapter adapter;
     private Button button;
     private TextView clear;
-    private FiltersDataSource filtersDataSource;
+    private AllCinemasDataSource allCinemasDataSource;
+    private static final int NUMBER_OF_COLUMN = 1;
 
     AllCinemasFragment(Button button) {
         this.button = button;
@@ -37,10 +38,10 @@ public class AllCinemasFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_cinemas_fragment, container, false);
 
-        filtersDataSource = new FiltersDataSource(getActivity());
-        filtersDataSource.open();
+        allCinemasDataSource = new AllCinemasDataSource(getActivity());
+        allCinemasDataSource.open();
 
-        ArrayList<Filters> list = filtersDataSource.getAllFilters();
+        ArrayList<Filters> list = allCinemasDataSource.getAllFilters();
 
         clear = (TextView) view.findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +55,7 @@ public class AllCinemasFragment extends Fragment {
 
 
         listView = (ListView) view.findViewById(R.id.list_view);
+//        Toast.makeText(getActivity(), list.toString(), Toast.LENGTH_LONG).show();
 //        ArrayList<Filter> list = new ArrayList<>();
 //
 //        for (int i = 0; i < 100; i++) {

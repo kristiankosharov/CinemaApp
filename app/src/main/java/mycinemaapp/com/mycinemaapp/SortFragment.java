@@ -60,7 +60,7 @@ public class SortFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.popularity_sort:
                 clickedButton = "popularity";
-                Intent intent1 = new Intent(getActivity(), TestDatabaseFilters.class);
+                Intent intent1 = new Intent(getActivity(), TestDatabaseMovies.class);
                 startActivity(intent1);
 //                getFragmentManager().popBackStack();
                 break;
