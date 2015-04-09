@@ -36,10 +36,8 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import adapters.MovieAdapter;
 import database.AllCinemasDataSource;
@@ -50,7 +48,6 @@ import helpers.RequestManager;
 import helpers.SessionManager;
 import models.Filters;
 import models.Movie;
-import models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -247,7 +244,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             mVideoView.start();
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
-            movieList = movieDataSource.getAllMovie();
+            movieList = movieDataSource.getAllMovieTitle();
             movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, movieList, false, false, false);
             movieAdapter.notifyDataSetChanged();
             gridView.setAdapter(movieAdapter);
@@ -308,16 +305,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             ArrayList<String> days = new ArrayList<>();
                             ArrayList<String> nameOfDays = new ArrayList<>();
                             HashSet<String> nameOfPlaces = new HashSet<>();
-//                            ArrayList<String> nameOfPlacesArray = new ArrayList<>();
                             HashMap<String, String[]> onlyProjections;
                             String[] projections;
                             HashMap<String, HashMap<String, String[]>> allProjections;
-                            Iterator it1, it2, it3;
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject obj = jsonArray.getJSONObject(i);
 
-                                ArrayList<String> genre = new ArrayList<>();
                                 ArrayList<String> directors = new ArrayList<>();
                                 ArrayList<String> actors = new ArrayList<>();
 
@@ -333,7 +327,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 }
                                 movie.setMovieDirectors(directors);
                                 for (int k = 0; k < obj.getJSONArray("movie_genre").length(); k++) {
-                                    genre.add(obj.getJSONArray("movie_genre").getString(k));
                                     movie.setMovieGenre(obj.getJSONArray("movie_genre").getString(k));
                                 }
 
@@ -358,14 +351,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     projections[m] = obj.getJSONArray("hours").getString(m);
                                 }
                                 String temp;
-                                days = new ArrayList<>();
                                 onlyProjections = new HashMap<>();
+                                days = new ArrayList<>();
                                 for (int z = 0; z < obj.getJSONArray("days").length(); z++) {
                                     for (int y = 0; y < obj.getJSONArray("days").getJSONArray(z).length(); y++) {
                                         if (y == 0) {
                                             temp = obj.getJSONArray("days").getJSONArray(z).getString(y);
-                                            days.add(temp);
                                             movie.setDate(temp);
+                                            days.add(temp);
                                             onlyProjections.put(temp, projections);
                                         } else {
                                             nameOfDays.add(obj.getJSONArray("days").getJSONArray(z).getString(y));
@@ -373,11 +366,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     }
                                 }
                                 String tempCinema;
-//                                nameOfPlacesArray = new ArrayList<>();
                                 for (int l = 0; l < obj.getJSONArray("cinemas").length(); l++) {
                                     tempCinema = obj.getJSONArray("cinemas").getString(l);
                                     movie.setNameOfPlace(tempCinema);
-//                                    nameOfPlacesArray.add(tempCinema);
                                     nameOfPlaces.add(tempCinema);
                                 }
 
@@ -389,67 +380,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 movie.setNameDayOfMonth(nameOfDays);
                                 movie.setAllProjections(allProjections);
 
-                                it1 = days.iterator();
-                                it2 = nameOfPlaces.iterator();
-                                it3 = genre.iterator();
-
-                                ArrayList<Integer> arr = new ArrayList<>();
-                                arr.add(movie.getDate().size());
-                                arr.add(movie.getNameOfPlace().size());
-                                arr.add(movie.getMovieGenre().size());
-                                Collections.sort(arr);
-
-                                String day = "";
-                                String cinema = "";
-                                String genreString = "";
-
-                                for (int q = 0; i < arr.get(0); q++) {
-
-
-                                    if (days.get(i) != null || days.get(i) != "") {
-                                        day = days.get(i);
-                                    }
-                                    Toast.makeText(MainActivity.this, it2.next().toString(), Toast.LENGTH_SHORT).show();
-                                    if (it2.next().toString() != null || it2.next().toString() != "") {
-                                        cinema = it2.toString();
-                                    }
-                                    if (genre.get(i) != null || genre.get(i) != "") {
-                                        genreString = genre.get(i);
-                                    }
-                                    Toast.makeText(MainActivity.this, "CLICK" + arr.get(0), Toast.LENGTH_SHORT).show();
-//                                    movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
-//                                            , day, cinema, genreString);
-                                }
-
-//                                while (it1.hasNext() || it2.hasNext() || it3.hasNext()) {
-//                                    if (it1.hasNext()) {
-//                                        if (it2.hasNext()) {
-//                                            if (it3.hasNext()) {
-//                                                movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
-//                                                        , it1.next().toString(), it2.next().toString(), it3.next().toString());
-//                                    Toast.makeText(MainActivity.this, "KO STAVA", Toast.LENGTH_SHORT).show();
-//                                            }
-//                                            else {
-//                                                movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
-//                                                        , it1.next().toString(), it2.next().toString(), "");
-//                                            }
-//                                        }
-//                                        else {
-//                                            movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
-//                                                    , it1.next().toString(), "", "");
-//                                        }
-//                                    }
-//                                    else {
-//                                        movieDataSource.createMovie(movie.getMovieTitle(), String.valueOf(movie.getMovieProgress())
-//                                                , "", "", "");
-//                                    }
-//                                }
                                 movieList.add(movie);
                             }
 
+                            for (int i = 0; i < movieList.size(); i++) {
+                                for (int k = 0; k < movieList.get(i).getDate().size(); k++) {
+                                    for (int j = 0; j < movieList.get(i).getNameOfPlace().size(); j++) {
+                                        for (int l = 0; l < movieList.get(i).getMovieGenre().size(); l++) {
+                                            movieDataSource.createMovie(movieList.get(i).getMovieTitle(), String.valueOf(movieList.get(i).getMovieProgress())
+                                                    , movieList.get(i).getDate().get(k), movieList.get(i).getNameOfPlace().get(j), movieList.get(i).getMovieGenre().get(l));
+                                        }
+                                    }
+                                }
+                            }
 
-//                            AllGenresFilters.allGenres.clear();
-//                            AllDaysFilters.allDays.clear();
                             allDaysDataSource.removeAll();
 
                             for (String s : days) {
@@ -459,19 +403,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 allCinemasDataSource.createFilter(s);
                             }
 
-//                            for (int i = 0; i < days.size(); i++) {
-//                                Filter filter = new Filter();
-//                                filter.setFilter(days.get(i));
-//                                AllDaysFilters.allDays.add(filter);
-//                            }
-//                            AllCinemasFilters.allCinemas.clear();
-//                            for (String s : nameOfPlaces) {
-//                                Filter filter = new Filter();
-//                                filter.setFilter(s);
-//                                AllCinemasFilters.allCinemas.add(filter);
-//                            }
-
-                            SaveTempMovieModel.setMovies(movieList);
                             movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, movieList, false, false, false);
                             movieAdapter.notifyDataSetChanged();
                             gridView.setAdapter(movieAdapter);

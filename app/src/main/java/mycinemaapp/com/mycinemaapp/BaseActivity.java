@@ -16,8 +16,11 @@
 
 package mycinemaapp.com.mycinemaapp;
 
+import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -136,5 +139,12 @@ public abstract class BaseActivity extends ActionBarActivity {
         display.getSize(size);
         int screenWidth = size.x;
         return screenWidth / 3;
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

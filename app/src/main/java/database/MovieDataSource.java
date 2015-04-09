@@ -78,6 +78,24 @@ public class MovieDataSource {
         return userList;
     }
 
+    public ArrayList<Movie> getAllMovieTitle() {
+        ArrayList<Movie> userList = new ArrayList<Movie>();
+
+        Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.TABLE_MOVIES + " GROUP BY " + MySQLiteHelper.COLUMN_MOVIE_TITLE, null);
+//                database.query(MySQLiteHelper.TABLE_MOVIES,
+//                allColumns, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Movie movie = cursorToUser(cursor);
+            userList.add(movie);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return userList;
+    }
+
     private Movie cursorToUser(Cursor cursor) {
         Movie movie = new Movie();
         movie.setId(cursor.getLong(0));
@@ -95,9 +113,6 @@ public class MovieDataSource {
     public void removeAll() {
         // db.delete(String tableName, String whereClause, String[] whereArgs);
         // If whereClause is null, it will delete all rows.
-//        SQLiteDatabase db = helper.getWritableDatabase(); // helper is object extends SQLiteOpenHelper
         database.delete(MySQLiteHelper.TABLE_MOVIES, null, null);
     }
-
-//    public void sort(String day, String )
 }

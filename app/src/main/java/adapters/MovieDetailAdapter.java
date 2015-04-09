@@ -39,7 +39,7 @@ import mycinemaapp.com.mycinemaapp.WebViewActivity;
 public class MovieDetailAdapter extends PagerAdapter {
 
     private Activity context;
-    private ArrayList<Movie> list;
+    private ArrayList<Movie> list = new ArrayList<>();
     private String day;
     private String place;
 
@@ -113,41 +113,51 @@ public class MovieDetailAdapter extends PagerAdapter {
 
         String genresString = "";
         ArrayList<String> genresArray = item.getMovieGenre();
-        for (int i = 0; i < item.getCountGenre(); i++) {
-            if (genresArray.get(i) == null) {
-                genresArray.remove(i);
-                genresArray.add(i, "");
+        if (item.getMovieGenre() != null) {
+            for (int i = 0; i < item.getCountGenre(); i++) {
+                if (genresArray.get(i) == null) {
+                    genresArray.remove(i);
+                    genresArray.add(i, "");
+                }
+                genresString = genresString + genresArray.get(i) + ".";
             }
-            genresString = genresString + genresArray.get(i) + ".";
         }
         viewHolder.genre.setText(genresString);
 
         String directorsString = "";
         ArrayList<String> directorsArray = item.getMovieDirectors();
-        for (int i = 0; i < item.getCountDeirectors(); i++) {
-            if (directorsArray.get(i) == null) {
-                directorsArray.remove(i);
-                directorsArray.add(i, "");
+        if (item.getMovieDirectors() != null) {
+            for (int i = 0; i < item.getCountDeirectors(); i++) {
+                if (directorsArray.get(i) == null) {
+                    directorsArray.remove(i);
+                    directorsArray.add(i, "");
+                }
+                directorsString = directorsString + directorsArray.get(i) + "\n";
             }
-            directorsString = directorsString + directorsArray.get(i) + "\n";
         }
         viewHolder.director.setText(directorsString);
 
         String actorsString = "";
         ArrayList<String> actorsArray = item.getMovieActors();
-        for (int i = 0; i < item.getCountActors(); i++) {
-            if (actorsArray.get(i) == null) {
-                actorsArray.remove(i);
-                actorsArray.add("");
+        if (item.getMovieActors() != null) {
+            for (int i = 0; i < item.getCountActors(); i++) {
+                if (actorsArray.get(i) == null) {
+                    actorsArray.remove(i);
+                    actorsArray.add("");
+                }
+                actorsString = actorsString + actorsArray.get(i) + "\n";
             }
-            actorsString = actorsString + actorsArray.get(i) + "\n";
         }
         viewHolder.actors.setText(actorsString);
-
-        viewHolder.duration.setText(item.getDuration() + "min");
-        viewHolder.titleDescription.setText(item.getMovieTitle());
-        viewHolder.fullDescription.setText(item.getFullDescription());
-
+        if (item.getDuration() != null) {
+            viewHolder.duration.setText(item.getDuration() + "min");
+        }
+        if (item.getMovieTitle() != null) {
+            viewHolder.titleDescription.setText(item.getMovieTitle());
+        }
+        if (item.getFullDescription() != null) {
+            viewHolder.fullDescription.setText(item.getFullDescription());
+        }
         viewHolder.playTrailer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,9 +177,10 @@ public class MovieDetailAdapter extends PagerAdapter {
         RelativeLayout projectionLayout = (RelativeLayout) view.findViewById(R.id.projection_horizontal_scroll_view);
 
         //New Thread maybe
-        createDaysScroll(daysLayout, item, projectionLayout);
-        createPlaceScroll(mallLayout, item, projectionLayout);
-
+        if (item.getNameOfPlace() != null || item.getDate() != null) {
+            createDaysScroll(daysLayout, item, projectionLayout);
+            createPlaceScroll(mallLayout, item, projectionLayout);
+        }
         viewHolder.rateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,11 +243,21 @@ public class MovieDetailAdapter extends PagerAdapter {
         ImageView addButton;
     }
 
-    public void createDaysScroll(RelativeLayout containerLayout, Movie item, RelativeLayout containerForProjects) {
+    public void createDaysScroll(RelativeLayout containerLayout, Movie item, RelativeLayout
+            containerForProjects) {
         boolean fromAdapter = true;
-        ArrayList<String> nameOfDays = item.getNameDayOfMonth();
-        ArrayList<String> date = item.getDate();
-        ArrayList<String> places = item.getNameOfPlace();
+        ArrayList<String> nameOfDays = new ArrayList<>();
+        ArrayList<String> date = new ArrayList<>();
+        ArrayList<String> places = new ArrayList<>();
+        if (item.getNameDayOfMonth() != null) {
+            nameOfDays = item.getNameDayOfMonth();
+        }
+        if (item.getDate() != null) {
+            date = item.getDate();
+        }
+        if (item.getNameOfPlace() != null) {
+            places = item.getNameOfPlace();
+        }
 
 //        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
 
@@ -278,13 +299,17 @@ public class MovieDetailAdapter extends PagerAdapter {
                 dayView.setWidth(viewWidth);
                 dayView.setLayoutParams(textViewParam);
                 dayView.setGravity(Gravity.CENTER_HORIZONTAL);
-                dayView.setText(nameOfDays.get(i));
+                if (nameOfDays.size() > 0) {
+                    dayView.setText(nameOfDays.get(i));
+                }
                 dayView.setTag(i);
 
                 dateView.setWidth(viewWidth);
                 dateView.setLayoutParams(textViewParam);
                 dateView.setGravity(Gravity.CENTER_HORIZONTAL);
-                dateView.setText(date.get(i));
+                if (date.size() > 0) {
+                    dateView.setText(date.get(i));
+                }
 
                 layout.addView(dayView);
                 layout.addView(dateView);
@@ -300,7 +325,8 @@ public class MovieDetailAdapter extends PagerAdapter {
         containerLayout.addView(scrollView);
     }
 
-    public void createPlaceScroll(RelativeLayout containerLayout, Movie item, RelativeLayout containerForProjects) {
+    public void createPlaceScroll(RelativeLayout containerLayout, Movie item, RelativeLayout
+            containerForProjects) {
 
         final ArrayList<String> nameOfPlace = item.getNameOfPlace();
         ArrayList<String> date = item.getDate();

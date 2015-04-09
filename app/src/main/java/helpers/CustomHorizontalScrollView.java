@@ -247,7 +247,10 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
         int viewWidth = ((BaseActivity) context).getViewWidth();
         TextView placeView;
         LinearLayout layout;
-        String[] projections = map.get(place).get(day);
+        String[] projections = new String[0];
+        if (map != null) {
+            projections = map.get(place).get(day);
+        }
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 viewWidth,

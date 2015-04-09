@@ -8,13 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import adapters.MovieDetailAdapter;
+import database.MovieDataSource;
 import models.AddMovies;
 import models.RatedMovies;
-import models.SaveTempMovieModel;
 
 /**
  * Created by kristian on 15-3-4.
@@ -34,11 +35,15 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
     private boolean isRated;
     private boolean isBought;
     private int position;
+    private MovieDataSource movieDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);
+
+        movieDataSource = new MovieDataSource(this);
+        movieDataSource.open();
 
         LayoutInflater inflater = getLayoutInflater();
 
@@ -57,13 +62,18 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         isBought = intent.getBooleanExtra("ISBOUGHT", false);
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        if (isList) {
-            adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
-        } else if (isRated) {
-            adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
-        } else if (isBought) {
+        if (isOnline()) {
+            if (isList) {
+                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
+            } else if (isRated) {
+                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
+            } else if (isBought) {
+            } else {
+                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(), isList, isRated, isBought);
+            }
         } else {
-            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
+            Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
+            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovieTitle(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
@@ -87,13 +97,17 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         super.onResume();
-        if (isList) {
-            adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
-        } else if (isRated) {
-            adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
-        } else if (isBought) {
+        if (isOnline()) {
+            if (isList) {
+                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
+            } else if (isRated) {
+                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
+            } else if (isBought) {
+            } else {
+                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(), isList, isRated, isBought);
+            }
         } else {
-            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
+            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovieTitle(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         if (adapter.getCount() == 0) {
@@ -113,8 +127,8 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
             if (resultCode == RESULT_CODE) {
                 position = data.getIntExtra("POSITION", 0);
             }
-        } else if(requestCode == 2){
-            if(resultCode == 2){
+        } else if (requestCode == 2) {
+            if (resultCode == 2) {
                 position = data.getIntExtra("POSITION", 0);
             }
         }
