@@ -19,11 +19,11 @@ public class Movie {
     float userRating;
 
 
-    String duration;
+    int duration;
     String imageUrl;
     String movieTitle;
     ArrayList<String> movieGenre = new ArrayList<>();
-    ArrayList<String> movieDirectors;
+    String movieDirectors;
     ArrayList<String> movieActors;
 
     String movieTrailerUrl;
@@ -42,11 +42,21 @@ public class Movie {
     ArrayList<String> nameDayOfMonth;
     String[] timeOfProjection;
 
+    String releaseDate;
+
     ArrayList<String> nameOfPlace = new ArrayList<>();
 
     HashMap<String, HashMap<String, String[]>> allProjections;
 
     private boolean isAdd;
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
 
     public long getId() {
         return id;
@@ -183,11 +193,11 @@ public class Movie {
     }
 
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
@@ -219,17 +229,17 @@ public class Movie {
         return movieGenre.size();
     }
 
-    public ArrayList<String> getMovieDirectors() {
+    public String getMovieDirectors() {
         return movieDirectors;
     }
 
-    public void setMovieDirectors(ArrayList<String> movieDirectors) {
+    public void setMovieDirectors(String movieDirectors) {
         this.movieDirectors = movieDirectors;
     }
 
-    public int getCountDeirectors() {
-        return movieDirectors.size();
-    }
+//    public int getCountDeirectors() {
+//        return movieDirectors.size();
+//    }
 
     public int getCountActors() {
         return movieActors.size();

@@ -23,9 +23,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import database.AllCinemasDataSource;
+import database.AllDaysDataSource;
+import database.AllGenresDataSource;
 import helpers.CustomHorizontalScrollView;
 import helpers.SessionManager;
 import models.AddMovies;
+import models.Filters;
 import models.Movie;
 import mycinemaapp.com.mycinemaapp.BaseActivity;
 import mycinemaapp.com.mycinemaapp.MovieTrailerLandscape;
@@ -47,6 +51,10 @@ public class MovieDetailAdapter extends PagerAdapter {
     private int viewWidth;
     private SessionManager sm;
     private boolean isList, isRated, isBought;
+    private AllDaysDataSource daysDataSource;
+    private AllCinemasDataSource cinemasDataSource;
+    private AllGenresDataSource genresDataSource;
+
 
     public MovieDetailAdapter(Activity context, ArrayList<Movie> list, boolean isList, boolean isRated, boolean isBought) {
         this.context = context;
@@ -72,6 +80,13 @@ public class MovieDetailAdapter extends PagerAdapter {
         density = ((BaseActivity) context).getDensity();
         viewWidth = ((BaseActivity) context).getViewWidth();
         sm = new SessionManager(context);
+        daysDataSource = new AllDaysDataSource(context);
+        daysDataSource.open();
+        cinemasDataSource = new AllCinemasDataSource(context);
+        cinemasDataSource.open();
+        genresDataSource = new AllGenresDataSource(context);
+        genresDataSource.open();
+
         LayoutInflater inflater = context.getLayoutInflater();
         View view = inflater.inflate(R.layout.movie_detail_item, null, false);
 
@@ -125,17 +140,17 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.genre.setText(genresString);
 
         String directorsString = "";
-        ArrayList<String> directorsArray = item.getMovieDirectors();
-        if (item.getMovieDirectors() != null) {
-            for (int i = 0; i < item.getCountDeirectors(); i++) {
-                if (directorsArray.get(i) == null) {
-                    directorsArray.remove(i);
-                    directorsArray.add(i, "");
-                }
-                directorsString = directorsString + directorsArray.get(i) + "\n";
-            }
-        }
-        viewHolder.director.setText(directorsString);
+//        ArrayList<String> directorsArray = item.getMovieDirectors();
+//        if (item.getMovieDirectors() != null) {
+//            for (int i = 0; i < item.getCountDeirectors(); i++) {
+//                if (directorsArray.get(i) == null) {
+//                    directorsArray.remove(i);
+//                    directorsArray.add(i, "");
+//                }
+//                directorsString = directorsString + directorsArray.get(i) + "\n";
+//            }
+//        }
+        viewHolder.director.setText(item.getMovieDirectors());
 
         String actorsString = "";
         ArrayList<String> actorsArray = item.getMovieActors();
@@ -149,7 +164,7 @@ public class MovieDetailAdapter extends PagerAdapter {
             }
         }
         viewHolder.actors.setText(actorsString);
-        if (item.getDuration() != null) {
+        if (item.getDuration() != 0) {
             viewHolder.duration.setText(item.getDuration() + "min");
         }
         if (item.getMovieTitle() != null) {
@@ -247,16 +262,13 @@ public class MovieDetailAdapter extends PagerAdapter {
             containerForProjects) {
         boolean fromAdapter = true;
         ArrayList<String> nameOfDays = new ArrayList<>();
-        ArrayList<String> date = new ArrayList<>();
-        ArrayList<String> places = new ArrayList<>();
-        if (item.getNameDayOfMonth() != null) {
-            nameOfDays = item.getNameDayOfMonth();
-        }
-        if (item.getDate() != null) {
-            date = item.getDate();
-        }
-        if (item.getNameOfPlace() != null) {
-            places = item.getNameOfPlace();
+        ArrayList<Filters> date = new ArrayList<>();
+        ArrayList<Filters> places = new ArrayList<>();
+
+        date = daysDataSource.getAllFilters();
+        places = cinemasDataSource.getAllFilters();
+        for (Filters s : date) {
+            nameOfDays.add(s.getDayNameFilter());
         }
 
 //        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
@@ -281,7 +293,7 @@ public class MovieDetailAdapter extends PagerAdapter {
         scrollView.setDayAndPlace(places, date, item.getAllProjections());
         scrollView.setHorizontalScrollBarEnabled(false);
         scrollView.fromScroll(true, false, false);
-        scrollView.createProjectionScroll(places.get(0), date.get(0), fromAdapter);
+        scrollView.createProjectionScroll(places.get(0).getCinemaFilter(), date.get(0).getDayFilter(), fromAdapter);
 
         for (int i = -1; i < date.size() + 1; i++) {
 
@@ -308,7 +320,7 @@ public class MovieDetailAdapter extends PagerAdapter {
                 dateView.setLayoutParams(textViewParam);
                 dateView.setGravity(Gravity.CENTER_HORIZONTAL);
                 if (date.size() > 0) {
-                    dateView.setText(date.get(i));
+                    dateView.setText(date.get(i).getDayFilter());
                 }
 
                 layout.addView(dayView);
@@ -316,7 +328,7 @@ public class MovieDetailAdapter extends PagerAdapter {
 
                 layout.setLayoutParams(layoutParams);
             }
-            day = date.get(0);
+            day = date.get(0).getDayFilter();
 
             layout.setBackground(context.getResources().getDrawable(R.drawable.scalloped_rectangle));
             masterLayout.addView(layout);
@@ -328,15 +340,15 @@ public class MovieDetailAdapter extends PagerAdapter {
     public void createPlaceScroll(RelativeLayout containerLayout, Movie item, RelativeLayout
             containerForProjects) {
 
-        final ArrayList<String> nameOfPlace = item.getNameOfPlace();
-        ArrayList<String> date = item.getDate();
+        final ArrayList<Filters> nameOfPlace = cinemasDataSource.getAllFilters();
+        ArrayList<Filters> date = daysDataSource.getAllFilters();
 
         final CustomHorizontalScrollView scrollView = new CustomHorizontalScrollView(context, nameOfPlace.size() - 1, viewWidth, viewWidth, containerForProjects);
         scrollView.setHorizontalScrollBarEnabled(false);
         scrollView.fromScroll(false, true, false);
 
         scrollView.setDayAndPlace(nameOfPlace, date, item.getAllProjections());
-        scrollView.createProjectionScroll(nameOfPlace.get(0), date.get(0), true);
+        scrollView.createProjectionScroll(nameOfPlace.get(0).getCinemaFilter(), date.get(0).getDayFilter(), true);
 
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -373,7 +385,7 @@ public class MovieDetailAdapter extends PagerAdapter {
                 placeView.setWidth(viewWidth);
                 placeView.setLayoutParams(textViewParam);
                 placeView.setGravity(Gravity.CENTER);
-                placeView.setText(nameOfPlace.get(i));
+                placeView.setText(nameOfPlace.get(i).getCinemaFilter());
                 placeView.setTag(i);
 
                 layout.addView(placeView);

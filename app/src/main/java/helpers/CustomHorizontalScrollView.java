@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import models.Filters;
 import mycinemaapp.com.mycinemaapp.BaseActivity;
 import mycinemaapp.com.mycinemaapp.R;
 import mycinemaapp.com.mycinemaapp.ReservationSeats;
@@ -33,8 +34,8 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     private int overScrollX, scrollToX, scrollToY;
 
     private String day, place;
-    private ArrayList<String> nameOfPlace;
-    private ArrayList<String> days;
+    private ArrayList<Filters> nameOfPlace;
+    private ArrayList<Filters> days;
     private HashMap<String, HashMap<String, String[]>> map;
 
     private GestureDetector gestureDetector;
@@ -218,7 +219,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
     }
 
-    public void setDayAndPlace(ArrayList<String> nameOfPlace, ArrayList<String> days, HashMap<String, HashMap<String, String[]>> map) {
+    public void setDayAndPlace(ArrayList<Filters> nameOfPlace, ArrayList<Filters> days, HashMap<String, HashMap<String, String[]>> map) {
         this.nameOfPlace = nameOfPlace;
         this.days = days;
         this.map = map;
@@ -233,10 +234,10 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     private void isFromScroll(boolean isDaysScroll, boolean isPlaceScroll, boolean isProjectionScroll, int position) {
         if (isDaysScroll) {
             activeDay = position;
-            createProjectionScroll(nameOfPlace.get(activePlace), days.get(activeDay), false);
+            createProjectionScroll(nameOfPlace.get(activePlace).getCinemaFilter(), days.get(activeDay).getDayFilter(), false);
         } else if (isPlaceScroll) {
             activePlace = position;
-            createProjectionScroll(nameOfPlace.get(activePlace), days.get(activeDay), false);
+            createProjectionScroll(nameOfPlace.get(activePlace).getCinemaFilter(), days.get(activeDay).getDayFilter(), false);
         } else if (isProjectionScroll) {
 
         }

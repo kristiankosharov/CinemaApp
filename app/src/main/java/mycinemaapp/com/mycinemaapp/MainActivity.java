@@ -254,7 +254,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/bQGAxfVFea?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/cuFxuKnVKa?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -312,7 +312,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject obj = jsonArray.getJSONObject(i);
 
-                                ArrayList<String> directors = new ArrayList<>();
+//                                ArrayList<String> directors = new ArrayList<>();
                                 ArrayList<String> actors = new ArrayList<>();
 
 
@@ -321,11 +321,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 movie.setMovieProgress(Float.parseFloat(obj.getString("rating")));
                                 movie.setMovieTitle(obj.getString("title"));
                                 movie.setNewForWeek(obj.getString("new_for_week"));
-
-                                for (int j = 0; j < obj.getJSONArray("movie_directors").length(); j++) {
-                                    directors.add(obj.getJSONArray("movie_directors").getString(j));
-                                }
-                                movie.setMovieDirectors(directors);
+                                movie.setMovieDirectors(obj.getString("movie_directors"));
+                                movie.setReleaseDate(obj.getString("release_date"));
+//                                for (int j = 0; j < obj.getJSONArray("movie_directors").length(); j++) {
+//                                    directors.add(obj.getJSONArray("movie_directors").getString(j));
+//                                }
+//                                movie.setMovieDirectors(directors);
                                 for (int k = 0; k < obj.getJSONArray("movie_genre").length(); k++) {
                                     movie.setMovieGenre(obj.getJSONArray("movie_genre").getString(k));
                                 }
@@ -338,7 +339,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     movie.setUserRating(Integer.parseInt(obj.getString("user_rating")));
                                 }
                                 movie.setImdbUrl(obj.getString("imdb_url"));
-                                movie.setDuration(obj.getString("movie_duration"));
+                                movie.setDuration(Integer.parseInt(obj.getString("movie_duration")));
                                 movie.setFullDescription(obj.getString("movie_description"));
                                 movie.setTimeOfProjection(new String[]{});
                                 movie.setNumberOfDays(countOfDays);
@@ -384,20 +385,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             }
 
                             for (int i = 0; i < movieList.size(); i++) {
-                                for (int k = 0; k < movieList.get(i).getDate().size(); k++) {
-                                    for (int j = 0; j < movieList.get(i).getNameOfPlace().size(); j++) {
-                                        for (int l = 0; l < movieList.get(i).getMovieGenre().size(); l++) {
-                                            movieDataSource.createMovie(movieList.get(i).getMovieTitle(), String.valueOf(movieList.get(i).getMovieProgress())
-                                                    , movieList.get(i).getDate().get(k), movieList.get(i).getNameOfPlace().get(j), movieList.get(i).getMovieGenre().get(l));
-                                        }
-                                    }
-                                }
+                                movieDataSource.createMovie(movieList.get(i).getMovieTitle(), movieList.get(i).getMovieProgress(),
+                                        movieList.get(i).getImageUrl(), movieList.get(i).getDuration(), movieList.get(i).getImdbUrl(),
+                                        movieList.get(i).getFullDescription(), movieList.get(i).getMovieDirectors(), movieList.get(i).getReleaseDate(),
+                                        movieList.get(i).getNewForWeek());
                             }
 
                             allDaysDataSource.removeAll();
 
-                            for (String s : days) {
-                                allDaysDataSource.createFilter(s);
+                            for (int i = 0; i < days.size(); i++) {
+                                allDaysDataSource.createFilter(days.get(i), nameOfDays.get(i));
                             }
                             for (String s : nameOfPlaces) {
                                 allCinemasDataSource.createFilter(s);

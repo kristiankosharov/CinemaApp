@@ -10,10 +10,20 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import adapters.MovieDetailAdapter;
+import database.CinemaDataSource;
 import database.MovieDataSource;
+import helpers.RequestManager;
 import models.AddMovies;
 import models.RatedMovies;
 
@@ -36,6 +46,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
     private boolean isBought;
     private int position;
     private MovieDataSource movieDataSource;
+    private CinemaDataSource cinemaDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +55,13 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
 
         movieDataSource = new MovieDataSource(this);
         movieDataSource.open();
+        cinemaDataSource = new CinemaDataSource(this);
+        cinemaDataSource.open();
 
         LayoutInflater inflater = getLayoutInflater();
 
         v = inflater.inflate(R.layout.movie_detail_item, null);
+
 
         back = (ImageView) findViewById(R.id.back);
         share = (ImageView) findViewById(R.id.share);
@@ -73,7 +87,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
             }
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
-            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovieTitle(), isList, isRated, isBought);
+            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
@@ -158,5 +172,41 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         intent.putExtra("ISRATED", position);
         intent.putExtra("ISBOUGHT", position);
         super.onBackPressed();
+    }
+
+    private void cinemaRequest() {
+        String url = "http://www.json-generator.com/api/json/get/bYJRDIimgi?indent=2";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject obj = array.getJSONObject(i);
+//                                Cinema cinema = new Cinema();
+//                                cinema.setMovieId(obj.getInt("movie_id"));
+//                                cinema.setTitle(obj.getString("title"));
+//                                cinema.setLatitude(obj.getDouble("latitude"));
+//                                cinema.setLongitude(obj.getDouble("longitude"));
+                                cinemaDataSource.createCinema(obj.getInt("movie_id"), obj.getString("title"), (float) obj.getDouble("longitude"), (float) obj.getDouble("latitude"));
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MovieDetailActivity.this, "Please re-connect your connection!", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        );
+        // Add the request to the RequestQueue.
+        RequestManager.getRequestQueue().add(stringRequest);
     }
 }

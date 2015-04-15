@@ -20,7 +20,7 @@ public class AllDaysDataSource {
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
     private String[] allColumns = {MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.COLUMN_DAYS_FILTER};
+            MySQLiteHelper.COLUMN_DAYS_FILTER, MySQLiteHelper.COLUMN_DAYS_NAME};
 
     public AllDaysDataSource(Context context) {
         dbHelper = new MySQLiteHelper(context);
@@ -34,11 +34,12 @@ public class AllDaysDataSource {
         dbHelper.close();
     }
 
-    public Filters createFilter(String filter) {
+    public Filters createFilter(String filter, String dayName) {
         Filters newUser = new Filters();
         long insertId = 0;
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_DAYS_FILTER, filter);
+        values.put(MySQLiteHelper.COLUMN_DAYS_NAME, dayName);
         insertId = database.insert(MySQLiteHelper.TABLE_ALL_DAYS, null,
                 values);
         Cursor cursor = database.query(MySQLiteHelper.TABLE_ALL_DAYS,
@@ -79,6 +80,7 @@ public class AllDaysDataSource {
     private Filters cursorToUser(Cursor cursor) {
         Filters filters = new Filters();
         filters.setDayFilter(cursor.getString(1));
+        filters.setDayNameFilter(cursor.getString(2));
         return filters;
     }
 

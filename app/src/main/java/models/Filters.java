@@ -11,6 +11,15 @@ public class Filters {
     boolean isDaySelected;
     boolean isCinemaSelected;
     boolean isGenreSelected;
+    String dayNameFilter;
+
+    public String getDayNameFilter() {
+        return dayNameFilter;
+    }
+
+    public void setDayNameFilter(String dayNameFilter) {
+        this.dayNameFilter = dayNameFilter;
+    }
 
     public boolean isGenreSelected() {
         return isGenreSelected;

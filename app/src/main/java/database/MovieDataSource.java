@@ -18,9 +18,11 @@ public class MovieDataSource {
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
     private String[] allColumns = {MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.COLUMN_MOVIE_TITLE, MySQLiteHelper.COLUMN_MOVIE_PROGRESS,
-            MySQLiteHelper.COLUMN_MOVIE_DAYS, MySQLiteHelper.COLUMN_MOVIE_CINEMAS,
-            MySQLiteHelper.COLUMN_MOVIE_GENRES};
+            MySQLiteHelper.COLUMN_MOVIE_TITLE, MySQLiteHelper.COLUMN_MOVIE_RATE,
+            MySQLiteHelper.COLUMN_MOVIE_IMG_URL, MySQLiteHelper.COLUMN_MOVIE_DURATION,
+            MySQLiteHelper.COLUMN_MOVIE_IMDB, MySQLiteHelper.COLUMN_MOVIE_DESCRIPTION,
+            MySQLiteHelper.COLUMN_MOVIE_DIRECTOR,MySQLiteHelper.COLUMN_MOVIE_RELEASE_DATE,
+            MySQLiteHelper.COLUMN_MOVIE_NEW_THIS_WEEK};
     private Context con;
 
     public MovieDataSource(Context context) {
@@ -36,13 +38,19 @@ public class MovieDataSource {
         dbHelper.close();
     }
 
-    public Movie createMovie(String movieTitle, String movieProgress, String movieDay, String movieCinema, String movieGenres) {
+    public Movie createMovie(String movieTitle, float movieProgress, String movieImgUrl,
+                             int movieDuration, String movieImdbUrl, String movieDescription,
+                             String movieDirector, String movieReleaseDate, String movieNewThisWeek) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_MOVIE_TITLE, movieTitle);
-        values.put(MySQLiteHelper.COLUMN_MOVIE_PROGRESS, movieProgress);
-        values.put(MySQLiteHelper.COLUMN_MOVIE_DAYS, movieDay);
-        values.put(MySQLiteHelper.COLUMN_MOVIE_CINEMAS, movieCinema);
-        values.put(MySQLiteHelper.COLUMN_MOVIE_GENRES, movieGenres);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_RATE, movieProgress);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_IMG_URL, movieImgUrl);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_DURATION, movieDuration);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_IMDB, movieImdbUrl);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_DESCRIPTION, movieDescription);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_DIRECTOR, movieDirector);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_RELEASE_DATE, movieReleaseDate);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_NEW_THIS_WEEK, movieNewThisWeek);
         long insertId = database.insert(MySQLiteHelper.TABLE_MOVIES, null,
                 values);
         Cursor cursor = database.query(MySQLiteHelper.TABLE_MOVIES,
@@ -100,10 +108,14 @@ public class MovieDataSource {
         Movie movie = new Movie();
         movie.setId(cursor.getLong(0));
         movie.setMovieTitle(cursor.getString(1));
-        movie.setMovieProgress(Float.parseFloat(cursor.getString(2)));
-        movie.setDate(cursor.getString(3));
-        movie.setNameOfPlace(cursor.getString(4));
-        movie.setMovieGenre(cursor.getString(5));
+        movie.setMovieProgress(cursor.getFloat(2));
+        movie.setImageUrl(cursor.getString(3));
+        movie.setDuration(cursor.getInt(4));
+        movie.setImdbUrl(cursor.getString(5));
+        movie.setFullDescription(cursor.getString(6));
+        movie.setMovieDirectors(cursor.getString(7));
+        movie.setReleaseDate(cursor.getString(8));
+        movie.setNewForWeek(cursor.getString(9));
         return movie;
     }
 
