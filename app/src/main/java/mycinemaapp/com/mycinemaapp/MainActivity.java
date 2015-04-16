@@ -40,14 +40,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import adapters.MovieAdapter;
+import database.ActorsDataSource;
 import database.AllCinemasDataSource;
 import database.AllDaysDataSource;
 import database.AllGenresDataSource;
+import database.GenresDataSource;
 import database.MovieDataSource;
+import database.MovieDaysDataSource;
 import helpers.RequestManager;
 import helpers.SessionManager;
 import models.Filters;
 import models.Movie;
+import models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -75,6 +79,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private AllDaysDataSource allDaysDataSource;
     private AllCinemasDataSource allCinemasDataSource;
     private AllGenresDataSource allGenresDataSource;
+    private ActorsDataSource actorsDataSource;
+    private GenresDataSource genresDataSource;
+    private MovieDaysDataSource movieDaysDataSource;
 
     public MainActivity() {
     }
@@ -194,6 +201,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         allDaysDataSource = new AllDaysDataSource(this);
         allCinemasDataSource = new AllCinemasDataSource(this);
         allGenresDataSource = new AllGenresDataSource(this);
+        actorsDataSource = new ActorsDataSource(this);
+        genresDataSource = new GenresDataSource(this);
+        movieDaysDataSource = new MovieDaysDataSource(this);
+        movieDaysDataSource.open();
+        genresDataSource.open();
+        actorsDataSource.open();
         allCinemasDataSource.open();
         allGenresDataSource.open();
         allDaysDataSource.open();
@@ -245,6 +258,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
             movieList = movieDataSource.getAllMovieTitle();
+            SaveTempMovieModel.setMovies(movieDataSource.getAllMovie());
             movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, movieList, false, false, false);
             movieAdapter.notifyDataSetChanged();
             gridView.setAdapter(movieAdapter);
@@ -254,7 +268,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/cuFxuKnVKa?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/bQdtaZplXC?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -384,13 +398,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 movieList.add(movie);
                             }
 
-                            for (int i = 0; i < movieList.size(); i++) {
-                                movieDataSource.createMovie(movieList.get(i).getMovieTitle(), movieList.get(i).getMovieProgress(),
-                                        movieList.get(i).getImageUrl(), movieList.get(i).getDuration(), movieList.get(i).getImdbUrl(),
-                                        movieList.get(i).getFullDescription(), movieList.get(i).getMovieDirectors(), movieList.get(i).getReleaseDate(),
-                                        movieList.get(i).getNewForWeek());
-                            }
-
                             allDaysDataSource.removeAll();
 
                             for (int i = 0; i < days.size(); i++) {
@@ -399,6 +406,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             for (String s : nameOfPlaces) {
                                 allCinemasDataSource.createFilter(s);
                             }
+
+                            ArrayList<Movie> allMovies = movieDataSource.getAllMovie();
+                            ArrayList<Filters> allDays = allDaysDataSource.getAllFilters();
+                            for (int i = 0; i < movieList.size(); i++) {
+                                Toast.makeText(MainActivity.this, movieList.get(i).getDate().toString(), Toast.LENGTH_LONG).show();
+                                movieDataSource.createMovie(movieList.get(i).getMovieTitle(), movieList.get(i).getMovieProgress(),
+                                        movieList.get(i).getImageUrl(), movieList.get(i).getDuration(), movieList.get(i).getImdbUrl(),
+                                        movieList.get(i).getFullDescription(), movieList.get(i).getMovieDirectors(), movieList.get(i).getReleaseDate(),
+                                        movieList.get(i).getNewForWeek());
+                                allMovies = movieDataSource.getAllMovie();
+                                for (int j = 0; j < movieList.get(i).getMovieActors().size(); j++) {
+                                    actorsDataSource.createActor(allMovies.get(i).getId(), movieList.get(i).getMovieActors().get(j));
+                                }
+                                for (int k = 0; k < movieList.get(i).getMovieGenre().size(); k++) {
+                                    genresDataSource.createGenre(allMovies.get(i).getId(), movieList.get(i).getMovieGenre().get(k));
+                                }
+                                for (int q = 0; q < movieList.get(i).getDate().size(); q++) {
+                                    for (int l = 0; l < allDays.size(); l++) {
+                                        if (allDays.get(l).getDayFilter().equals(movieList.get(i).getDate().get(q)))
+                                            Log.d("MOVIE", allDays.get(l).getDayId()+"  "+ movieList.get(i).getId() + "");
+                                        movieDaysDataSource.createMovieDay(allDays.get(l).getDayId(), movieList.get(i).getId());
+                                    }
+                                }
+                            }
+
+
+                            Toast.makeText(MainActivity.this, movieDataSource.getAllMovie().toString(), Toast.LENGTH_SHORT).show();
+                            SaveTempMovieModel.setMovies(movieDataSource.getAllMovie());
+
 
                             movieAdapter = new MovieAdapter(MainActivity.this, R.layout.movie_layout, movieList, false, false, false);
                             movieAdapter.notifyDataSetChanged();
@@ -471,7 +507,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
                 isInFragment = true;
-                AllDaysFragment allDaysFragment = new AllDaysFragment(allDays);
+                AllDaysFragment allDaysFragment = new AllDaysFragment(allDays, movieAdapter);
                 loadFragment(allDaysFragment, R.id.filter_container);
                 break;
             case R.id.all_cinemas:

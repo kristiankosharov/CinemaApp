@@ -26,6 +26,7 @@ import database.MovieDataSource;
 import helpers.RequestManager;
 import models.AddMovies;
 import models.RatedMovies;
+import models.SaveTempMovieModel;
 
 /**
  * Created by kristian on 15-3-4.
@@ -61,7 +62,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         LayoutInflater inflater = getLayoutInflater();
 
         v = inflater.inflate(R.layout.movie_detail_item, null);
-
+        cinemaRequest();
 
         back = (ImageView) findViewById(R.id.back);
         share = (ImageView) findViewById(R.id.share);
@@ -83,11 +84,11 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
                 adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
             } else if (isBought) {
             } else {
-                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
             }
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
-            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(), isList, isRated, isBought);
+            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
@@ -118,10 +119,10 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
                 adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
             } else if (isBought) {
             } else {
-                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
             }
         } else {
-            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovieTitle(), isList, isRated, isBought);
+            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         if (adapter.getCount() == 0) {
@@ -192,6 +193,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
 //                                cinema.setTitle(obj.getString("title"));
 //                                cinema.setLatitude(obj.getDouble("latitude"));
 //                                cinema.setLongitude(obj.getDouble("longitude"));
+                                Toast.makeText(MovieDetailActivity.this, "test", Toast.LENGTH_SHORT).show();
                                 cinemaDataSource.createCinema(obj.getInt("movie_id"), obj.getString("title"), (float) obj.getDouble("longitude"), (float) obj.getDouble("latitude"));
                             }
                         } catch (Exception e) {

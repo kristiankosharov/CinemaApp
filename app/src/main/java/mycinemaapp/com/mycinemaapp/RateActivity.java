@@ -141,7 +141,7 @@ public class RateActivity extends Activity implements View.OnClickListener {
 
                     } else {
                         // Rate without add
-                        ratedMovie.add(SaveTempMovieModel.getItem(position));
+                        ratedMovie.add(movies.get(position));
                         movies.get(position).setUserRating(ratingBar.getRating());
                     }
 //                    Toast.makeText(this, position + "", Toast.LENGTH_LONG).show();

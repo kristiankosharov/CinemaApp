@@ -23,13 +23,17 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import database.ActorsDataSource;
 import database.AllCinemasDataSource;
 import database.AllDaysDataSource;
 import database.AllGenresDataSource;
+import database.GenresDataSource;
 import helpers.CustomHorizontalScrollView;
 import helpers.SessionManager;
+import models.Actor;
 import models.AddMovies;
 import models.Filters;
+import models.Genre;
 import models.Movie;
 import mycinemaapp.com.mycinemaapp.BaseActivity;
 import mycinemaapp.com.mycinemaapp.MovieTrailerLandscape;
@@ -53,7 +57,9 @@ public class MovieDetailAdapter extends PagerAdapter {
     private boolean isList, isRated, isBought;
     private AllDaysDataSource daysDataSource;
     private AllCinemasDataSource cinemasDataSource;
-    private AllGenresDataSource genresDataSource;
+    private AllGenresDataSource allGenresDataSource;
+    private ActorsDataSource actorsDataSource;
+    private GenresDataSource genresDataSource;
 
 
     public MovieDetailAdapter(Activity context, ArrayList<Movie> list, boolean isList, boolean isRated, boolean isBought) {
@@ -84,7 +90,11 @@ public class MovieDetailAdapter extends PagerAdapter {
         daysDataSource.open();
         cinemasDataSource = new AllCinemasDataSource(context);
         cinemasDataSource.open();
-        genresDataSource = new AllGenresDataSource(context);
+        allGenresDataSource = new AllGenresDataSource(context);
+        allGenresDataSource.open();
+        actorsDataSource = new ActorsDataSource(context);
+        actorsDataSource.open();
+        genresDataSource = new GenresDataSource(context);
         genresDataSource.open();
 
         LayoutInflater inflater = context.getLayoutInflater();
@@ -127,17 +137,15 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.title.setText(item.getMovieTitle());
 
         String genresString = "";
-        ArrayList<String> genresArray = item.getMovieGenre();
-        if (item.getMovieGenre() != null) {
-            for (int i = 0; i < item.getCountGenre(); i++) {
-                if (genresArray.get(i) == null) {
-                    genresArray.remove(i);
-                    genresArray.add(i, "");
-                }
-                genresString = genresString + genresArray.get(i) + ".";
+        ArrayList<Genre> genresArray = genresDataSource.getAllGenres(item.getId());
+        for (int i = 0; i < genresArray.size(); i++) {
+            if (genresArray.get(i) == null) {
+                genresArray.remove(i);
             }
+            genresString = genresString + genresArray.get(i).getTitle() + ".";
         }
         viewHolder.genre.setText(genresString);
+
 
         String directorsString = "";
 //        ArrayList<String> directorsArray = item.getMovieDirectors();
@@ -153,19 +161,14 @@ public class MovieDetailAdapter extends PagerAdapter {
         viewHolder.director.setText(item.getMovieDirectors());
 
         String actorsString = "";
-        ArrayList<String> actorsArray = item.getMovieActors();
-        if (item.getMovieActors() != null) {
-            for (int i = 0; i < item.getCountActors(); i++) {
-                if (actorsArray.get(i) == null) {
-                    actorsArray.remove(i);
-                    actorsArray.add("");
-                }
-                actorsString = actorsString + actorsArray.get(i) + "\n";
-            }
+        ArrayList<Actor> actorsArray = actorsDataSource.getAllActors(item.getId());
+        for (int i = 0; i < actorsArray.size(); i++) {
+            actorsString = actorsString + actorsArray.get(i).getTitle() + "\n";
         }
+
         viewHolder.actors.setText(actorsString);
         if (item.getDuration() != 0) {
-            viewHolder.duration.setText(item.getDuration() + "min");
+            viewHolder.duration.setText(item.getDuration() + " min " + item.getReleaseDate());
         }
         if (item.getMovieTitle() != null) {
             viewHolder.titleDescription.setText(item.getMovieTitle());

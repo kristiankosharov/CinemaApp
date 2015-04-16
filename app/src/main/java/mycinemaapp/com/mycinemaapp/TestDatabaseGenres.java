@@ -8,39 +8,35 @@ import android.widget.Button;
 
 import java.util.List;
 
-import database.ActorsDataSource;
-import models.Actor;
+import database.GenresDataSource;
+import models.Genre;
 
 /**
- * Created by kristian on 15-4-7.
+ * Created by kristian on 15-4-16.
  */
-public class TestDatabaseFilters extends ListActivity {
-    //    private AllDaysDataSource allDaysDataSource;
-    private ActorsDataSource actorsDataSource;
-    ArrayAdapter<Actor> adapter;
-    List<Actor> values;
+public class TestDatabaseGenres extends ListActivity {
+    private GenresDataSource genresDataSource;
+    ArrayAdapter<Genre> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_database);
-        actorsDataSource = new ActorsDataSource(this);
-        actorsDataSource.open();
+        genresDataSource = new GenresDataSource(this);
+        genresDataSource.open();
         Button clear = (Button) findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actorsDataSource.removeAll();
-                adapter = new ArrayAdapter<Actor>(TestDatabaseFilters.this,
-                        android.R.layout.simple_list_item_1, values);
-                setListAdapter(adapter);
+                genresDataSource.removeAll();
+                adapter.notifyDataSetChanged();
             }
         });
-        values = actorsDataSource.getAllActors();
+        List<Genre> values = genresDataSource.getAllGenres();
 
         // use the SimpleCursorAdapter to show the
         // elements in a ListView
-        adapter = new ArrayAdapter<Actor>(this,
+        adapter = new ArrayAdapter<Genre>(this,
                 android.R.layout.simple_list_item_1, values);
         setListAdapter(adapter);
     }

@@ -78,6 +78,7 @@ public class AllCinemasDataSource {
 
     private Filters cursorToUser(Cursor cursor) {
         Filters filters = new Filters();
+        filters.setCinemaId(cursor.getLong(0));
         filters.setCinemaFilter(cursor.getString(1));
         return filters;
     }

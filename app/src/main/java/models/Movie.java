@@ -279,6 +279,6 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie: " + movieTitle + ",Progress: " + movieProgress + ",days" + date.toString() + ",cinemas" + nameOfPlace.toString() + ",genres" + movieGenre.toString();
+        return "MOVIE ID :" + id + "Movie: " + movieTitle + ",Progress: " + movieProgress + ",days" + date.toString() + ",cinemas" + nameOfPlace.toString() + ",genres" + movieGenre.toString();
     }
 }

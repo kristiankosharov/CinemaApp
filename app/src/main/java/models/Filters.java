@@ -13,6 +13,34 @@ public class Filters {
     boolean isGenreSelected;
     String dayNameFilter;
 
+    long dayId;
+    long cinemaId;
+    long genreId;
+
+    public long getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(long genreId) {
+        this.genreId = genreId;
+    }
+
+    public long getDayId() {
+        return dayId;
+    }
+
+    public void setDayId(long dayId) {
+        this.dayId = dayId;
+    }
+
+    public long getCinemaId() {
+        return cinemaId;
+    }
+
+    public void setCinemaId(long cinemaId) {
+        this.cinemaId = cinemaId;
+    }
+
     public String getDayNameFilter() {
         return dayNameFilter;
     }

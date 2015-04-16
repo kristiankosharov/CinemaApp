@@ -11,7 +11,7 @@ import android.util.Log;
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
     // Datebase Version
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 22;
 
     // Datebase Name
     private static final String DATABASE_NAME = "mycinemaapp.db";
@@ -56,6 +56,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String TABLE_ALL_DAYS = "alldays";
     public static final String COLUMN_DAYS_FILTER = "daysfilter";
     public static final String COLUMN_DAYS_NAME = "days_name";
+
     // Table All Cinemas
     public static final String TABLE_ALL_CINEMAS = "allcinemas";
     public static final String COLUMN_CINEMAS_FILTER = "cinemasfilter";
@@ -63,6 +64,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     // Table All Genres
     public static final String TABLE_ALL_GENRES = "allgenres";
     public static final String COLUMN_GENRES_FILTER = "genresfilter";
+
+    // Table MOVIE-DAYS
+    public static final String TABLE_MOVIE_DAYS = "movie_days";
+    public static final String COLUMN_MOVIE_DAYS_DAY_ID = "day_id";
 
     // Database creation sql statement
     private static final String CREATE_TABLE_USERS =
@@ -110,24 +115,33 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_ACTORS =
             "CREATE TABLE " + TABLE_ACTORS + " ("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + COLUMN_MOVIE_ID + " INTEGER "
+                    + COLUMN_MOVIE_ID + " INTEGER, "
                     + COLUMN_ACTORS_TITLE + " TEXT, "
-                    + " FOREIGN KEY (" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "));";
+                    + "FOREIGN KEY(" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "));";
     // CREATE GENRES TABLE
     private static final String CREATE_TABLE_GENRES =
             "CREATE TABLE " + TABLE_GENRES + " ("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + COLUMN_MOVIE_ID + " INTEGER "
+                    + COLUMN_MOVIE_ID + " INTEGER, "
                     + COLUMN_GENRES_TITLE + " TEXT, "
                     + " FOREIGN KEY (" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "));";
 
     private static final String CREATE_TABLE_CINEMA =
             "CREATE TABLE " + TABLE_CINEMA + " ("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + COLUMN_MOVIE_ID + " INTEGER "
+                    + COLUMN_MOVIE_ID + " INTEGER, "
                     + COLUMN_CINEMA_TITLE + " TEXT, "
                     + COLUMN_CINEMA_LONGITUDE + " REAL, "
                     + COLUMN_CINEMA_LATITUDE + " REAL, "
+                    + " FOREIGN KEY (" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "));";
+
+    // Database creation sql statement
+    private static final String CREATE_TABLE_MOVIE_DAYS =
+            "CREATE TABLE " + TABLE_MOVIE_DAYS + " ("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_MOVIE_DAYS_DAY_ID + " INTEGER, "
+                    + COLUMN_MOVIE_ID + " INTEGER, "
+                    + " FOREIGN KEY (" + COLUMN_MOVIE_DAYS_DAY_ID + ") REFERENCES " + TABLE_ALL_DAYS + "(" + COLUMN_ID + "),"
                     + " FOREIGN KEY (" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "));";
 
     public MySQLiteHelper(Context context) {
@@ -144,6 +158,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_CINEMA);
         db.execSQL(CREATE_TABLE_ACTORS);
         db.execSQL(CREATE_TABLE_GENRES);
+        db.execSQL(CREATE_TABLE_MOVIE_DAYS);
     }
 
     @Override
@@ -159,6 +174,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CINEMA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTORS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GENRES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIE_DAYS);
         onCreate(db);
     }
 }

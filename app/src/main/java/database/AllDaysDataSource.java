@@ -79,6 +79,7 @@ public class AllDaysDataSource {
 
     private Filters cursorToUser(Cursor cursor) {
         Filters filters = new Filters();
+        filters.setDayId(cursor.getLong(0));
         filters.setDayFilter(cursor.getString(1));
         filters.setDayNameFilter(cursor.getString(2));
         return filters;

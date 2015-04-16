@@ -77,6 +77,7 @@ public class AllGenresDataSource {
 
     private Filters cursorToUser(Cursor cursor) {
         Filters filters = new Filters();
+        filters.setGenreId(cursor.getLong(0));
         filters.setDayFilter(cursor.getString(1));
         return filters;
     }

@@ -54,23 +54,27 @@ public class SortFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.alphabetic_sort:
                 clickedButton = "alphabetic";
-                Intent intent = new Intent(getActivity(), TestDatabaseUsers.class);
+                Intent intent = new Intent(getActivity(), TestDatabaseCinema.class);
                 startActivity(intent);
 //                getFragmentManager().popBackStack();
                 break;
             case R.id.popularity_sort:
                 clickedButton = "popularity";
-                Intent intent1 = new Intent(getActivity(), TestDatabaseMovies.class);
+                Intent intent1 = new Intent(getActivity(), TestDatabaseFilters.class);
                 startActivity(intent1);
 //                getFragmentManager().popBackStack();
                 break;
             case R.id.release_date:
                 clickedButton = "release";
-                getFragmentManager().popBackStack();
+                Intent intent2 = new Intent(getActivity(), TestDatabaseMovies.class);
+                startActivity(intent2);
+//                getFragmentManager().popBackStack();
                 break;
             case R.id.rating_sort:
                 clickedButton = "rating";
-                getFragmentManager().popBackStack();
+                Intent intent3 = new Intent(getActivity(), TestDatabaseGenres.class);
+                startActivity(intent3);
+//                getFragmentManager().popBackStack();
                 break;
         }
     }

@@ -70,7 +70,7 @@ public class AllCinemasFragment extends Fragment {
 //            }
 //        }
 //        AllCinemasFilters.setAllCinemas(list);
-        adapter = new FilterAdapter(getActivity(), list, button, "all cinemas");
+        adapter = new FilterAdapter(getActivity(), list, button, "all cinemas", null);
         listView.setAdapter(adapter);
 
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import adapters.FilterAdapter;
+import adapters.MovieAdapter;
 import database.AllDaysDataSource;
 import models.Filters;
 
@@ -28,9 +29,11 @@ public class AllDaysFragment extends Fragment implements View.OnClickListener {
     private TextView clear;
     private AllDaysDataSource allDaysDataSource;
     private static final int NUMBER_OF_COLUMN = 0;
+    private MovieAdapter mainActivityArray;
 
-    AllDaysFragment(Button button) {
+    AllDaysFragment(Button button, MovieAdapter movieArrayList) {
         this.button = button;
+        mainActivityArray = movieArrayList;
     }
 
     @Nullable
@@ -64,7 +67,7 @@ public class AllDaysFragment extends Fragment implements View.OnClickListener {
 //            }
 //        }
 //        AllDaysFilters.setAllDays(list);
-        adapter = new FilterAdapter(getActivity(), list, button, "all days");
+        adapter = new FilterAdapter(getActivity(), list, button, "all days", mainActivityArray);
         listView.setAdapter(adapter);
 
         return view;

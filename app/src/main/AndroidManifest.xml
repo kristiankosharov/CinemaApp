@@ -65,6 +65,8 @@
         <activity android:name=".TestDatabaseUsers"></activity>
         <activity android:name=".TestDatabaseMovies"></activity>
         <activity android:name=".TestDatabaseFilters"></activity>
+        <activity android:name=".TestDatabaseGenres"></activity>
+        <activity android:name=".TestDatabaseCinema"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
