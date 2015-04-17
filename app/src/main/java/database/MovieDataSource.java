@@ -21,7 +21,7 @@ public class MovieDataSource {
             MySQLiteHelper.COLUMN_MOVIE_TITLE, MySQLiteHelper.COLUMN_MOVIE_RATE,
             MySQLiteHelper.COLUMN_MOVIE_IMG_URL, MySQLiteHelper.COLUMN_MOVIE_DURATION,
             MySQLiteHelper.COLUMN_MOVIE_IMDB, MySQLiteHelper.COLUMN_MOVIE_DESCRIPTION,
-            MySQLiteHelper.COLUMN_MOVIE_DIRECTOR,MySQLiteHelper.COLUMN_MOVIE_RELEASE_DATE,
+            MySQLiteHelper.COLUMN_MOVIE_DIRECTOR, MySQLiteHelper.COLUMN_MOVIE_RELEASE_DATE,
             MySQLiteHelper.COLUMN_MOVIE_NEW_THIS_WEEK};
     private Context con;
 
@@ -40,7 +40,7 @@ public class MovieDataSource {
 
     public Movie createMovie(String movieTitle, float movieProgress, String movieImgUrl,
                              int movieDuration, String movieImdbUrl, String movieDescription,
-                             String movieDirector, String movieReleaseDate, String movieNewThisWeek) {
+                             String movieDirector, String price, String movieReleaseDate, String movieNewThisWeek) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_MOVIE_TITLE, movieTitle);
         values.put(MySQLiteHelper.COLUMN_MOVIE_RATE, movieProgress);
@@ -49,6 +49,7 @@ public class MovieDataSource {
         values.put(MySQLiteHelper.COLUMN_MOVIE_IMDB, movieImdbUrl);
         values.put(MySQLiteHelper.COLUMN_MOVIE_DESCRIPTION, movieDescription);
         values.put(MySQLiteHelper.COLUMN_MOVIE_DIRECTOR, movieDirector);
+        values.put(MySQLiteHelper.COLUMN_MOVIE_PRICE, price);
         values.put(MySQLiteHelper.COLUMN_MOVIE_RELEASE_DATE, movieReleaseDate);
         values.put(MySQLiteHelper.COLUMN_MOVIE_NEW_THIS_WEEK, movieNewThisWeek);
         long insertId = database.insert(MySQLiteHelper.TABLE_MOVIES, null,
@@ -114,8 +115,9 @@ public class MovieDataSource {
         movie.setImdbUrl(cursor.getString(5));
         movie.setFullDescription(cursor.getString(6));
         movie.setMovieDirectors(cursor.getString(7));
-        movie.setReleaseDate(cursor.getString(8));
-        movie.setNewForWeek(cursor.getString(9));
+        movie.setPrice(cursor.getString(8));
+        movie.setReleaseDate(cursor.getString(9));
+        movie.setNewForWeek(cursor.getString(10));
         return movie;
     }
 

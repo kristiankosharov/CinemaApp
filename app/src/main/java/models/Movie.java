@@ -43,12 +43,21 @@ public class Movie {
     String[] timeOfProjection;
 
     String releaseDate;
+    String price;
 
     ArrayList<String> nameOfPlace = new ArrayList<>();
 
     HashMap<String, HashMap<String, String[]>> allProjections;
 
     private boolean isAdd;
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
     public String getReleaseDate() {
         return releaseDate;

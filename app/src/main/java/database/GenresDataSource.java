@@ -34,9 +34,8 @@ public class GenresDataSource {
         dbHelper.close();
     }
 
-    public Genre createGenre(long movieId, String genreTitle) {
+    public Genre createGenre(String genreTitle) {
         ContentValues values = new ContentValues();
-        values.put(MySQLiteHelper.COLUMN_MOVIE_ID, movieId);
         values.put(MySQLiteHelper.COLUMN_GENRES_TITLE, genreTitle);
         long insertId = database.insert(MySQLiteHelper.TABLE_GENRES, null,
                 values);
@@ -102,8 +101,7 @@ public class GenresDataSource {
     private Genre cursorToUser(Cursor cursor) {
         Genre genre = new Genre();
         genre.setId(cursor.getLong(0));
-        genre.setMovie_id(cursor.getLong(1));
-        genre.setTitle(cursor.getString(2));
+        genre.setTitle(cursor.getString(1));
         return genre;
     }
 

@@ -99,6 +99,8 @@ public class FilterAdapter extends ArrayAdapter<Filters> {
                         Log.d("DATE",item.getDayFilter());
                         Log.d("LOG", movieList.toString());
                         mainActivityArray = new MovieAdapter(context, R.layout.movie_layout, movieList, false, false, false);
+                        mainActivityArray.notifyDataSetChanged();
+                        ((MainActivity) context).gridView.setAdapter(mainActivityArray);
                         context.onBackPressed();
 //                        AllDaysFilters.allDays.get(position).setSelect(true);
                         break;

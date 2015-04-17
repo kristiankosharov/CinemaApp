@@ -39,7 +39,6 @@ public class CinemaDataSource {
     public Cinema createCinema(int movieId, String cinemaTitle, float cinemaLongitude,
                                float cinemaLatitude) {
         ContentValues values = new ContentValues();
-        values.put(MySQLiteHelper.COLUMN_MOVIE_ID, movieId);
         values.put(MySQLiteHelper.COLUMN_CINEMA_TITLE, cinemaTitle);
         values.put(MySQLiteHelper.COLUMN_CINEMA_LONGITUDE, cinemaLongitude);
         values.put(MySQLiteHelper.COLUMN_CINEMA_LATITUDE, cinemaLatitude);
@@ -100,10 +99,9 @@ public class CinemaDataSource {
     private Cinema cursorToUser(Cursor cursor) {
         Cinema cinema = new Cinema();
         cinema.setCinemaId(cursor.getInt(0));
-        cinema.setMovieId(cursor.getInt(1));
-        cinema.setTitle(cursor.getString(2));
-        cinema.setLongitude(cursor.getFloat(3));
-        cinema.setLatitude(cursor.getFloat(4));
+        cinema.setTitle(cursor.getString(1));
+        cinema.setLongitude(cursor.getFloat(2));
+        cinema.setLatitude(cursor.getFloat(3));
         return cinema;
     }
 

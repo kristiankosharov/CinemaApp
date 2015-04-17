@@ -38,6 +38,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import adapters.MovieAdapter;
 import database.ActorsDataSource;
@@ -58,7 +60,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private ArrayList<Movie> movieList = new ArrayList<>();
     private ArrayList<Filters> filtersList = new ArrayList<>();
-    private MovieAdapter movieAdapter;
+    public MovieAdapter movieAdapter;
 
     private ImageView myProfile, location, filter;
 
@@ -73,7 +75,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private RelativeLayout videoLayout, filterContainer, header;
     private LinearLayout topLayout;
     private ProgressBar progressBar;
-    StaggeredGridView gridView;
+    public StaggeredGridView gridView;
 
     private MovieDataSource movieDataSource;
     private AllDaysDataSource allDaysDataSource;
@@ -268,7 +270,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void movieRequest() {
 
-        String url = "http://www.json-generator.com/api/json/get/bQdtaZplXC?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/bHAxRbXHzC?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -316,7 +318,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             allCinemasDataSource.removeAll();
                             allGenresDataSource.removeAll();
 
-                            ArrayList<String> days = new ArrayList<>();
+                            LinkedHashSet<String> days = new LinkedHashSet<>();
                             ArrayList<String> nameOfDays = new ArrayList<>();
                             HashSet<String> nameOfPlaces = new HashSet<>();
                             HashMap<String, String[]> onlyProjections;
@@ -367,7 +369,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 }
                                 String temp;
                                 onlyProjections = new HashMap<>();
-                                days = new ArrayList<>();
+//                                days = new ArrayList<>();
                                 for (int z = 0; z < obj.getJSONArray("days").length(); z++) {
                                     for (int y = 0; y < obj.getJSONArray("days").getJSONArray(z).length(); y++) {
                                         if (y == 0) {
@@ -399,9 +401,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             }
 
                             allDaysDataSource.removeAll();
+                            actorsDataSource.removeAll();
+                            genresDataSource.removeAll();
+                            movieDaysDataSource.removeAll();
+
+                            Iterator iterator = days.iterator();
 
                             for (int i = 0; i < days.size(); i++) {
-                                allDaysDataSource.createFilter(days.get(i), nameOfDays.get(i));
+                                if (iterator.hasNext()) {
+                                    allDaysDataSource.createFilter(iterator.next().toString(), nameOfDays.get(i));
+                                }
                             }
                             for (String s : nameOfPlaces) {
                                 allCinemasDataSource.createFilter(s);
@@ -410,7 +419,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             ArrayList<Movie> allMovies = movieDataSource.getAllMovie();
                             ArrayList<Filters> allDays = allDaysDataSource.getAllFilters();
                             for (int i = 0; i < movieList.size(); i++) {
-                                Toast.makeText(MainActivity.this, movieList.get(i).getDate().toString(), Toast.LENGTH_LONG).show();
+//                                Toast.makeText(MainActivity.this, movieList.get(i).getDate().toString(), Toast.LENGTH_LONG).show();
                                 movieDataSource.createMovie(movieList.get(i).getMovieTitle(), movieList.get(i).getMovieProgress(),
                                         movieList.get(i).getImageUrl(), movieList.get(i).getDuration(), movieList.get(i).getImdbUrl(),
                                         movieList.get(i).getFullDescription(), movieList.get(i).getMovieDirectors(), movieList.get(i).getReleaseDate(),
@@ -423,16 +432,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     genresDataSource.createGenre(allMovies.get(i).getId(), movieList.get(i).getMovieGenre().get(k));
                                 }
                                 for (int q = 0; q < movieList.get(i).getDate().size(); q++) {
-                                    for (int l = 0; l < allDays.size(); l++) {
-                                        if (allDays.get(l).getDayFilter().equals(movieList.get(i).getDate().get(q)))
-                                            Log.d("MOVIE", allDays.get(l).getDayId()+"  "+ movieList.get(i).getId() + "");
-                                        movieDaysDataSource.createMovieDay(allDays.get(l).getDayId(), movieList.get(i).getId());
+//                                    Log.d("MOVIE", movieList.get(i).getDate().get(q) + " : " + allDays.get(q).getDayFilter());
+                                    for (int z = 0; z < allDays.size(); z++) {
+                                        if ((movieList.get(i).getDate().get(q)).equals(allDays.get(z).getDayFilter())) {
+                                            movieDaysDataSource.createMovieDay(allDays.get(z).getDayId(), allMovies.get(i).getId());
+                                        }
                                     }
                                 }
                             }
 
-
-                            Toast.makeText(MainActivity.this, movieDataSource.getAllMovie().toString(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, movieDataSource.getAllMovie().toString(), Toast.LENGTH_SHORT).show();
                             SaveTempMovieModel.setMovies(movieDataSource.getAllMovie());
 
 

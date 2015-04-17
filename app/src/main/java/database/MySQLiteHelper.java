@@ -35,6 +35,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_MOVIE_DESCRIPTION = "description";
     public static final String COLUMN_MOVIE_DIRECTOR = "director";
     public static final String COLUMN_MOVIE_RELEASE_DATE = "date";
+    public static final String COLUMN_MOVIE_PRICE = "price";
     public static final String COLUMN_MOVIE_NEW_THIS_WEEK = "new_this_week";
 
     // Table Actors
@@ -51,6 +52,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CINEMA_TITLE = "title";
     public static final String COLUMN_CINEMA_LONGITUDE = "longitude";
     public static final String COLUMN_CINEMA_LATITUDE = "latitude";
+
+    // Table MOIVES-CINEMAS
+    public static final String TABLE_MOVIES_CINEMAS = "moives_cinemas";
+    public static final String COLUMN_CINEMA_ID = "cinema_id";
+    public static final String COLUMN_IS_ACTIVE = "is_active";
+
+    // Table MOVIE_CINEMA_PROJECTIONS
+    public static final String TABLE_MOVIE_CINEMA_PROJECTIONS = "movie_cinema_projections";
+    public static final String COLUMN_MOVIE_CINEMA_ID = "movie_cinema_id";
+    public static final String COLUMN_DAY_OF_WEEK = "day_of_week";
+    public static final String COLUMN_STARTING_TIME = "strting_time";
+
+    // Table MOVIES_GENRES
+    public static final String TABLE_MOVIES_GENRES = "movies_genres";
+    public static final String COLUMN_GENRES_ID = "genres_id";
 
     // Table All days
     public static final String TABLE_ALL_DAYS = "alldays";
@@ -91,7 +107,34 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     + COLUMN_MOVIE_DESCRIPTION + " TEXT, "
                     + COLUMN_MOVIE_DIRECTOR + " TEXT, "
                     + COLUMN_MOVIE_RELEASE_DATE + " TEXT, "
+                    + COLUMN_MOVIE_PRICE + " TEXT, "
                     + COLUMN_MOVIE_NEW_THIS_WEEK + " TEXT);";
+
+    private static final String CREATE_TABLE_MOVIES_CINEMAS =
+            "CREATE TABLE " + TABLE_MOVIES_CINEMAS + " ("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_MOVIE_ID + " INTEGER, "
+                    + COLUMN_CINEMA_ID + " INTEGER, "
+                    + COLUMN_IS_ACTIVE + " INTEGER ,"
+                    + "FOREIGN KEY(" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "), "
+                    + "FOREIGN KEY(" + COLUMN_CINEMA_ID + ") REFERENCES " + TABLE_CINEMA + "(" + COLUMN_ID + "));";
+
+    private static final String CREATE_TABLE_MOVIE_CINEMA_PROJECTIONS =
+            "CREATE TABLE " + TABLE_MOVIE_CINEMA_PROJECTIONS + " ("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_MOVIE_CINEMA_ID + " INTEGER, "
+                    + COLUMN_DAY_OF_WEEK + " TEXT, "
+                    + COLUMN_STARTING_TIME + " TEXT, "
+                    + "FOREIGN KEY(" + COLUMN_MOVIE_CINEMA_ID + ") REFERENCES " + TABLE_MOVIES_CINEMAS + "(" + COLUMN_ID + ");";
+
+    private static final String CREATE_TABLE_MOVIES_GENRES =
+            "CREATE TABLE " + TABLE_MOVIES_GENRES + " ("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_MOVIE_ID + " INTEGER, "
+                    + COLUMN_GENRES_ID + " INTEGER, "
+                    + "FOREIGN KEY(" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "),"
+                    + "FOREIGN KEY(" + COLUMN_GENRES_ID + ") REFERENCES " + TABLE_GENRES + "(" + COLUMN_ID + ");";
+
 
     // Database creation sql statement
     private static final String CREATE_TABLE_ALL_DAYS =
@@ -122,18 +165,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_GENRES =
             "CREATE TABLE " + TABLE_GENRES + " ("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + COLUMN_MOVIE_ID + " INTEGER, "
-                    + COLUMN_GENRES_TITLE + " TEXT, "
-                    + " FOREIGN KEY (" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "));";
+                    + COLUMN_GENRES_TITLE + " TEXT);";
 
     private static final String CREATE_TABLE_CINEMA =
             "CREATE TABLE " + TABLE_CINEMA + " ("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + COLUMN_MOVIE_ID + " INTEGER, "
                     + COLUMN_CINEMA_TITLE + " TEXT, "
                     + COLUMN_CINEMA_LONGITUDE + " REAL, "
-                    + COLUMN_CINEMA_LATITUDE + " REAL, "
-                    + " FOREIGN KEY (" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "));";
+                    + COLUMN_CINEMA_LATITUDE + " REAL);";
 
     // Database creation sql statement
     private static final String CREATE_TABLE_MOVIE_DAYS =
@@ -152,13 +191,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_MOVIES);
-        db.execSQL(CREATE_TABLE_ALL_DAYS);
-        db.execSQL(CREATE_TABLE_ALL_CINEMAS);
-        db.execSQL(CREATE_TABLE_ALL_GENRES);
         db.execSQL(CREATE_TABLE_CINEMA);
-        db.execSQL(CREATE_TABLE_ACTORS);
         db.execSQL(CREATE_TABLE_GENRES);
-        db.execSQL(CREATE_TABLE_MOVIE_DAYS);
+        db.execSQL(CREATE_TABLE_MOVIES_GENRES);
+        db.execSQL(CREATE_TABLE_MOVIES_CINEMAS);
+        db.execSQL(CREATE_TABLE_MOVIE_CINEMA_PROJECTIONS);
     }
 
     @Override
@@ -168,13 +205,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALL_DAYS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALL_CINEMAS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALL_GENRES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CINEMA);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTORS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GENRES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIE_DAYS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIES_GENRES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIES_CINEMAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIE_CINEMA_PROJECTIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GENRES);
         onCreate(db);
     }
 }
