@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
+import models.Cinema;
+import models.Genre;
 import models.MoviesCinemas;
 
 /**
@@ -34,7 +36,7 @@ public class MoviesCinemasDataSource {
         dbHelper.close();
     }
 
-    public MoviesCinemas createGenre(long movieId, long cinemaId, int isActive) {
+    public MoviesCinemas createMovieCinema(long movieId, long cinemaId, int isActive) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_MOVIE_ID, movieId);
         values.put(MySQLiteHelper.COLUMN_CINEMA_ID, cinemaId);
@@ -57,7 +59,7 @@ public class MoviesCinemasDataSource {
                 + " = " + id, null);
     }
 
-    public ArrayList<MoviesCinemas> getAllGenres() {
+    public ArrayList<MoviesCinemas> getAllMoviesCinemas() {
         ArrayList<MoviesCinemas> moviesCinemasArrayList = new ArrayList<MoviesCinemas>();
 
         Cursor cursor = database.query
@@ -77,28 +79,50 @@ public class MoviesCinemasDataSource {
         return moviesCinemasArrayList;
     }
 
-//    public ArrayList<MoviesCinemas> getAllGenres() {
-//        ArrayList<MoviesCinemas> genresList = new ArrayList<MoviesCinemas>();
-//
-//        Cursor cursor = database.query(MySQLiteHelper.TABLE_MOVIES_CINEMAS,
+    public int getSizeMoviesCinemasWithoutRepeat() {
+        ArrayList<Genre> genresList = new ArrayList<Genre>();
+
+        Cursor cursor = database.rawQuery("SELECT DISTINCT " + MySQLiteHelper.COLUMN_MOVIE_ID + " FROM " + MySQLiteHelper.TABLE_MOVIES_CINEMAS, null);
+//                query(MySQLiteHelper.TABLE_MOVIES_CINEMAS,
 //                allColumns, null, null, null, null, null);
-//
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            Genre genre = cursorToUser(cursor);
-//            genresList.add(genre);
-//            cursor.moveToNext();
-//        }
-//        // make sure to close the cursor
-//        cursor.close();
-//        return genresList;
-//    }
-//
-//    private Genre cursorToUserFromId(Cursor cursor) {
-//        Genre genre = new Genre();
-//        genre.setTitle(cursor.getString(0));
-//        return genre;
-//    }
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Genre genre = cursorToUserFromId(cursor);
+            genresList.add(genre);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return genresList.size();
+    }
+
+    public ArrayList<Cinema> getAllCinemasFromId(long movieId) {
+        ArrayList<Cinema> allCinemas = new ArrayList<>();
+
+        String args[] = {movieId + ""};
+        Cursor cursor = database.rawQuery("SELECT " + MySQLiteHelper.TABLE_CINEMA + "." + MySQLiteHelper.COLUMN_CINEMA_TITLE
+                + " FROM " + MySQLiteHelper.TABLE_MOVIES_CINEMAS + " JOIN " + MySQLiteHelper.TABLE_CINEMA + " ON "
+                + MySQLiteHelper.TABLE_MOVIES_CINEMAS + "." + MySQLiteHelper.COLUMN_CINEMA_ID + " = " + MySQLiteHelper.TABLE_CINEMA
+                + "." + MySQLiteHelper.COLUMN_ID + " WHERE " + MySQLiteHelper.TABLE_MOVIES_CINEMAS + "." + MySQLiteHelper.COLUMN_MOVIE_ID
+                + " = ?", args);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Cinema cinema = cursorToCinemaFromId(cursor);
+
+            allCinemas.add(cinema);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return allCinemas;
+    }
+
+    private Genre cursorToUserFromId(Cursor cursor) {
+        Genre genre = new Genre();
+        genre.setTitle(cursor.getString(0));
+        return genre;
+    }
 
     private MoviesCinemas cursorToUser(Cursor cursor) {
         MoviesCinemas moviesCinemas = new MoviesCinemas();
@@ -107,6 +131,12 @@ public class MoviesCinemasDataSource {
         moviesCinemas.setCinema_id(cursor.getLong(2));
         moviesCinemas.setIsActive(cursor.getInt(3));
         return moviesCinemas;
+    }
+
+    private Cinema cursorToCinemaFromId(Cursor cursor) {
+        Cinema cinema = new Cinema();
+        cinema.setTitle(cursor.getString(0));
+        return cinema;
     }
 
     /**

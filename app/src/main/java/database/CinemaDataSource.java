@@ -18,8 +18,7 @@ public class CinemaDataSource {
     // Database fields
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
-    private String[] allColumns = {MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.COLUMN_MOVIE_ID, MySQLiteHelper.COLUMN_CINEMA_TITLE,
+    private String[] allColumns = {MySQLiteHelper.COLUMN_ID, MySQLiteHelper.COLUMN_CINEMA_TITLE,
             MySQLiteHelper.COLUMN_CINEMA_LONGITUDE, MySQLiteHelper.COLUMN_CINEMA_LATITUDE};
     private Context con;
 
@@ -36,7 +35,7 @@ public class CinemaDataSource {
         dbHelper.close();
     }
 
-    public Cinema createCinema(int movieId, String cinemaTitle, float cinemaLongitude,
+    public Cinema createCinema(String cinemaTitle, float cinemaLongitude,
                                float cinemaLatitude) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_CINEMA_TITLE, cinemaTitle);

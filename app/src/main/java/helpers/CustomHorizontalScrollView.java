@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -19,7 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import models.Filters;
+import models.Cinema;
 import mycinemaapp.com.mycinemaapp.BaseActivity;
 import mycinemaapp.com.mycinemaapp.R;
 import mycinemaapp.com.mycinemaapp.ReservationSeats;
@@ -34,8 +35,8 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     private int overScrollX, scrollToX, scrollToY;
 
     private String day, place;
-    private ArrayList<Filters> nameOfPlace;
-    private ArrayList<Filters> days;
+    private ArrayList<Cinema> nameOfPlace;
+    private ArrayList<String> days;
     private HashMap<String, HashMap<String, String[]>> map;
 
     private GestureDetector gestureDetector;
@@ -219,7 +220,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
 
     }
 
-    public void setDayAndPlace(ArrayList<Filters> nameOfPlace, ArrayList<Filters> days, HashMap<String, HashMap<String, String[]>> map) {
+    public void setDayAndPlace(ArrayList<Cinema> nameOfPlace, ArrayList<String> days, HashMap<String, HashMap<String, String[]>> map) {
         this.nameOfPlace = nameOfPlace;
         this.days = days;
         this.map = map;
@@ -234,10 +235,14 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     private void isFromScroll(boolean isDaysScroll, boolean isPlaceScroll, boolean isProjectionScroll, int position) {
         if (isDaysScroll) {
             activeDay = position;
-            createProjectionScroll(nameOfPlace.get(activePlace).getCinemaFilter(), days.get(activeDay).getDayFilter(), false);
+            if (nameOfPlace != null && !nameOfPlace.isEmpty() && days != null && !days.isEmpty()) {
+                createProjectionScroll(nameOfPlace.get(activePlace).getTitle(), days.get(activeDay), false);
+            }
         } else if (isPlaceScroll) {
             activePlace = position;
-            createProjectionScroll(nameOfPlace.get(activePlace).getCinemaFilter(), days.get(activeDay).getDayFilter(), false);
+            if (nameOfPlace != null && !nameOfPlace.isEmpty() && days != null && !days.isEmpty()) {
+                createProjectionScroll(nameOfPlace.get(activePlace).getTitle(), days.get(activeDay), false);
+            }
         } else if (isProjectionScroll) {
 
         }
@@ -246,11 +251,13 @@ public class CustomHorizontalScrollView extends HorizontalScrollView implements
     public void createProjectionScroll(String place, String day, boolean fromAdapter) {
         float density = ((BaseActivity) context).getDensity();
         int viewWidth = ((BaseActivity) context).getViewWidth();
+
         TextView placeView;
         LinearLayout layout;
-        String[] projections = new String[0];
+        String[] projections = {"NOT"};
         if (map != null) {
             projections = map.get(place).get(day);
+            Log.d("MAP", "IS NOT NULL");
         }
         LinearLayout masterLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

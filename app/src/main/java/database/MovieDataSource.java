@@ -21,7 +21,7 @@ public class MovieDataSource {
             MySQLiteHelper.COLUMN_MOVIE_TITLE, MySQLiteHelper.COLUMN_MOVIE_RATE,
             MySQLiteHelper.COLUMN_MOVIE_IMG_URL, MySQLiteHelper.COLUMN_MOVIE_DURATION,
             MySQLiteHelper.COLUMN_MOVIE_IMDB, MySQLiteHelper.COLUMN_MOVIE_DESCRIPTION,
-            MySQLiteHelper.COLUMN_MOVIE_DIRECTOR, MySQLiteHelper.COLUMN_MOVIE_RELEASE_DATE,
+            MySQLiteHelper.COLUMN_MOVIE_DIRECTOR,MySQLiteHelper.COLUMN_MOVIE_PRICE, MySQLiteHelper.COLUMN_MOVIE_RELEASE_DATE,
             MySQLiteHelper.COLUMN_MOVIE_NEW_THIS_WEEK};
     private Context con;
 

@@ -1,4 +1,4 @@
-package mycinemaapp.com.mycinemaapp;
+package test.database;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import java.util.List;
 
 import database.MovieDataSource;
 import models.Movie;
+import mycinemaapp.com.mycinemaapp.R;
 
 /**
  * Created by kristian on 15-4-7.

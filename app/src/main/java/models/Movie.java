@@ -22,7 +22,12 @@ public class Movie {
     int duration;
     String imageUrl;
     String movieTitle;
-    ArrayList<String> movieGenre = new ArrayList<>();
+    //    ArrayList<String> movieGenre = new ArrayList<>();
+    ArrayList<Integer> genreIds = new ArrayList<>();
+
+
+    ArrayList<String> startingHours = new ArrayList<>();
+
     String movieDirectors;
     ArrayList<String> movieActors;
 
@@ -45,11 +50,28 @@ public class Movie {
     String releaseDate;
     String price;
 
-    ArrayList<String> nameOfPlace = new ArrayList<>();
+    ArrayList<Integer> cinemaIds = new ArrayList<>();
 
     HashMap<String, HashMap<String, String[]>> allProjections;
 
     private boolean isAdd;
+    int isActive;
+
+    public int getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
+    }
+
+    public ArrayList<String> getStartingHours() {
+        return startingHours;
+    }
+
+    public void setStartingHours(String startingHours) {
+        this.startingHours.add(startingHours);
+    }
 
     public String getPrice() {
         return price;
@@ -117,12 +139,12 @@ public class Movie {
         this.isAdd = isAdd;
     }
 
-    public ArrayList<String> getNameOfPlace() {
-        return nameOfPlace;
+    public ArrayList<Integer> getCinemaIds() {
+        return cinemaIds;
     }
 
-    public void setNameOfPlace(String places) {
-        nameOfPlace.add(places);
+    public void setCinemaIds(int places) {
+        cinemaIds.add(places);
     }
 
 
@@ -226,16 +248,16 @@ public class Movie {
         this.rating = rating;
     }
 
-    public ArrayList<String> getMovieGenre() {
-        return movieGenre;
+    public ArrayList<Integer> getMovieGenreIds() {
+        return genreIds;
     }
 
-    public void setMovieGenre(String movieGenreString) {
-        movieGenre.add(movieGenreString);
+    public void setMovieGenreId(int movieGenreString) {
+        genreIds.add(movieGenreString);
     }
 
-    public int getCountGenre() {
-        return movieGenre.size();
+    public int getCountGenreIds() {
+        return genreIds.size();
     }
 
     public String getMovieDirectors() {
@@ -288,6 +310,6 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "MOVIE ID :" + id + "Movie: " + movieTitle + ",Progress: " + movieProgress + ",days" + date.toString() + ",cinemas" + nameOfPlace.toString() + ",genres" + movieGenre.toString();
+        return "MOVIE ID :" + id + "Movie: " + movieTitle + ",Progress: " + movieProgress + ",days" + date.toString() + ",cinemas" + cinemaIds.toString() + ",genres" + genreIds.toString();
     }
 }

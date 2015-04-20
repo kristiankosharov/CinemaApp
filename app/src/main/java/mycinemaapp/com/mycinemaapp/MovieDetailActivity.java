@@ -10,23 +10,13 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 import adapters.MovieDetailAdapter;
 import database.CinemaDataSource;
 import database.MovieDataSource;
-import helpers.RequestManager;
 import models.AddMovies;
 import models.RatedMovies;
-import models.SaveTempMovieModel;
 
 /**
  * Created by kristian on 15-3-4.
@@ -62,7 +52,7 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         LayoutInflater inflater = getLayoutInflater();
 
         v = inflater.inflate(R.layout.movie_detail_item, null);
-        cinemaRequest();
+//        cinemaRequest();
 
         back = (ImageView) findViewById(R.id.back);
         share = (ImageView) findViewById(R.id.share);
@@ -79,16 +69,17 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         if (isOnline()) {
             if (isList) {
-                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isRated) {
-                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(),MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isBought) {
             } else {
-                adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
             }
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
-            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
+
+            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
@@ -114,15 +105,15 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         super.onResume();
         if (isOnline()) {
             if (isList) {
-                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isRated) {
-                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(),MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isBought) {
             } else {
-                adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
             }
         } else {
-            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), isList, isRated, isBought);
+            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         if (adapter.getCount() == 0) {
@@ -175,40 +166,40 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         super.onBackPressed();
     }
 
-    private void cinemaRequest() {
-        String url = "http://www.json-generator.com/api/json/get/bYJRDIimgi?indent=2";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        try {
-                            JSONArray array = new JSONArray(response);
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject obj = array.getJSONObject(i);
-//                                Cinema cinema = new Cinema();
-//                                cinema.setMovieId(obj.getInt("movie_id"));
-//                                cinema.setTitle(obj.getString("title"));
-//                                cinema.setLatitude(obj.getDouble("latitude"));
-//                                cinema.setLongitude(obj.getDouble("longitude"));
-                                Toast.makeText(MovieDetailActivity.this, "test", Toast.LENGTH_SHORT).show();
-                                cinemaDataSource.createCinema(obj.getInt("movie_id"), obj.getString("title"), (float) obj.getDouble("longitude"), (float) obj.getDouble("latitude"));
-                            }
-                        } catch (Exception e) {
-
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MovieDetailActivity.this, "Please re-connect your connection!", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        );
-        // Add the request to the RequestQueue.
-        RequestManager.getRequestQueue().add(stringRequest);
-    }
+//    private void cinemaRequest() {
+//        String url = "http://www.json-generator.com/api/json/get/bYJRDIimgi?indent=2";
+//
+//        // Request a string response from the provided URL.
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//
+//                        try {
+//                            JSONArray array = new JSONArray(response);
+//                            for (int i = 0; i < array.length(); i++) {
+//                                JSONObject obj = array.getJSONObject(i);
+////                                Cinema cinema = new Cinema();
+////                                cinema.setMovieId(obj.getInt("movie_id"));
+////                                cinema.setTitle(obj.getString("title"));
+////                                cinema.setLatitude(obj.getDouble("latitude"));
+////                                cinema.setLongitude(obj.getDouble("longitude"));
+//                                Toast.makeText(MovieDetailActivity.this, "test", Toast.LENGTH_SHORT).show();
+//                                cinemaDataSource.createCinema(obj.getInt("movie_id"), obj.getString("title"), (float) obj.getDouble("longitude"), (float) obj.getDouble("latitude"));
+//                            }
+//                        } catch (Exception e) {
+//
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(MovieDetailActivity.this, "Please re-connect your connection!", Toast.LENGTH_LONG).show();
+//            }
+//        }
+//
+//        );
+//        // Add the request to the RequestQueue.
+//        RequestManager.getRequestQueue().add(stringRequest);
+//    }
 }

@@ -62,11 +62,14 @@
         <activity
             android:name=".LoginFragment"
             android:screenOrientation="portrait" />
-        <activity android:name=".TestDatabaseUsers"></activity>
-        <activity android:name=".TestDatabaseMovies"></activity>
-        <activity android:name=".TestDatabaseFilters"></activity>
-        <activity android:name=".TestDatabaseGenres"></activity>
-        <activity android:name=".TestDatabaseCinema"></activity>
+        <activity android:name="test.database.TestDatabaseUsers"></activity>
+        <activity android:name="test.database.TestDatabaseMovies"></activity>
+        <activity android:name="test.database.TestDatabaseFilters"></activity>
+        <activity android:name="test.database.TestDatabaseGenres"></activity>
+        <activity android:name="test.database.TestDatabaseCinema"></activity>
+        <activity android:name="test.database.TestDatabaseMovieGenres"></activity>
+        <activity android:name="test.database.TestDatabaseMovieCinema"></activity>
+        <activity android:name="test.database.TestDatabaseMovieCinemaProjections"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

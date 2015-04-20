@@ -14,8 +14,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import adapters.FilterAdapter;
-import models.AllGenresFilters;
+import database.GenresDataSource;
 import models.Filters;
+import models.Genre;
 
 /**
  * Created by kristian on 15-3-31.
@@ -27,6 +28,7 @@ public class AllGenresFragment extends Fragment {
     private Button button;
     private TextView clear;
     private static final int NUMBER_OF_COLUMN = 2;
+    private GenresDataSource genresDataSource;
 
     AllGenresFragment(Button button) {
         this.button = button;
@@ -45,23 +47,19 @@ public class AllGenresFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        genresDataSource = new GenresDataSource(getActivity());
+        genresDataSource.open();
         listView = (ListView) view.findViewById(R.id.list_view);
-        ArrayList<Filters> list = new ArrayList<>();
+        ArrayList<Genre> list = new ArrayList<>();
+        list = genresDataSource.getAllGenres();
+        ArrayList<Filters> allGenres = new ArrayList<>();
+         for(int i=0;i<list.size();i++){
+             Filters filters = new Filters();
+             filters.setGenreFilter(list.get(i).getTitle());
+             allGenres.add(filters);
+         }
 
-        for (int i = 0; i < 100; i++) {
-            if (i == 0) {
-                Filters item = new Filters();
-                item.setGenreFilter("ALL GENRES");
-                list.add(item);
-            } else {
-                Filters item = new Filters();
-                item.setGenreFilter("FILTER" + i);
-                list.add(item);
-            }
-        }
-//        AllGenresFilters.allGenres.clear();
-        AllGenresFilters.setAllGenres(list);
-        adapter = new FilterAdapter(getActivity(), AllGenresFilters.allGenres, button, "all genres", null);
+        adapter = new FilterAdapter(getActivity(), allGenres, button, "all genres", null);
         listView.setAdapter(adapter);
 
         return view;

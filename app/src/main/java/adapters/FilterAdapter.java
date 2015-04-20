@@ -11,9 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import database.MovieDaysDataSource;
 import models.Filters;
-import models.Movie;
 import mycinemaapp.com.mycinemaapp.MainActivity;
 import mycinemaapp.com.mycinemaapp.R;
 
@@ -26,7 +24,6 @@ public class FilterAdapter extends ArrayAdapter<Filters> {
     private MovieAdapter mainActivityArray;
     private Button button;
     private String from;
-    private MovieDaysDataSource movieDaysDataSource;
 
     public FilterAdapter(Activity mContext,
                          ArrayList<Filters> filtersArrayList, Button button, String from, MovieAdapter arrayList) {
@@ -53,8 +50,6 @@ public class FilterAdapter extends ArrayAdapter<Filters> {
     @Override
     public View getView(final int position, final View convertView, ViewGroup parent) {
         View rowView = convertView;
-        movieDaysDataSource = new MovieDaysDataSource(context);
-        movieDaysDataSource.open();
         if (rowView == null) {
             LayoutInflater inflater = context.getLayoutInflater();
             rowView = inflater.inflate(R.layout.filter_item_layout,
@@ -95,10 +90,10 @@ public class FilterAdapter extends ArrayAdapter<Filters> {
                     case "all days":
                         item.setDaySelected(true);
                         button.setText(item.getDayFilter());
-                        ArrayList<Movie> movieList = movieDaysDataSource.getAllMovieDay(item.getDayFilter());
+//                        ArrayList<Movie> movieList = movieDaysDataSource.getAllMovieDay(item.getDayFilter());
                         Log.d("DATE",item.getDayFilter());
-                        Log.d("LOG", movieList.toString());
-                        mainActivityArray = new MovieAdapter(context, R.layout.movie_layout, movieList, false, false, false);
+//                        Log.d("LOG", movieList.toString());
+//                        mainActivityArray = new MovieAdapter(context, R.layout.movie_layout, movieList, false, false, false);
                         mainActivityArray.notifyDataSetChanged();
                         ((MainActivity) context).gridView.setAdapter(mainActivityArray);
                         context.onBackPressed();

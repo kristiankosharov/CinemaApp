@@ -40,8 +40,7 @@ public class AllDaysFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_days_fragment, container, false);
-        allDaysDataSource = new AllDaysDataSource(getActivity());
-        allDaysDataSource.open();
+
 
         clear = (TextView) view.findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
@@ -53,21 +52,13 @@ public class AllDaysFragment extends Fragment implements View.OnClickListener {
             }
         });
         listView = (ListView) view.findViewById(R.id.list_view);
-        ArrayList<Filters> list = allDaysDataSource.getAllFilters();
-//        Toast.makeText(getActivity(), list.toString(), Toast.LENGTH_LONG).show();
-//        for (int i = 0; i < 100; i++) {
-//            if (i == 0) {
-//                Filter item = new Filter();
-//                item.setFilter("ALL DAYS");
-//                list.add(item);
-//            } else {
-//                Filter item = new Filter();
-//                item.setFilter("FILTER" + i);
-//                list.add(item);
-//            }
-//        }
-//        AllDaysFilters.setAllDays(list);
-        adapter = new FilterAdapter(getActivity(), list, button, "all days", mainActivityArray);
+        ArrayList<Filters> allDays = new ArrayList<>();
+        for (int i = 1; i < 32; i++) {
+            Filters filters = new Filters();
+            filters.setDayFilter(i + "");
+            allDays.add(filters);
+        }
+        adapter = new FilterAdapter(getActivity(), allDays, button, "all days", mainActivityArray);
         listView.setAdapter(adapter);
 
         return view;

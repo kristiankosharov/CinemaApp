@@ -10,6 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import test.database.TestDatabaseCinema;
+import test.database.TestDatabaseMovieCinema;
+import test.database.TestDatabaseMovieCinemaProjections;
+import test.database.TestDatabaseMovieGenres;
+
 /**
  * Created by kristian on 15-3-19.
  */
@@ -60,19 +65,19 @@ public class SortFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.popularity_sort:
                 clickedButton = "popularity";
-                Intent intent1 = new Intent(getActivity(), TestDatabaseFilters.class);
+                Intent intent1 = new Intent(getActivity(), TestDatabaseMovieCinemaProjections.class);
                 startActivity(intent1);
 //                getFragmentManager().popBackStack();
                 break;
             case R.id.release_date:
                 clickedButton = "release";
-                Intent intent2 = new Intent(getActivity(), TestDatabaseMovies.class);
+                Intent intent2 = new Intent(getActivity(), TestDatabaseMovieGenres.class);
                 startActivity(intent2);
 //                getFragmentManager().popBackStack();
                 break;
             case R.id.rating_sort:
                 clickedButton = "rating";
-                Intent intent3 = new Intent(getActivity(), TestDatabaseGenres.class);
+                Intent intent3 = new Intent(getActivity(), TestDatabaseMovieCinema.class);
                 startActivity(intent3);
 //                getFragmentManager().popBackStack();
                 break;

@@ -38,4 +38,14 @@ public class MoviesCinemas {
     public void setCinema_id(long cinema_id) {
         this.cinema_id = cinema_id;
     }
+
+    @Override
+    public String toString() {
+        return "MoviesCinemas{" +
+                "id=" + id +
+                ", movie_id=" + movie_id +
+                ", cinema_id=" + cinema_id +
+                ", isActive=" + isActive +
+                '}';
+    }
 }

@@ -11,7 +11,7 @@ import android.util.Log;
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
     // Datebase Version
-    private static final int DATABASE_VERSION = 22;
+    private static final int DATABASE_VERSION = 2;
 
     // Datebase Name
     private static final String DATABASE_NAME = "mycinemaapp.db";
@@ -75,7 +75,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     // Table All Cinemas
     public static final String TABLE_ALL_CINEMAS = "allcinemas";
-    public static final String COLUMN_CINEMAS_FILTER = "cinemasfilter";
+    public static final String COLUMN_CINEMAS_TITLE = "cinemastitle";
+    public static final String COLUMN_CINEMAS_LATITUDE = "latitude";
+    public static final String COLUMN_CINEMAS_LONGITUDE = "longitude";
 
     // Table All Genres
     public static final String TABLE_ALL_GENRES = "allgenres";
@@ -125,15 +127,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     + COLUMN_MOVIE_CINEMA_ID + " INTEGER, "
                     + COLUMN_DAY_OF_WEEK + " TEXT, "
                     + COLUMN_STARTING_TIME + " TEXT, "
-                    + "FOREIGN KEY(" + COLUMN_MOVIE_CINEMA_ID + ") REFERENCES " + TABLE_MOVIES_CINEMAS + "(" + COLUMN_ID + ");";
+                    + "FOREIGN KEY(" + COLUMN_MOVIE_CINEMA_ID + ") REFERENCES " + TABLE_MOVIES_CINEMAS + "(" + COLUMN_ID + "));";
 
     private static final String CREATE_TABLE_MOVIES_GENRES =
             "CREATE TABLE " + TABLE_MOVIES_GENRES + " ("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + COLUMN_MOVIE_ID + " INTEGER, "
                     + COLUMN_GENRES_ID + " INTEGER, "
-                    + "FOREIGN KEY(" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "),"
-                    + "FOREIGN KEY(" + COLUMN_GENRES_ID + ") REFERENCES " + TABLE_GENRES + "(" + COLUMN_ID + ");";
+                    + "FOREIGN KEY(" + COLUMN_MOVIE_ID + ") REFERENCES " + TABLE_MOVIES + "(" + COLUMN_ID + "), "
+                    + "FOREIGN KEY(" + COLUMN_GENRES_ID + ") REFERENCES " + TABLE_GENRES + "(" + COLUMN_ID + "));";
 
 
     // Database creation sql statement
@@ -143,11 +145,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     + COLUMN_DAYS_FILTER + " TEXT, "
                     + COLUMN_DAYS_NAME + " TEXT);";
 
-    // Database creation sql statement
-    private static final String CREATE_TABLE_ALL_CINEMAS =
-            "CREATE TABLE " + TABLE_ALL_CINEMAS + " ("
-                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + COLUMN_CINEMAS_FILTER + " TEXT);";
+//    // Database creation sql statement
+//    private static final String CREATE_TABLE_ALL_CINEMAS =
+//            "CREATE TABLE " + TABLE_ALL_CINEMAS + " ("
+//                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+//                    + COLUMN_CINEMAS_TITLE + " TEXT, "
+//    +COLUMN_CINEMAS_LATITUDE + " ");";
 
     // Database creation sql statement
     private static final String CREATE_TABLE_ALL_GENRES =

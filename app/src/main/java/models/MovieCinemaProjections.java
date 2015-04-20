@@ -39,4 +39,14 @@ public class MovieCinemaProjections {
     public void setDayOfWeek(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
+
+    @Override
+    public String toString() {
+        return "MovieCinemaProjections{" +
+                "id=" + id +
+                ", movie_cinema_id=" + movie_cinema_id +
+                ", dayOfWeek='" + dayOfWeek + '\'' +
+                ", startingTime='" + startingTime + '\'' +
+                '}';
+    }
 }
