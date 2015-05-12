@@ -6,7 +6,7 @@ import android.widget.ArrayAdapter;
 
 import java.util.List;
 
-import database.GenresDataSource;
+import database.SQLite.GenresDataSource;
 import models.Genre;
 
 /**

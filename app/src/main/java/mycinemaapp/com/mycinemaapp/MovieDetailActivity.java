@@ -13,8 +13,8 @@ import android.widget.Toast;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import adapters.MovieDetailAdapter;
-import database.CinemaDataSource;
-import database.MovieDataSource;
+import database.SQLite.CinemaDataSource;
+import database.SQLite.MovieDataSource;
 import models.AddMovies;
 import models.RatedMovies;
 

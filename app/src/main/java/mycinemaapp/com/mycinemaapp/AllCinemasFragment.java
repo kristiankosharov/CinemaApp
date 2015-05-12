@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import adapters.FilterAdapter;
-import database.CinemaDataSource;
+import database.SQLite.CinemaDataSource;
 import models.Cinema;
 import models.Filters;
 

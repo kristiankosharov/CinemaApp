@@ -23,8 +23,8 @@ import com.facebook.model.GraphUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import database.User;
-import database.UsersDataSource;
+import database.SQLite.User;
+import database.SQLite.UsersDataSource;
 import helpers.SessionManager;
 
 /**
@@ -155,6 +155,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         if (values.size() > 0) {
                                             for (int i = 0; i < values.size(); i++) {
                                                 if (values.get(i).getUserEmail().equals(user.getProperty("email").toString())) {
+                                                    // Message for existing user
                                                 }
                                             }
                                         } else {

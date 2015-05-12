@@ -70,6 +70,7 @@
         <activity android:name="test.database.TestDatabaseMovieGenres"></activity>
         <activity android:name="test.database.TestDatabaseMovieCinema"></activity>
         <activity android:name="test.database.TestDatabaseMovieCinemaProjections"></activity>
+        <activity android:name="database.NoSQL.Couchbase"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

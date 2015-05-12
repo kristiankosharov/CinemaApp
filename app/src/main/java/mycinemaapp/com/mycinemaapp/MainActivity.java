@@ -37,21 +37,21 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 
 import adapters.MovieAdapter;
-import database.ActorsDataSource;
-import database.CinemaDataSource;
-import database.GenresDataSource;
-import database.MovieCinemaProjectionsDataSource;
-import database.MovieDataSource;
-import database.MoviesCinemasDataSource;
-import database.MoviesGenresDataSource;
+import database.NoSQL.Couchbase;
+import database.SQLite.ActorsDataSource;
+import database.SQLite.CinemaDataSource;
+import database.SQLite.GenresDataSource;
+import database.SQLite.MovieCinemaProjectionsDataSource;
+import database.SQLite.MovieDataSource;
+import database.SQLite.MoviesCinemasDataSource;
+import database.SQLite.MoviesGenresDataSource;
 import helpers.RequestManager;
 import helpers.SessionManager;
 import models.Filters;
 import models.Movie;
-import models.MoviesCinemas;
 import models.SaveTempMovieModel;
 import origamilabs.library.views.StaggeredGridView;
 
@@ -86,6 +86,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private MovieCinemaProjectionsDataSource movieCinemaProjectionsDataSource;
     private MoviesCinemasDataSource moviesCinemasDataSource;
     private MoviesGenresDataSource moviesGenresDataSource;
+    private Couchbase couchbase;
 
     public MainActivity() {
     }
@@ -201,6 +202,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void initialize(Bundle savedInstanceState) {
         sm = new SessionManager(this);
+        couchbase = new Couchbase(this);
         movieDataSource = new MovieDataSource(this);
 //        allDaysDataSource = new AllDaysDataSource(this);
 //        allCinemasDataSource = new AllCinemasDataSource(this);
@@ -277,7 +279,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     public void movieRequest() {
-        String url = "http://www.json-generator.com/api/json/get/bYOKffIPqW?indent=2";
+        String url = "http://www.json-generator.com/api/json/get/cbkGvMiFwy?indent=2";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -317,196 +319,222 @@ public class MainActivity extends Activity implements View.OnClickListener {
                          */
 
                         try {
+                            couchbase.deleteAllDocuments();
                             JSONObject object = new JSONObject(response);
                             JSONArray jsonArrayMoives = object.getJSONArray("movies");
                             JSONArray jsonArrayCinemas = object.getJSONArray("cinemas");
                             JSONArray jsonArrayGenres = object.getJSONArray("genres");
-
-                            movieDataSource.removeAll();
-//                            allDaysDataSource.removeAll();
-                            cinemaDataSource.removeAll();
-                            genresDataSource.removeAll();
-                            moviesCinemasDataSource.removeAll();
-                            movieCinemaProjectionsDataSource.removeAll();
-
-                            ArrayList<String> days = new ArrayList<>();
-                            ArrayList<String> startingTime = new ArrayList<>();
-                            ArrayList<String> nameOfDays = new ArrayList<>();
-                            HashSet<String> nameOfPlaces = new HashSet<>();
-                            ArrayList<String> actors = new ArrayList<>();
-                            HashMap<String, String[]> onlyProjections;
-                            String[] projections;
-                            HashMap<String, HashMap<String, String[]>> allProjections;
-
-                            try {
-                                for (int l = 0; l < jsonArrayCinemas.length(); l++) {
-                                    JSONObject jsonObject = jsonArrayCinemas.getJSONObject(l);
-                                    cinemaDataSource.createCinema(jsonObject.getString("title"),
-                                            Float.parseFloat(jsonObject.getString("longitude")),
-                                            Float.parseFloat(jsonObject.getString("latitude")));
-                                    nameOfPlaces.add(jsonObject.getString("title"));
-                                }
-                            } catch (Exception e) {
-                                Log.d("FOR", "CINEMA DATA SOURCE");
-                            }
-
-                            try {
-                                for (int k = 0; k < jsonArrayGenres.length(); k++) {
-//                                    movie.setMovieGenre(obj.getJSONArray("movie_genre").getString(k));
-
-                                    genresDataSource.createGenre(jsonArrayGenres.getString(k));
-                                }
-                            } catch (Exception e) {
-                                Log.d("FOR", "GENRES DATA SOURCE");
-                            }
-
-
+                            Map<String, Object> movies = new HashMap<>();
                             for (int i = 0; i < jsonArrayMoives.length(); i++) {
-                                JSONObject obj = jsonArrayMoives.getJSONObject(i);
-
-//                                ArrayList<String> directors = new ArrayList<>();
-
-
-                                Movie movie = new Movie();
+                                JSONObject movie = jsonArrayMoives.getJSONObject(i);
+                                movies.put("movies", movie.toString());
                                 try {
-                                    movie.setImageUrl(obj.getString("image_url"));
-                                    movie.setMovieProgress(Float.parseFloat(obj.getString("rating")));
-                                    movie.setMovieTitle(obj.getString("title"));
-                                    movie.setNewForWeek(obj.getString("new_for_week"));
-                                    movie.setMovieDirectors(obj.getString("movie_directors"));
-                                    movie.setReleaseDate(obj.getString("release_date"));
+                                    couchbase.createDocument(movies);
                                 } catch (Exception e) {
-                                    Log.d("EXEPTION", "MOIVE.SET");
+                                    e.printStackTrace();
                                 }
-//                                for (int j = 0; j < obj.getJSONArray("movie_directors").length(); j++) {
-//                                    directors.add(obj.getJSONArray("movie_directors").getString(j));
+                            }
+
+                            Map<String, Object> cinemas = new HashMap<>();
+                            for (int k = 0; k < jsonArrayCinemas.length(); k++) {
+//                                JSONObject cinema = jsonArrayCinemas.getJSONObject(k);
+//                                cinemas.put("cinemas", cinema);
+//                                couchbase.createDocument(cinemas);
+                            }
+
+                            Map<String, Object> genres = new HashMap<>();
+                            for (int l = 0; l < jsonArrayGenres.length(); l++) {
+//                                JSONObject genre = jsonArrayGenres.getJSONObject(l);
+//                                genres.put("genres", genre);
+//                                couchbase.createDocument(genres);
+                            }
+
+
+//                            movieDataSource.removeAll();
+////                            allDaysDataSource.removeAll();
+//                            cinemaDataSource.removeAll();
+//                            genresDataSource.removeAll();
+//                            moviesCinemasDataSource.removeAll();
+//                            movieCinemaProjectionsDataSource.removeAll();
+//
+//                            ArrayList<String> days = new ArrayList<>();
+//                            ArrayList<String> startingTime = new ArrayList<>();
+//                            ArrayList<String> nameOfDays = new ArrayList<>();
+//                            HashSet<String> nameOfPlaces = new HashSet<>();
+//                            ArrayList<String> actors = new ArrayList<>();
+//                            HashMap<String, String[]> onlyProjections;
+//                            String[] projections;
+//                            HashMap<String, HashMap<String, String[]>> allProjections;
+//
+//                            try {
+//                                for (int l = 0; l < jsonArrayCinemas.length(); l++) {
+//                                    JSONObject jsonObject = jsonArrayCinemas.getJSONObject(l);
+//                                    cinemaDataSource.createCinema(jsonObject.getString("title"),
+//                                            Float.parseFloat(jsonObject.getString("longitude")),
+//                                            Float.parseFloat(jsonObject.getString("latitude")));
+//                                    nameOfPlaces.add(jsonObject.getString("title"));
 //                                }
-//                                movie.setMovieDirectors(directors);
-
-                                try {
-                                    for (int z = 0; z < obj.getJSONArray("cinema_id").length(); z++) {
-                                        movie.setCinemaIds(Integer.parseInt(obj.getJSONArray("cinema_id").getString(z)));
-                                    }
-                                } catch (Exception e) {
-                                    Log.d("FOR", "SET CINEMA IDS");
-                                }
-
-                                try {
-                                    for (int q = 0; q < obj.getJSONArray("genre_id").length(); q++) {
-                                        movie.setMovieGenreId(Integer.parseInt(obj.getJSONArray("genre_id").getString(q)));
-                                    }
-                                } catch (Exception e) {
-                                    Log.d("FOR", "SET MOVIE GENRE ID");
-                                }
-
-                                try {
-                                    actors = new ArrayList<>();
-                                    for (int l = 0; l < obj.getJSONArray("movie_actors").length(); l++) {
-                                        actors.add(obj.getJSONArray("movie_actors").getString(l));
-                                    }
-                                } catch (Exception e) {
-                                    Log.d("FOR", "ADD ACTORS");
-                                }
-
-                                movie.setMovieActors(actors);
-                                Log.d("ACTORS", actors.toString());
-                                if (!obj.getString("user_rating").equals("")) {
-                                    movie.setUserRating(Integer.parseInt(obj.getString("user_rating")));
-                                }
-                                try {
-                                    movie.setImdbUrl(obj.getString("imdb_url"));
-                                    movie.setDuration(Integer.parseInt(obj.getString("movie_duration")));
-                                    movie.setFullDescription(obj.getString("movie_description"));
-                                    movie.setTimeOfProjection(new String[]{});
-                                    movie.setNumberOfDays(countOfDays);
-                                    movie.setStartDay(dayOfMonth);
-                                    movie.setMovieTrailerUrl(obj.getString("trailer_url"));
-                                    movie.setImdbRating(obj.getString("imdb_rating"));
-                                    movie.setIsActive(Integer.parseInt(obj.getString("is_active")));
-                                } catch (Exception e) {
-                                    Log.d("EXEPTION", "MOVIE SET 2");
-                                }
-
-
-                                projections = new String[obj.getJSONArray("hours").length()];
-                                for (int m = 0; m < obj.getJSONArray("hours").length(); m++) {
-                                    projections[m] = obj.getJSONArray("hours").getString(m);
-                                    startingTime.add(obj.getJSONArray("hours").getString(m));
-                                    movie.setStartingHours(obj.getJSONArray("hours").getString(m));
-                                }
-
-
-                                String temp;
-                                onlyProjections = new HashMap<>();
-//                                days = new ArrayList<>();
-                                for (int z = 0; z < obj.getJSONArray("days").length(); z++) {
-                                    for (int y = 0; y < obj.getJSONArray("days").getJSONArray(z).length(); y++) {
-                                        if (y == 0) {
-                                            temp = obj.getJSONArray("days").getJSONArray(z).getString(y);
-                                            movie.setDate(temp);
-                                            days.add(temp);
-                                            onlyProjections.put(temp, projections);
-                                        } else {
-                                            nameOfDays.add(obj.getJSONArray("days").getJSONArray(z).getString(y));
-                                        }
-                                    }
-                                }
-
-                                String tempCinema;
-//                                for (int l = 0; l < obj.getJSONArray("cinemas").length(); l++) {
-//                                    tempCinema = obj.getJSONArray("cinemas").getString(l);
-//                                    movie.setNameOfPlace(tempCinema);
-//                                    nameOfPlaces.add(tempCinema);
-//                                }
-
-                                allProjections = new HashMap<>();
-                                for (String s : nameOfPlaces) {
-                                    allProjections.put(s, onlyProjections);
-                                }
-
-                                movie.setNameDayOfMonth(nameOfDays);
-                                movie.setAllProjections(allProjections);
-
-                                movieList.add(movie);
-                            }
-                            for (int i = 0; i < movieList.size(); i++) {
-                                movieDataSource.createMovie(movieList.get(i).getMovieTitle(), movieList.get(i).getMovieProgress(),
-                                        movieList.get(i).getImageUrl(), movieList.get(i).getDuration(), movieList.get(i).getImdbUrl(),
-                                        movieList.get(i).getFullDescription(), movieList.get(i).getMovieDirectors(), movieList.get(i).getPrice(),
-                                        movieList.get(i).getReleaseDate(), movieList.get(i).getNewForWeek());
-                            }
-
-                            ArrayList<Movie> allMovies = movieDataSource.getAllMovie();
-                            for (int k = 0; k < movieList.size(); k++) {
-                                for (int j = 0; j < movieList.get(k).getCinemaIds().size(); j++) {
-                                    moviesCinemasDataSource.createMovieCinema(allMovies.get(k).getId(),
-                                            movieList.get(k).getCinemaIds().get(j),
-                                            movieList.get(k).getIsActive());
-                                }
-                                for (int w = 0; w < movieList.get(k).getMovieGenreIds().size(); w++) {
-                                    moviesGenresDataSource.createMovieGenre(allMovies.get(k).getId(), movieList.get(k).getMovieGenreIds().get(w));
-                                }
-                            }
-//
-                            ArrayList<MoviesCinemas> allMoviesCinemas = moviesCinemasDataSource.getAllMoviesCinemas();
-                            int size = moviesCinemasDataSource.getSizeMoviesCinemasWithoutRepeat();
-                            try {
-                                for (int q = 0; q < size; q++) {
-                                    for (int j = 0; j < movieList.get(q).getDate().size(); j++) {
-                                        for (int v = 0; v < movieList.get(q).getStartingHours().size(); v++) {
-                                            movieCinemaProjectionsDataSource.createMovieCinemaProjection(allMoviesCinemas.get(q).getId(), movieList.get(q).getDate().get(j), movieList.get(q).getStartingHours().get(v));
-                                        }
-                                    }
-                                }
-                            } catch (Exception e) {
-                                Log.d("Exeption", "MOVIE CINEMA PROJECTIONS");
-                                e.printStackTrace();
-                            }
-//
-//                            for (int i = 0; i < days.size(); i++) {
-//                                allDaysDataSource.createFilter(days.get(i), nameOfDays.get(i));
-//
+//                            } catch (Exception e) {
+//                                Log.d("FOR", "CINEMA DATA SOURCE");
 //                            }
+//
+//                            try {
+//                                for (int k = 0; k < jsonArrayGenres.length(); k++) {
+////                                    movie.setMovieGenre(obj.getJSONArray("movie_genre").getString(k));
+//
+//                                    genresDataSource.createGenre(jsonArrayGenres.getString(k));
+//                                }
+//                            } catch (Exception e) {
+//                                Log.d("FOR", "GENRES DATA SOURCE");
+//                            }
+//
+//
+//                            for (int i = 0; i < jsonArrayMoives.length(); i++) {
+//                                JSONObject obj = jsonArrayMoives.getJSONObject(i);
+//
+////                                ArrayList<String> directors = new ArrayList<>();
+//
+//
+//                                Movie movie = new Movie();
+//                                try {
+//                                    movie.setImageUrl(obj.getString("image_url"));
+//                                    movie.setMovieProgress(Float.parseFloat(obj.getString("rating")));
+//                                    movie.setMovieTitle(obj.getString("title"));
+//                                    movie.setNewForWeek(obj.getString("new_for_week"));
+//                                    movie.setMovieDirectors(obj.getString("movie_directors"));
+//                                    movie.setReleaseDate(obj.getString("release_date"));
+//                                } catch (Exception e) {
+//                                    Log.d("EXEPTION", "MOIVE.SET");
+//                                }
+////                                for (int j = 0; j < obj.getJSONArray("movie_directors").length(); j++) {
+////                                    directors.add(obj.getJSONArray("movie_directors").getString(j));
+////                                }
+////                                movie.setMovieDirectors(directors);
+//
+//                                try {
+//                                    for (int z = 0; z < obj.getJSONArray("cinema_id").length(); z++) {
+//                                        movie.setCinemaIds(Integer.parseInt(obj.getJSONArray("cinema_id").getString(z)));
+//                                    }
+//                                } catch (Exception e) {
+//                                    Log.d("FOR", "SET CINEMA IDS");
+//                                }
+//
+//                                try {
+//                                    for (int q = 0; q < obj.getJSONArray("genre_id").length(); q++) {
+//                                        movie.setMovieGenreId(Integer.parseInt(obj.getJSONArray("genre_id").getString(q)));
+//                                    }
+//                                } catch (Exception e) {
+//                                    Log.d("FOR", "SET MOVIE GENRE ID");
+//                                }
+//
+//                                try {
+//                                    actors = new ArrayList<>();
+//                                    for (int l = 0; l < obj.getJSONArray("movie_actors").length(); l++) {
+//                                        actors.add(obj.getJSONArray("movie_actors").getString(l));
+//                                    }
+//                                } catch (Exception e) {
+//                                    Log.d("FOR", "ADD ACTORS");
+//                                }
+//
+//                                movie.setMovieActors(actors);
+//                                Log.d("ACTORS", actors.toString());
+//                                if (!obj.getString("user_rating").equals("")) {
+//                                    movie.setUserRating(Integer.parseInt(obj.getString("user_rating")));
+//                                }
+//                                try {
+//                                    movie.setImdbUrl(obj.getString("imdb_url"));
+//                                    movie.setDuration(Integer.parseInt(obj.getString("movie_duration")));
+//                                    movie.setFullDescription(obj.getString("movie_description"));
+//                                    movie.setTimeOfProjection(new String[]{});
+//                                    movie.setNumberOfDays(countOfDays);
+//                                    movie.setStartDay(dayOfMonth);
+//                                    movie.setMovieTrailerUrl(obj.getString("trailer_url"));
+//                                    movie.setImdbRating(obj.getString("imdb_rating"));
+//                                    movie.setIsActive(Integer.parseInt(obj.getString("is_active")));
+//                                } catch (Exception e) {
+//                                    Log.d("EXEPTION", "MOVIE SET 2");
+//                                }
+//
+//
+//                                projections = new String[obj.getJSONArray("hours").length()];
+//                                for (int m = 0; m < obj.getJSONArray("hours").length(); m++) {
+//                                    projections[m] = obj.getJSONArray("hours").getString(m);
+//                                    startingTime.add(obj.getJSONArray("hours").getString(m));
+//                                    movie.setStartingHours(obj.getJSONArray("hours").getString(m));
+//                                }
+//
+//
+//                                String temp;
+//                                onlyProjections = new HashMap<>();
+////                                days = new ArrayList<>();
+//                                for (int z = 0; z < obj.getJSONArray("days").length(); z++) {
+//                                    for (int y = 0; y < obj.getJSONArray("days").getJSONArray(z).length(); y++) {
+//                                        if (y == 0) {
+//                                            temp = obj.getJSONArray("days").getJSONArray(z).getString(y);
+//                                            movie.setDate(temp);
+//                                            days.add(temp);
+//                                            onlyProjections.put(temp, projections);
+//                                        } else {
+//                                            nameOfDays.add(obj.getJSONArray("days").getJSONArray(z).getString(y));
+//                                        }
+//                                    }
+//                                }
+//
+//                                String tempCinema;
+////                                for (int l = 0; l < obj.getJSONArray("cinemas").length(); l++) {
+////                                    tempCinema = obj.getJSONArray("cinemas").getString(l);
+////                                    movie.setNameOfPlace(tempCinema);
+////                                    nameOfPlaces.add(tempCinema);
+////                                }
+//
+//                                allProjections = new HashMap<>();
+//                                for (String s : nameOfPlaces) {
+//                                    allProjections.put(s, onlyProjections);
+//                                }
+//
+//                                movie.setNameDayOfMonth(nameOfDays);
+//                                movie.setAllProjections(allProjections);
+//
+//                                movieList.add(movie);
+//                            }
+//                            for (int i = 0; i < movieList.size(); i++) {
+//                                movieDataSource.createMovie(movieList.get(i).getMovieTitle(), movieList.get(i).getMovieProgress(),
+//                                        movieList.get(i).getImageUrl(), movieList.get(i).getDuration(), movieList.get(i).getImdbUrl(),
+//                                        movieList.get(i).getFullDescription(), movieList.get(i).getMovieDirectors(), movieList.get(i).getPrice(),
+//                                        movieList.get(i).getReleaseDate(), movieList.get(i).getNewForWeek());
+//                            }
+//
+//                            ArrayList<Movie> allMovies = movieDataSource.getAllMovie();
+//                            for (int k = 0; k < movieList.size(); k++) {
+//                                for (int j = 0; j < movieList.get(k).getCinemaIds().size(); j++) {
+//                                    moviesCinemasDataSource.createMovieCinema(allMovies.get(k).getId(),
+//                                            movieList.get(k).getCinemaIds().get(j),
+//                                            movieList.get(k).getIsActive());
+//                                }
+//                                for (int w = 0; w < movieList.get(k).getMovieGenreIds().size(); w++) {
+//                                    moviesGenresDataSource.createMovieGenre(allMovies.get(k).getId(), movieList.get(k).getMovieGenreIds().get(w));
+//                                }
+//                            }
+////
+//                            ArrayList<MoviesCinemas> allMoviesCinemas = moviesCinemasDataSource.getAllMoviesCinemas();
+//                            int size = moviesCinemasDataSource.getSizeMoviesCinemasWithoutRepeat();
+//                            try {
+//                                for (int q = 0; q < size; q++) {
+//                                    for (int j = 0; j < movieList.get(q).getDate().size(); j++) {
+//                                        for (int v = 0; v < movieList.get(q).getStartingHours().size(); v++) {
+//                                            movieCinemaProjectionsDataSource.createMovieCinemaProjection(allMoviesCinemas.get(q).getId(), movieList.get(q).getDate().get(j), movieList.get(q).getStartingHours().get(v));
+//                                        }
+//                                    }
+//                                }
+//                            } catch (Exception e) {
+//                                Log.d("Exeption", "MOVIE CINEMA PROJECTIONS");
+//                                e.printStackTrace();
+//                            }
+////
+////                            for (int i = 0; i < days.size(); i++) {
+////                                allDaysDataSource.createFilter(days.get(i), nameOfDays.get(i));
+////
+////                            }
 
 //                            Toast.makeText(MainActivity.this, movieDataSource.getAllMovie().toString(), Toast.LENGTH_SHORT).show();
                             SaveTempMovieModel.setMovies(movieDataSource.getAllMovie());
@@ -517,6 +545,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             gridView.setAdapter(movieAdapter);
                             progressBar.setVisibility(View.GONE);
                         } catch (Exception e) {
+                            e.printStackTrace();
                             Toast.makeText(MainActivity.this, "Some problem!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
                         }
@@ -537,19 +566,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.user_icon:
 
-                if (sm.getRemember()) {
-                    Intent intent = new Intent(this, MyProfileActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
-
-                } else {
-                    LoginFragment loginFragment = new LoginFragment();
-                    FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
-                    loginTransaction.addToBackStack("Login Fragment");
-                    loginTransaction.replace(R.id.fragment_container, loginFragment);
-                    loginTransaction.commit();
-                }
-//                Intent intentMyProfile = new Intent(this, LoginActivity.class);
+//                if (sm.getRemember()) {
+//                    Intent intent = new Intent(this, MyProfileActivity.class);
+//                    startActivity(intent);
+//                    overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
+//
+//                } else {
+//                    LoginFragment loginFragment = new LoginFragment();
+//                    FragmentTransaction loginTransaction = getFragmentManager().beginTransaction();
+//                    loginTransaction.addToBackStack("Login Fragment");
+//                    loginTransaction.replace(R.id.fragment_container, loginFragment);
+//                    loginTransaction.commit();
+//                }
+                couchbase.getAllMovies();
+//                ArrayList<Document> docs = couchbase.getAllDocuments();
+//                for (Document doc : docs) {
+//                    Log.d("Main", doc.getCurrentRevision().getProperties().toString());
+//                }
+//                Intent intentMyProfile = new Intent(this, Couchbase.class);
 //                startActivity(intentMyProfile);
 //                overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out);
                 break;

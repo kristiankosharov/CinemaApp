@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import adapters.FilterAdapter;
 import adapters.MovieAdapter;
-import database.AllDaysDataSource;
+import database.SQLite.AllDaysDataSource;
 import models.Filters;
 
 /**

@@ -8,8 +8,8 @@ import android.widget.Button;
 
 import java.util.List;
 
-import database.User;
-import database.UsersDataSource;
+import database.SQLite.User;
+import database.SQLite.UsersDataSource;
 import mycinemaapp.com.mycinemaapp.R;
 
 /**

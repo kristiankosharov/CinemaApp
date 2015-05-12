@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import java.util.List;
 
-import database.CinemaDataSource;
+import database.SQLite.CinemaDataSource;
 import models.Cinema;
 import mycinemaapp.com.mycinemaapp.R;
 

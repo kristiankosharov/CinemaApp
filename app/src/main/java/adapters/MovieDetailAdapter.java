@@ -24,12 +24,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import database.ActorsDataSource;
-import database.AllDaysDataSource;
-import database.AllGenresDataSource;
-import database.GenresDataSource;
-import database.MoviesCinemasDataSource;
-import database.MoviesGenresDataSource;
+import database.SQLite.ActorsDataSource;
+import database.SQLite.AllDaysDataSource;
+import database.SQLite.AllGenresDataSource;
+import database.SQLite.GenresDataSource;
+import database.SQLite.MoviesCinemasDataSource;
+import database.SQLite.MoviesGenresDataSource;
 import helpers.CustomHorizontalScrollView;
 import helpers.SessionManager;
 import models.AddMovies;

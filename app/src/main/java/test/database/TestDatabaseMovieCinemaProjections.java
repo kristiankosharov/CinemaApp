@@ -6,7 +6,7 @@ import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
-import database.MovieCinemaProjectionsDataSource;
+import database.SQLite.MovieCinemaProjectionsDataSource;
 import models.MovieCinemaProjections;
 
 /**

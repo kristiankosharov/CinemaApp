@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import java.util.List;
 
-import database.ActorsDataSource;
+import database.SQLite.ActorsDataSource;
 import models.Actor;
 import mycinemaapp.com.mycinemaapp.R;
 

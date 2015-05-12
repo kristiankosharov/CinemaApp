@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import adapters.FilterAdapter;
-import database.GenresDataSource;
+import database.SQLite.GenresDataSource;
 import models.Filters;
 import models.Genre;
 
