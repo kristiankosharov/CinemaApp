@@ -17,6 +17,7 @@ import database.SQLite.CinemaDataSource;
 import database.SQLite.MovieDataSource;
 import models.AddMovies;
 import models.RatedMovies;
+import models.SaveTempMovieModel;
 
 /**
  * Created by kristian on 15-3-4.
@@ -69,17 +70,17 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         if (isOnline()) {
             if (isList) {
-                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isRated) {
-                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(),MainActivity.getMovieList(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isBought) {
             } else {
-                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), MainActivity.getMovieList(), isList, isRated, isBought);
             }
         } else {
             Toast.makeText(this, "Please re - connect your connection!", Toast.LENGTH_LONG).show();
 
-            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
+            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(), MainActivity.getMovieList(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         mViewPager.setPageMargin(20);
@@ -105,15 +106,15 @@ public class MovieDetailActivity extends BaseActivity implements View.OnClickLis
         super.onResume();
         if (isOnline()) {
             if (isList) {
-                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, AddMovies.getAddMovie(), MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isRated) {
-                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(),MainActivity.getMovieList(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, RatedMovies.getRatedMovies(), MainActivity.getMovieList(), isList, isRated, isBought);
             } else if (isBought) {
             } else {
-                adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
+                adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), MainActivity.getMovieList(), isList, isRated, isBought);
             }
         } else {
-            adapter = new MovieDetailAdapter(this, movieDataSource.getAllMovie(),MainActivity.getMovieList(), isList, isRated, isBought);
+            adapter = new MovieDetailAdapter(this, SaveTempMovieModel.getMovies(), MainActivity.getMovieList(), isList, isRated, isBought);
         }
         adapter.notifyDataSetChanged();
         if (adapter.getCount() == 0) {

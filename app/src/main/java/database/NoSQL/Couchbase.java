@@ -5,10 +5,13 @@ import android.content.Context;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
+import com.couchbase.lite.Emitter;
 import com.couchbase.lite.Manager;
+import com.couchbase.lite.Mapper;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
+import com.couchbase.lite.Reducer;
 import com.couchbase.lite.android.AndroidContext;
 import com.couchbase.lite.util.Log;
 
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -183,14 +187,61 @@ public class Couchbase {
 
     public void getAllMovies() {
 
-        int document = database.getDocumentCount();
-        Log.d(TAG,document+"");
-
-
 //        Query query = database.getView("movies").createQuery();
+//        View document = database.getView("movies");
+//        Log.d("GET ALL MOVIES", query.getView().getR);
 //        query.setDescending(true);
 //        query.setLimit(100);
-////        Log.d(TAG, query.toString());
+//        query.setStartKeyDocId("movies");
+
+
+        /**
+         *
+         */
+        com.couchbase.lite.View view = database.getView("movies");
+        final Document document = database.getDocument("movies");
+        if (view.getMap() == null) {
+            view.setMapReduce(new Mapper() {
+                                  @Override
+                                  public void map(Map<String, Object> map, Emitter emitter) {
+                                      List<String> hours = (List) document.getProperty("hours");
+                                      for (String hour : hours) {
+                                          emitter.emit(hour, document.getProperty("name"));
+                                          Log.d("MAPPER","Vliza");
+                                      }
+                                  }
+                              },
+                    new Reducer() {
+                        @Override
+                        public Object reduce(List<Object> list, List<Object> list1, boolean b) {
+                            Log.d("REDUCE","Vliza");
+                            return new Integer(list1.size());
+                        }
+                    }, "1");
+        }
+
+
+//            Mapper mapper = new Mapper() {
+//                public void map(Map<String, Object> document, Emitter emitter) {
+//
+//
+//                    String type = (String)document.get("rating");
+//                    Log.d("LOG TYPE",type);
+//                    if ("rating".equals(type)) {
+//                        emitter.emit(document.get("rating"), document);
+//                    }
+//                }
+//            };
+//            view.setMap(mapper, "2");
+//        }
+
+//        Query query = view.createQuery();
+//
+//        /**
+//         *
+//         */
+//
+//
 //        QueryEnumerator result = null;
 //        try {
 //            result = query.run();
@@ -198,7 +249,7 @@ public class Couchbase {
 //            e.printStackTrace();
 //        }
 //        for (Iterator<QueryRow> it = result; it.hasNext(); ) {
-//            Log.d(TAG, it.next().toString());
+//            Log.d("GEL ALL MOVIES", it.next().toString());
 //        }
     }
 
